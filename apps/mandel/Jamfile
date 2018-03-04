@@ -1,0 +1,8 @@
+SubDir TOP apps mandel ;
+
+Main MANDGFX.BIN : mandgfx.c ;
+CoCoDisk mandel.dsk : MANDGFX.BIN ;
+
+#Main MANDEL.BIN : mandel.c ;
+#CoCoDisk mandel.dsk : MANDEL.BIN ;
+

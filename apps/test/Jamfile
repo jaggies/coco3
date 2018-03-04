@@ -1,0 +1,10 @@
+SubDir TOP apps printf ;
+
+ObjectCcFlags main.o : -DCOCO3 ;
+
+Main PRINTF.BIN : printf.c ;
+Main FLOAT.BIN : float.c ;
+
+CoCoDisk main.dsk : FLOAT.BIN ;
+CoCoDisk main.dsk : PRINTF.BIN ;
+

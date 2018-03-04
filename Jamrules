@@ -1,0 +1,63 @@
+#LWTOOLS
+AR = lwar ;
+
+#CMOC
+CC = cmoc ;
+#LINK = lwlink ;
+LINK = $(CC) ;
+
+OPTIM = ;
+#CCFLAGS = --verbose ;
+CCFLAGS += --coco ; # Coco .bin file
+#CCFLAGS += --os9 ; # Coco OS9 executable
+ALL_LOCATE_TARGET = $(TOP)/build/coco3 ;
+
+DECB = decb ; # coco disk builder
+
+#
+# Rule to create a disk
+#
+rule CoCoDisk
+{
+    local _disk = $(<) ;
+    local _files = $(>) ;
+	CoCoDiskCreate $(_disk) ;
+	CoCoDiskFromFiles $(_disk) : $(_files) ;
+}
+
+#
+# CocoDiskFromFiles <dskname> : <files>
+#
+rule CoCoDiskFromFiles
+{
+    local _disk _files ;
+
+    # Add grist (absolute path) to file names
+    _files = $(>) ;
+    _disk = $(<) ;
+
+    # library depends on its member objects
+	Depends all : $(_disk) ;   # Force disk to be built
+
+    # make library depend on objects
+    Depends $(_disk) : $(_files) ;
+
+    Clean clean : $(_l) ;
+    CoCoDiskCopy $(_disk) : $(_files) ;
+}
+
+rule CoCoDiskCreate
+{
+	Depends all : $(<) ;
+}
+
+actions CoCoDiskCreate
+{
+    $(DECB) dskini $(<) ;
+}
+
+actions piecemeal CoCoDiskCopy
+{
+	$(DECB) copy -2br $(>) $(<), ;
+}
+
