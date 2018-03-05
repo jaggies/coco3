@@ -1,16 +1,19 @@
 #LWTOOLS
-AR = lwar ;
+AR = lwar -car ;
+RANLIB = echo ;
 
 #CMOC
 CC = cmoc ;
 #LINK = lwlink ;
-LINK = $(CC) ;
 
 OPTIM = ;
 #CCFLAGS = --verbose ;
+CCFLAGS += -DCOCO -Dconst= ;
 CCFLAGS += --coco ; # Coco .bin file
 #CCFLAGS += --os9 ; # Coco OS9 executable
 ALL_LOCATE_TARGET = $(TOP)/build/coco3 ;
+
+LINK = $(CC) $(CCFLAGS) -L$(ALL_LOCATE_TARGET) ;
 
 DECB = decb ; # coco disk builder
 

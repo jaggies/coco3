@@ -1,0 +1,4 @@
+SubDir TOP lib os ;
+
+Library libmath.a : pow.c ;
+

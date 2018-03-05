@@ -1,4 +1,4 @@
-SubDir TOP apps printf ;
+SubDir TOP apps test ;
 
 ObjectCcFlags main.o : -DCOCO3 ;
 

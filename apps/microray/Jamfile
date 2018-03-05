@@ -1,0 +1,24 @@
+SubDir TOP apps microray ;
+SubDirHdrs $(TOP) lib os ;
+
+#LINKLIBS on microray.bin = -lmath ;
+
+Main microray.bin : 
+	checkerboardshader.c
+	hit.c
+	loader.c
+	main.c
+	netpbm.c
+	perspectivecamera.c
+	phongshader.c
+	pointlight.c
+	raymath.c
+	raytrace.c
+	sphere.c
+	testload.c
+	triangle.c
+	vec2.c
+	vec3.c
+	world.c
+	stubs.c # HACK 9000
+	;
