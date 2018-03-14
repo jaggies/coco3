@@ -1,10 +1,13 @@
 SubDir TOP apps test ;
+SubDirHdrs $(TOP) lib os ;
 
 ObjectCcFlags main.o : -DCOCO3 ;
+
+LINKLIBS on FLOAT.BIN = -los ;
 
 Main PRINTF.BIN : printf.c ;
 Main FLOAT.BIN : float.c ;
 
-CoCoDisk main.dsk : FLOAT.BIN ;
-CoCoDisk main.dsk : PRINTF.BIN ;
+CoCoDisk float.dsk : FLOAT.BIN ;
+CoCoDisk printf.dsk : PRINTF.BIN ;
 

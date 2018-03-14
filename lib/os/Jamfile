@@ -1,6 +1,6 @@
 SubDir TOP lib os ;
 
-Library libmath.a :
+Library libos.a :
 	math.c
 	sqrt.c 
 	stdlib.c
