@@ -1,7 +1,7 @@
 SubDir TOP apps microray ;
 SubDirHdrs $(TOP) lib os ;
 
-#LINKLIBS on microray.bin = -lmath ;
+LINKLIBS on microray.bin = -lmath ;
 
 Main microray.bin : 
 	checkerboardshader.c
@@ -20,5 +20,4 @@ Main microray.bin :
 	vec2.c
 	vec3.c
 	world.c
-	stubs.c # HACK 9000
 	;

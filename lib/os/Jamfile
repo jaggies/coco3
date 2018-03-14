@@ -1,4 +1,9 @@
 SubDir TOP lib os ;
 
-Library libmath.a : pow.c ;
+Library libmath.a :
+	math.c
+	sqrt.c 
+	stdlib.c
+	string.c
+	;
 

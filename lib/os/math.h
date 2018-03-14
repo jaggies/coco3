@@ -2,14 +2,23 @@
 #define _OS_MATH_H
 
 #ifdef COCO
-#define double float
-double sqrt(double x);
-double floorf(double x);
-double tan(double x);
-double fabs(double x);
-double pow(double x, double y);
-double round(double x);
-#define M_PI (3.141592653f)
+
+#define M_PI (3.14159265358979323846f)
+
+#define sqrt(x) sqrtf(x)
+#define floor(x) floorf(x)
+#define tan(x) tanf(x)
+#define fabs(x) fabsf(x)
+#define pow(x, y) powf(x,y)
+#define round(x) roundf(x)
+
+extern float sqrtf(float x);
+extern float floorf(float x);
+extern float tanf(float x);
+extern float fabsf(float x);
+extern float pow(float x, float y);
+extern float round(float x);
+extern float powf(float x, float y);
 #else 
 #include <math.h>
 #endif
