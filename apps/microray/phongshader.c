@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include "math.h"
 #include "phongshader.h"
 #include "hit.h"
 

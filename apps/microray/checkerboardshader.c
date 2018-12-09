@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include "math.h"
 #include "hit.h"
 #include "checkerboardshader.h"
 
@@ -13,8 +14,8 @@ static void evaluateCheckerboard(struct Shader* sh, Hit* hit, Vec3* color)
 {
     CheckerboardShader* shader = (CheckerboardShader*) sh;
     Vec2 p; multadd2(&shader->scale, &hit->uv, &shader->bias, &p);
-    int u = ((int) floorf(p.x)) & 1;
-    int v = ((int) floorf(p.y)) & 1;
+    int u = ((int) floor(p.x)) & 1;
+    int v = ((int) floor(p.y)) & 1;
     shader->target = (u^v) ? shader->odd : shader->even;
     shader->target->op->evaluate(shader->target, hit, color);
 }
