@@ -10,6 +10,6 @@
 
 #include "fixed.h"
 
-extern fixed isqrt(fixed value);
+extern long isqrt(long value);
 
 #endif /* APPS_INTRAY_IMATH_H_ */

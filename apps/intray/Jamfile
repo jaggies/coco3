@@ -1,13 +1,16 @@
 SubDir TOP apps intray ;
+SubDirHdrs $(TOP) lib os ;
 
 Main INTRAY.BIN :
 	fixed.c
+	icamera.c
 	ivec2i.c
 	ivec3i.c
 	imath.c
 	intray.c
+	isphere.c
 	;
 
-CoCoDisk mandel.dsk : INTRAY.BIN ;
+CoCoDisk intray.dsk : INTRAY.BIN ;
 
 

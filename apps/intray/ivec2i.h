@@ -25,6 +25,6 @@ extern void inormalize2(Vec2i* n);
 extern void icopy2(Vec2i* a, Vec2i* result);
 extern void inegate2(Vec2i* a);
 extern void imultadd2(Vec2i* a, Vec2i* b, Vec2i* c, Vec2i* result);
-extern fixed isqrt(fixed a);
+extern void ivec2_print(Vec2i* v);
 
 #endif /* APPS_MINRAY_IMATH_H_ */

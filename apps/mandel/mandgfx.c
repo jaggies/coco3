@@ -22,7 +22,7 @@ float toFloat(fract value) {
     return (float) (value >> fraction) + (float)(value & mask) / mask;
 }
 
-fract mult(fract a, fract b) {
+fract fmult(fract a, fract b) {
     long long x = a;
     long long y = b;
     return (fract) (x * y >> fraction);
@@ -49,15 +49,15 @@ void doMandleInt(float xmin, float xmax, float ymin, float ymax) {
             fract zi = 0;
             uint8_t count = 0;
             fract dist;
-            fract zr2 = 0; // initial condition = mult(zr, zr) = 0
-            fract zi2 = 0; // initial condition = mult(zi, zr) = 0
+            fract zr2 = 0; // initial condition = fmult(zr, zr) = 0
+            fract zi2 = 0; // initial condition = fmult(zi, zr) = 0
             do {
                 // z = z^2 + c
                 fract tr = zr2 - zi2 + cr;
-                fract ti = mult(zr << 1, zi) + ci;
+                fract ti = fmult(zr << 1, zi) + ci;
                 zr = tr; zi = ti;
-                zr2 = mult(zr, zr);
-                zi2 = mult(zi, zi);
+                zr2 = fmult(zr, zr);
+                zi2 = fmult(zi, zi);
             } while (count++ < maxCount && (zr2 + zi2) < four);
 			hset(i, j, (count-1)%16);
         }
