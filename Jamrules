@@ -57,6 +57,7 @@ rule CoCoDiskCreate
 
 actions CoCoDiskCreate
 {
+	rm $(<) ;
     $(DECB) dskini $(<) ;
 }
 
