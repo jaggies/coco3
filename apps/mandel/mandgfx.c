@@ -88,8 +88,16 @@ void doMandelFloat(float xmin, float xmax, float ymin, float ymax) {
     }
 }
 
+// Enables 6309 Native mode for higher speed
+void set6309Native() {
+    asm {
+        ldmd  #$01
+    }
+}
+
 int main()
 {
+	set6309Native();
 	initCoCoSupport();
 	setHighSpeed(1);
 	for (uint8_t i = 0; i < 16; i++) {
