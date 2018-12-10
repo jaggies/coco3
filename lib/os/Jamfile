@@ -1,9 +1,6 @@
 SubDir TOP lib os ;
 
-Library libos.a :
-	math.c
-	sqrt.c 
-	stdlib.c
-	string.c
-	;
+if $(TARGET) = "coco3" {
+    Library libos.a : math.c sqrt.c  stdlib.c  string.c	;
+}
 
