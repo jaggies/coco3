@@ -10,8 +10,8 @@
 #include "icamera.h"
 #include "imath.h"
 
-const int width = 40;
-const int height = 20;
+const int width = 80;
+const int height = 40;
 
 int main(int argc, char** argv) {
     Vec3i from;
@@ -20,29 +20,20 @@ int main(int argc, char** argv) {
     iCamera cam;
     iSphere sp;
 
-//    printf("isqrt(%d) = %d\n", (1<<24), fsqrt(1 + (1<<24)));
-//    for (int i = 0; i < 64; i++) {
-//        fixed value = toFixed(i);
-//        fixed rt = fsqrt(value);
-//        printf("isqrt(%d) = %d  (%f %f)\n", value, rt, toFloat(value), toFloat(rt));
-//    }
-
     /* Create the camera */
-    ivec3(c_one, c_one, c_one, &from);
+    fixed eye = toFixed(2.0f);
+    ivec3(eye, eye, eye, &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
-    printf("create Camera!\n");
     cam_create(&from, &at, &up, toFixed(45.0f), toFixed(1.0f), &cam);
-    printf("done Camera!\n");
 
     /* Create the scene */
-    sp_create(c_zero, c_zero, c_zero, toFixed(0.1f), &sp);
+    sp_create(c_zero, c_zero, c_zero, toFixed(0.25f), &sp);
+    //sp_print(&sp);
 
-    sp_print(&sp);
     fixed u = 0, v = 0;
-    fixed du = toFixed(1.0f) / width;
-    fixed dv = toFixed(1.0f) / height;
-    printf("du=%f, dv=%f\n", toFloat(du), toFloat(dv));
+    fixed du = toFixed(1.0f) / (width-1);
+    fixed dv = toFixed(1.0f) / (height-1);
     for (int j = 0; j < height; j++, v += dv) {
         u = 0;
         for (int i = 0; i < width; i++, u += du) {
