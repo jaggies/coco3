@@ -10,8 +10,8 @@
 #include "icamera.h"
 #include "imath.h"
 
-const int width = 79;
-const int height = 24;
+const int width = 40;
+const int height = 20;
 
 int main(int argc, char** argv) {
     Vec3i from;

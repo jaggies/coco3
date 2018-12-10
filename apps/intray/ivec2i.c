@@ -5,6 +5,7 @@
  *      Author: jmiller
  */
 
+#include <stdio.h>
 #include "imath.h"
 #include "ivec2i.h"
 

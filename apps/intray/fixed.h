@@ -8,8 +8,10 @@
 #ifndef APPS_MINRAY_FIXED_H_
 #define APPS_MINRAY_FIXED_H_
 
-typedef int fixed;
-typedef long mulresult;
+#include <stdint.h>
+
+typedef int16_t fixed;
+typedef int32_t fresult; // intermediate result (e.g. multiply/divide)
 
 #define fraction 9
 
@@ -25,6 +27,7 @@ extern fixed c_one;
 extern fixed c_two;
 extern fixed c_pi;
 extern fixed c_half;
+extern fixed c_epsilon;
 
 extern long mask;
 

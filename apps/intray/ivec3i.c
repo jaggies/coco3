@@ -5,13 +5,7 @@
  *      Author: jmiller
  */
 
-/*
- * imath.c
- *
- *  Created on: Dec 9, 2018
- *      Author: jmiller
- */
-
+#include <stdio.h>
 #include "assert.h"
 #include "imath.h"
 #include "ivec3i.h"

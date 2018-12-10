@@ -8,7 +8,7 @@
 #include "imath.h"
 
 // Quick integer square rooter
-long isqrt(long value) {
+fresult isqrt(fresult value) {
     long result = 0;
     long bit = 1 << (8 * sizeof(fixed) - 2); // The second-to-top bit is set: 1 << 30 for 32 bits
     while (bit > value) {
@@ -28,6 +28,7 @@ long isqrt(long value) {
 
 fixed fsqrt(fixed value) {
     // approximation: isqrt(a<<fraction) ~= a*sqrt(512)
-    return fmult(toFixed(22.627416998f), isqrt(value));
+    const fixed sqrt512 = toFixed(22.627416998f);
+    return fmult(sqrt512, isqrt(value)); // more accurate: isqrt(value << fraction);
 }
 

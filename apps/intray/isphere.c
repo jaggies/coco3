@@ -24,7 +24,7 @@ int sp_isect(iSphere* sp, iRay* ray, fixed* tmax) {
     fixed disc = fmult(b, b) - idot3(&dir, &dir) + sp->r2;
 
     int hit = 0;
-    if (disc >= 0.0f) {
+    if (disc >= c_epsilon) {
         disc = fsqrt(disc);
         fixed t2 = b + disc;   // farthest point
         if (t2 > tmin && t2 < *tmax) {
