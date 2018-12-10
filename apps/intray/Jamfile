@@ -1,0 +1,13 @@
+SubDir TOP apps intray ;
+
+Main INTRAY.BIN :
+	fixed.c
+	ivec2i.c
+	ivec3i.c
+	imath.c
+	intray.c
+	;
+
+CoCoDisk mandel.dsk : INTRAY.BIN ;
+
+

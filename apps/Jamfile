@@ -1,4 +1,5 @@
 SubDir TOP apps ;
+SubInclude TOP apps intray ;
 SubInclude TOP apps mandel ;
-SubInclude TOP apps microray ;
+#SubInclude TOP apps microray ;
 SubInclude TOP apps test ;
