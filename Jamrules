@@ -24,6 +24,7 @@ rule CoCoDisk
 {
     local _disk = $(<) ;
     local _files = $(>) ;
+	MakeLocate $(<) : $(TOP)/build ;
 	CoCoDiskCreate $(_disk) ;
 	CoCoDiskFromFiles $(_disk) : $(_files) ;
 }
