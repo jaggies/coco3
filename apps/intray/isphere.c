@@ -5,9 +5,9 @@
  *      Author: jmiller
  */
 
+#include "os.h"
 #include "imath.h"
 #include "isphere.h"
-#include "stdio.h"
 
 static fixed tmin = 1; // some small number
 

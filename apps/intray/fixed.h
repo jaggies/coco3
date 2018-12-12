@@ -8,10 +8,14 @@
 #ifndef APPS_MINRAY_FIXED_H_
 #define APPS_MINRAY_FIXED_H_
 
+#ifdef COCO
+typedef int fixed;
+typedef long fresult; // intermediate result (e.g. multiply/divide)
+#else
 #include <stdint.h>
-
 typedef int16_t fixed;
 typedef int32_t fresult; // intermediate result (e.g. multiply/divide)
+#endif
 
 #define fraction 9
 

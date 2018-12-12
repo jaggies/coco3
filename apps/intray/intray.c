@@ -5,12 +5,12 @@
  *      Author: jmiller
  */
 
-#include <stdio.h>
+#include "os.h"
 #include "isphere.h"
 #include "icamera.h"
 #include "imath.h"
 
-const int width = 80;
+const int width = 79;
 const int height = 40;
 
 int main(int argc, char** argv) {

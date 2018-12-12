@@ -16,7 +16,6 @@ fixed c_two = 2 << fraction;
 fixed c_pi = 3 << fraction; // Meh, close enough. CMOC can't do static calls to functions
 fixed c_epsilon = 1 << (fraction - 7); // 1/128th
 
-
 float toFloat(fixed value) {
     return (float) (value >> fraction) + (float)(value & mask) / mask;
 }
@@ -29,7 +28,7 @@ fixed fmult(fixed a, fixed b) {
 
 fixed fdiv(fixed a, fixed b) {
     fresult r = a << fraction;
-    return r / b;
+    return (fixed) (r / b);
 }
 
 fixed toFixed(float value) {

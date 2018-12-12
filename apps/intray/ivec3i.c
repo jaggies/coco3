@@ -5,8 +5,7 @@
  *      Author: jmiller
  */
 
-#include <stdio.h>
-#include "assert.h"
+#include "os.h"
 #include "imath.h"
 #include "ivec3i.h"
 
@@ -53,7 +52,6 @@ fixed idot3(Vec3i* a, Vec3i* b) {
 void inormalize3(Vec3i* n) {
     fixed len2 = idot3(n, n);
     fixed len = fsqrt(len2);
-    assert(len != 0);
     fixed lenInv = fdiv(c_one, len);
     imult3(n, lenInv, n);
 }
