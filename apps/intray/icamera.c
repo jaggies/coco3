@@ -26,7 +26,9 @@ void cam_create(Vec3i* from, Vec3i* at, Vec3i* up, fixed fov, fixed aspect, iCam
     icopy3(&tdu, &camera->du);
     icopy3(&tdv, &camera->dv);
     icopy3(from, &camera->baseray.point);
-    iaddscaled3(&dir, -c_half, &camera->du, &camera->baseray.dir); // camera->dir = dir - 0.5*du - 0.5*dv
+
+	// camera->dir = dir - 0.5*du - 0.5*dv
+    iaddscaled3(&dir, -c_half, &camera->du, &camera->baseray.dir); 
     iaddscaled3(&camera->baseray.dir, -c_half, &camera->dv, &camera->baseray.dir);
 }
 

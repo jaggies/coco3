@@ -51,15 +51,20 @@ fixed idot3(Vec3i* a, Vec3i* b) {
 
 void inormalize3(Vec3i* n) {
     fixed len2 = idot3(n, n);
+    if (len2 <= 0) { // overflow or degenerate normal
+        #ifdef DEBUG
+        printf("OOPS! len2 = %x vec=", len2);
+        ivec3_print(n);
+        #endif
+        return;
+    }
     fixed len = fsqrt(len2);
     fixed lenInv = fdiv(c_one, len);
     imult3(n, lenInv, n);
 }
 
 void icopy3(Vec3i* a, Vec3i* result) {
-    result->x = a->x;
-    result->y = a->y;
-    result->z = a->z;
+	*result = *a;
 }
 
 void inegate3(Vec3i* a) {

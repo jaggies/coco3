@@ -9,25 +9,26 @@
 
 long mask = ((1 << fraction) - 1);
 
-fixed c_zero = 0;
-fixed c_half = 1 << (fraction - 1);
-fixed c_one = 1 << fraction;
-fixed c_two = 2 << fraction;
-fixed c_pi = 3 << fraction; // Meh, close enough. CMOC can't do static calls to functions
-fixed c_epsilon = 1 << (fraction - 7); // 1/128th
+const fixed c_zero = 0;
+const fixed c_half = 1 << (fraction - 1);
+const fixed c_one = 1 << fraction;
+const fixed c_two = 2 << fraction;
+const fixed c_pi = 3.14159f * (1 << fraction); //3 << fraction; // Meh, close enough. CMOC can't do static calls to functions
+const fixed c_epsilon = 1 << (fraction  - 7); 
 
 float toFloat(fixed value) {
-    return (float) (value >> fraction) + (float)(value & mask) / mask;
+    return (float) value / (1 << fraction);
 }
 
+// multiplication with rounding
 fixed fmult(fixed a, fixed b) {
     fresult x = a;
     fresult y = b;
-    return (fixed) (x * y >> fraction);
+    return (fixed) ((x * y + (1 << (fraction-1))) >> fraction);
 }
 
 fixed fdiv(fixed a, fixed b) {
-    fresult r = a << fraction;
+    fresult r = ((fresult) a) << fraction;
     return (fixed) (r / b);
 }
 
