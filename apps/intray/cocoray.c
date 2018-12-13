@@ -63,9 +63,10 @@ int main(int argc, char** argv) {
     for (int j = 0; j < HEIGHT; j++) {
         fixed v = (fixed) ((fresult) c_one * j / HEIGHT);
         for (int i = 0; i < WIDTH; i++) {
-            fixed u = (fixed) ((fresult) c_one * i / WIDTH);
             iRay ray;
+            fixed u = (fixed) ((fresult) c_one * i / WIDTH);
             fixed tmax = toFixed(31.0f);
+            hset(i, j, 3); // show which pixel we're working on
             cam_makeRay(&cam, u, v, &ray);
             int color = 0;
             if (sp_isect(&sp, &ray, &tmax)) {
