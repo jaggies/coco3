@@ -42,15 +42,14 @@ int main(int argc, char** argv) {
     }
 
     /* Create the camera */
-    fixed eye = toFixed(2.0f);
+    fixed eye = toFixed(3.0f);
     ivec3(eye, eye, eye, &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
     cam_create(&from, &at, &up, toFixed(45.0f), toFixed(1.0f), &cam);
 
     /* Create the scene */
-    sp_create(c_zero, c_zero, c_zero, toFixed(0.25f), &sp);
-    //sp_print(&sp);
+    sp_create(c_zero, c_zero, c_zero, toFixed(0.5f), &sp);
 
     Vec3i lightdir;
     ivec3(toFixed(1), toFixed(1), toFixed(1), &lightdir);
