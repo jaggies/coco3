@@ -1,16 +1,30 @@
 SubDir TOP apps intray ;
 SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib coco ;
 
 Main INTRAY.BIN :
+	cocoray.c
+	dither.c
 	fixed.c
 	icamera.c
 	ivec2i.c
 	ivec3i.c
 	imath.c
-	intray.c
+	isphere.c
+	;
+
+Main COCORAY.BIN :
+	cocoray.c
+	dither.c
+	fixed.c
+	icamera.c
+	ivec2i.c
+	ivec3i.c
+	imath.c
 	isphere.c
 	;
 
 CoCoDisk intray.dsk : INTRAY.BIN ;
+CoCoDisk intray.dsk : COCORAY.BIN ;
 
 

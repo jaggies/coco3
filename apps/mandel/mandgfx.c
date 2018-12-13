@@ -1,10 +1,6 @@
 #include <cmoc.h>
 #include <coco.h>
-
-#define HS320x192x4 1
-#define HS320x192x16 2
-#define HS640x192x2 3
-#define HS640x192x4 4
+#include "cocogfx.h"
 
 typedef int16_t fract;
 

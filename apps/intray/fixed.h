@@ -16,7 +16,7 @@ typedef long Word; // intermediate result (e.g. multiply/divide)
 #include <stdint.h>
 typedef int16_t Halfword;
 typedef int32_t Word; // intermediate result (e.g. multiply/divide)
-#define fraction 10
+#define fraction 9
 #endif
 
 typedef Halfword fixed;
