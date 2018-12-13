@@ -7,6 +7,9 @@
 
 #include "imath.h"
 
+static int init = 0;
+static fixed sqrtFrac;
+
 // Quick integer square rooter
 fresult isqrt(fresult value) {
     long result = 0;
@@ -27,8 +30,10 @@ fresult isqrt(fresult value) {
 }
 
 fixed fsqrt(fixed value) {
-    // approximation: isqrt(a<<fraction) ~= a*sqrt(512)
-    const fixed sqrtFrac = toFixed(isqrt(1 << fraction)); // TODO: compute this statically
+    if (!init) {
+         sqrtFrac = toFixed(isqrt(1 << fraction));
+         init = 1;
+    }
     return fmult(sqrtFrac, (fixed) isqrt(value)); // more accurate: isqrt(value << fraction);
 }
 
