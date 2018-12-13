@@ -12,9 +12,12 @@
 #include "cocogfx.h"
 #include "dither.h"
 
-const int WIDTH = 200;
+const int WIDTH = 400;
 const int HEIGHT = 200;
 const int COLORS = 32;
+const char GFXMODE = HS640x192x4;
+const int DPYWIDTH = 640;
+const int DPYHEIGHT = 200;
 
 // Enables 6309 Native mode for higher speed
 void set6309Native() {
@@ -36,7 +39,7 @@ int main(int argc, char** argv) {
     setHighSpeed(1);
 
     /* Graphics */
-    hscreen(HS320x192x16);
+    hscreen(GFXMODE);
     for (uint8_t i = 0; i < 4; i++) {
         paletteRGB(i, i, i, i);
     }
@@ -46,10 +49,10 @@ int main(int argc, char** argv) {
     ivec3(eye, eye, eye, &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
-    cam_create(&from, &at, &up, toFixed(45.0f), toFixed(1.0f), &cam);
+    cam_create(&from, &at, &up, toFixed(45.0f), toFixed((float) 1.0f), &cam);
 
     /* Create the scene */
-    sp_create(c_zero, c_zero, c_zero, toFixed(0.5f), &sp);
+    sp_create(c_zero, c_zero, c_zero, toFixed(0.1f), &sp);
 
     Vec3i lightdir;
     ivec3(toFixed(1), toFixed(1), toFixed(1), &lightdir);
