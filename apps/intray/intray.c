@@ -34,17 +34,22 @@ int main(int argc, char** argv) {
     fixed u = 0, v = 0;
     fixed du = toFixed(1.0f) / (width-1);
     fixed dv = toFixed(1.0f) / (height-1);
+    Vec3i lightdir;
+    ivec3(toFixed(1), toFixed(1), toFixed(1), &lightdir);
+    inormalize3(&lightdir);
+    printf("Light dir: ");
+    ivec3_print(&lightdir);
     for (int j = 0; j < height; j++, v += dv) {
         u = 0;
         for (int i = 0; i < width; i++, u += du) {
             iRay ray;
             fixed tmax = toFixed(31.0f);
             cam_makeRay(&cam, u, v, &ray);
-//            printf("Ray: %f %f %f - %f %f %f\n",
-//                    toFloat(ray.point.x), toFloat(ray.point.y), toFloat(ray.point.z),
-//                    toFloat(ray.dir.x), toFloat(ray.dir.y), toFloat(ray.dir.z));
             if (sp_isect(&sp, &ray, &tmax)) {
-                putchar('*');
+                Vec3i normal;
+                sp_normal(&sp, &ray, tmax, &normal);
+                fixed d = idot3(&lightdir, &normal);
+                putchar('0' + (d >> (fraction - 3)));
             } else {
                 putchar('.');
             }
