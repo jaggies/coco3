@@ -7,8 +7,6 @@
 
 #include "imath.h"
 
-extern double sqrt(double);
-
 // Quick integer square rooter
 fresult isqrt(fresult value) {
     long result = 0;
@@ -30,8 +28,7 @@ fresult isqrt(fresult value) {
 
 fixed fsqrt(fixed value) {
     // approximation: isqrt(a<<fraction) ~= a*sqrt(512)
-    //const fixed sqrtFrac = toFixed(22.627416998f); // sqrt512
-    const fixed sqrtFrac = toFixed(sqrt(1 << fraction));
-    return fmult(sqrtFrac, isqrt(value)); // more accurate: isqrt(value << fraction);
+    const fixed sqrtFrac = toFixed(isqrt(1 << fraction)); // TODO: compute this statically
+    return fmult(sqrtFrac, (fixed) isqrt(value)); // more accurate: isqrt(value << fraction);
 }
 

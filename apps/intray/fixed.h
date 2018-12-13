@@ -9,18 +9,18 @@
 #define APPS_MINRAY_FIXED_H_
 
 #ifdef COCO
-typedef int halfword;
-typedef long word; // intermediate result (e.g. multiply/divide)
+typedef int Halfword;
+typedef long Word; // intermediate result (e.g. multiply/divide)
 #define fraction 9
 #else
 #include <stdint.h>
-typedef int16_t halfword;
-typedef int32_t word; // intermediate result (e.g. multiply/divide)
+typedef int16_t Halfword;
+typedef int32_t Word; // intermediate result (e.g. multiply/divide)
 #define fraction 10
 #endif
 
-typedef halfword fixed;
-typedef word fresult;
+typedef Halfword fixed;
+typedef Word fresult;
 
 extern float toFloat(fixed value);
 extern fixed toFixed(float value);
