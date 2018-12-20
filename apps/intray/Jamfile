@@ -15,7 +15,7 @@ Main INTRAY.BIN :
 
 CoCoDisk intray.dsk : INTRAY.BIN ;
 
-if $TARGET = coco3 {
+if $(TARGET) = coco3 {
 	Main COCORAY.BIN :
 		cocoray.c
 		dither.c

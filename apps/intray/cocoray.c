@@ -45,14 +45,13 @@ int main(int argc, char** argv) {
     }
 
     /* Create the camera */
-    fixed eye = fromInt(3);
-    ivec3(eye, eye, eye, &from);
+    ivec3(c_zero, c_zero, c_one, &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
-    cam_create(&from, &at, &up, fromInt(45), fromFloat((float) 1.0f), &cam);
+    cam_create(&from, &at, &up, fromInt(45), fromFloat(1.0f), &cam);
 
     /* Create the scene */
-    sp_create(c_zero, c_zero, c_zero, fromFloat(0.1f), &sp);
+    sp_create(c_zero, c_zero, c_zero, fromFloat(0.35f), &sp);
 
     Vec3i lightdir;
     ivec3(c_one, c_one, c_one, &lightdir);
@@ -73,7 +72,7 @@ int main(int argc, char** argv) {
                 Vec3i normal;
                 sp_normal(&sp, &ray, tmax, &normal);
                 fixed d = idot3(&lightdir, &normal);
-                color = (c_half + fmult(fmult(d, kdiff), COLORS << fraction)) >> fraction;
+                color = (c_half + fmult(fmult(d, kdiff), fromInt(COLORS))) >> fraction;
             }
             color = dither(COLORS, 4, i, j, color);
             hset(i, j, color);

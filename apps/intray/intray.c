@@ -10,8 +10,14 @@
 #include "icamera.h"
 #include "imath.h"
 
-const int WIDTH = 80;
-const int HEIGHT = 40;
+const int WIDTH = 79;
+const int HEIGHT = 24;
+
+void runTests() {
+    for (int i = 0; i < 64; i++) {
+        printf("sqrt(%f) = %f\n", toFloat(fromInt(i)), toFloat(fsqrt(fromInt(i))));
+    }
+}
 
 int main(int argc, char** argv) {
     Vec3i from;
@@ -34,6 +40,11 @@ int main(int argc, char** argv) {
     /* Create the scene */
     sp_create(c_zero, c_zero, c_zero, fromFloat(0.35f), &sp);
 
+    printf("from: "); ivec3_print(&from);
+    printf("at: "); ivec3_print(&at);
+    printf("up: "); ivec3_print(&up);
+    printf("lightdir: "); ivec3_print(&lightdir);
+
     for (int j = 0; j < HEIGHT; j++) {
         fixed v = (fixed) ((fresult) c_one * j / HEIGHT);
         for (int i = 0; i < WIDTH; i++) {
@@ -45,7 +56,7 @@ int main(int argc, char** argv) {
                 Vec3i normal;
                 sp_normal(&sp, &ray, tmax, &normal);
                 fixed d = idot3(&lightdir, &normal);
-                putchar(d > 0 ? ('A' + (d >> (fraction - 5))) : '.');
+                putchar(d > 0 ? (char) ('A' + (d >> (fraction - 5))) : '.');
             } else {
                 putchar('.');
             }

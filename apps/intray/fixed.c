@@ -5,7 +5,6 @@
  *      Author: jmiller
  */
 
-#include <assert.h>
 #include <stdlib.h> // abs()
 #include "fixed.h"
 
@@ -51,7 +50,7 @@ fixed fromFloat(float value) {
 }
 
 fixed fromInt(int value) {
-    assert(abs(value) < (1 << (8*sizeof(fixed) - fraction - 1)));
+    //assert(abs(value) < (1 << (8*sizeof(fixed) - fraction - 1)));
     return value << fraction;
 }
 
