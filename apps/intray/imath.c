@@ -9,7 +9,7 @@
 
 // Quick integer square rooter
 fresult isqrt(fresult value) {
-    fresult bit = 1 << (8 * sizeof(fresult) - 2);
+    fresult bit = (fresult) 1 << (8 * sizeof(fresult) - 2);
     if (value <= 0) {
         return 0;
     }

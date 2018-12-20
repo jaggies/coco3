@@ -18,7 +18,7 @@ const fixed c_half = 1 << (fraction - 1);
 const fixed c_one = 1 << fraction;
 const fixed c_two = 2 << fraction;
 const fixed c_epsilon = 1 << (fraction  - 7);
-const fixed c_max = (1 << ((8*sizeof(fixed))-1)) - 1;
+const fixed c_max = ((unsigned)1 << (8*sizeof(fixed)-1)) - 1;
 #ifdef COCO
 const fixed c_pi = 3 << fraction; // TODO. Close enough? CMOC can't do static calls to functions
 #else
@@ -26,7 +26,7 @@ const fixed c_pi = 3.14159f * (1 << fraction);
 #endif
 
 float toFloat(fixed value) {
-    return (float) value / (1 << fraction);
+    return (float) value / c_one;
 }
 
 // multiplication with rounding
