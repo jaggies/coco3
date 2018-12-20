@@ -33,7 +33,7 @@ float toFloat(fixed value) {
 fixed fmult(fixed a, fixed b) {
     fresult x = a;
     fresult y = b;
-    return (fixed) ((x * y + (1 << (fraction-1))) >> fraction);
+    return (fixed) ((x * y + c_half) >> fraction);
 }
 
 fixed fdiv(fixed a, fixed b) {

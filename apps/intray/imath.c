@@ -9,8 +9,9 @@
 
 // Quick integer square rooter
 fresult isqrt(fresult value) {
-    fresult bit = (fresult) 1 << (8 * sizeof(fresult) - 2);
-    if (value <= 0) {
+    fresult bit = (fresult) 1 << (8 * sizeof(fresult) - 2); // highest non-sign bit
+    if (value < 0) {
+        printf("Exception: sqrt(%lld)\n", value);
         return 0;
     }
     while (bit > value) {
