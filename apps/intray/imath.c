@@ -11,7 +11,7 @@
 fresult isqrt(fresult value) {
     fresult bit = (fresult) 1 << (8 * sizeof(fresult) - 2); // highest non-sign bit
     if (value < 0) {
-        printf("Exception: sqrt(%lld)\n", value);
+        printf("Exception: sqrt(%d)\n", value);
         return (fresult) 0;
     }
     while (bit > value) {
