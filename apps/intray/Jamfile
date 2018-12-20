@@ -3,18 +3,7 @@ SubDirHdrs $(TOP) lib os ;
 SubDirHdrs $(TOP) lib coco ;
 
 Main INTRAY.BIN :
-	cocoray.c
-	dither.c
-	fixed.c
-	icamera.c
-	ivec2i.c
-	ivec3i.c
-	imath.c
-	isphere.c
-	;
-
-Main COCORAY.BIN :
-	cocoray.c
+	intray.c
 	dither.c
 	fixed.c
 	icamera.c
@@ -25,6 +14,20 @@ Main COCORAY.BIN :
 	;
 
 CoCoDisk intray.dsk : INTRAY.BIN ;
-CoCoDisk intray.dsk : COCORAY.BIN ;
+
+if $TARGET = coco3 {
+	Main COCORAY.BIN :
+		cocoray.c
+		dither.c
+		fixed.c
+		icamera.c
+		ivec2i.c
+		ivec3i.c
+		imath.c
+		isphere.c
+		;
+	CoCoDisk cocoray.dsk : COCORAY.BIN ;
+}
+
 
 
