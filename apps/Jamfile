@@ -1,7 +1,9 @@
 SubDir TOP apps ;
-SubInclude TOP apps intray ;
-if $(TARGET = "coco3") {
-	SubInclude TOP apps mandel ;
+if $(TARGET) = "coco3" {
+	#SubInclude TOP apps cocoray ;
+	#SubInclude TOP apps mandgfx ;
 	#SubInclude TOP apps microray ;
-	SubInclude TOP apps test ;
 }
+SubInclude TOP apps test ;
+SubInclude TOP apps mandel ;
+SubInclude TOP apps intray ;

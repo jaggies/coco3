@@ -1,10 +1,9 @@
-#include <cmoc.h>
-#include <coco.h>
+#include "os.h"
 
 typedef int16_t fract;
 
-static fract fraction = 12;
-static fract mask = (((fract)(1) << fraction) - 1);
+static const fract fraction = 12;
+static const fract mask = (((fract)(1) << fraction) - 1);
 static fract two = ((fract)(2) << fraction);
 static fract four = ((fract)(4) << fraction);
 
@@ -87,13 +86,13 @@ void doMandelFloat(float xmin, float xmax, float ymin, float ymax) {
 
 int main()
 {
-    printf("sizeof(fract) = %d\n", sizeof(fract));
-    printf("sizeof(long long) = %d\n", sizeof(long long));
+    printf("sizeof(fract) = %d\n", (int) sizeof(fract));
+    printf("sizeof(long long) = %d\n", (int) sizeof(long long));
     printf("two = %f\n", toFloat(two));
     printf("four = %f\n", toFloat(four));
     printf("two * four = %f\n", toFloat(fmult(two, four)));
     printf("two + four = %f\n", toFloat(two + four));
-	setHighSpeed(1);
+	//setHighSpeed(1);
     doMandleInt(-2.0f, 1.0f, -1.25f, 1.25f);
     doMandelFloat(-2.0f, 1.0f, -1.25f, 1.25f);
 	return 0;

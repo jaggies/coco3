@@ -1,0 +1,13 @@
+SubDir TOP apps cocoray ;
+SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib coco ;
+SubDirHdrs $(TOP) lib ray ;
+
+CoCoDisk cocoray.dsk : COCORAY.BIN ;
+
+LINKLIBS on COCORAY.BIN  = -lray ;
+
+Main COCORAY.BIN :
+	cocoray.c
+	;
+

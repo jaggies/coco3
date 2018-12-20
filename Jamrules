@@ -1,4 +1,6 @@
-OPTIM = -g -O0 ;
+#TARGET = coco3 ;
+
+OPTIM = -g -O1 ;
 #DEFINES += DEBUG ;
 
 if $(TARGET) = "coco3" {
@@ -15,9 +17,11 @@ if $(TARGET) = "coco3" {
 	CCFLAGS += -DCOCO -Dconst= ;
 	CCFLAGS += --coco ; # Coco .bin file
 	#CCFLAGS += --os9 ; # Coco OS9 executable
+} else {
+	TARGET = $(OS) ;
 }
 
-ALL_LOCATE_TARGET = $(TOP)/build/coco3 ;
+ALL_LOCATE_TARGET = $(TOP)/build/$(TARGET) ;
 
 LINK = $(CC) $(CCFLAGS) -L$(ALL_LOCATE_TARGET) ;
 

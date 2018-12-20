@@ -1,11 +1,11 @@
-#include <coco.h>
+#include "os.h"
 
 int main()
 {
 	printf("Hello, coco!\n");
-	printf("sizeof(int) = %d\n", sizeof(int));
-	printf("sizeof(long int) = %d\n", sizeof(long));
-	printf("sizeof(long long) = %d\n", sizeof(long long));
+	printf("sizeof(int) = %d\n", (int) sizeof(int));
+	printf("sizeof(long int) = %d\n", (int) sizeof(long));
+	printf("sizeof(long long) = %d\n", (int) sizeof(long long));
 	long x = 0xffff;
 	long y = 0xffff;
 	printf("x*y = %lx\n", x * y);

@@ -2,5 +2,7 @@ SubDir TOP lib os ;
 
 if $(TARGET) = "coco3" {
     Library libos.a : math.c sqrt.c  stdlib.c  string.c	;
+} else {
+	Library libos.a : cococompat.c ;
 }
 

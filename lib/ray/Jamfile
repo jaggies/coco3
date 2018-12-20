@@ -1,0 +1,13 @@
+SubDir TOP lib ray ;
+SubDirHdrs $(TOP) lib os ;
+
+Library libray.a : 
+	dither.c
+	fixed.c
+	icamera.c
+	imath.c
+	isphere.c
+	ivec2i.c
+	ivec3i.c
+;
+

@@ -1,33 +1,18 @@
 SubDir TOP apps intray ;
 SubDirHdrs $(TOP) lib os ;
 SubDirHdrs $(TOP) lib coco ;
-
-Main INTRAY.BIN :
-	intray.c
-	dither.c
-	fixed.c
-	icamera.c
-	ivec2i.c
-	ivec3i.c
-	imath.c
-	isphere.c
-	;
-
-CoCoDisk intray.dsk : INTRAY.BIN ;
+SubDirHdrs $(TOP) lib ray ;
 
 if $(TARGET) = coco3 {
-	Main COCORAY.BIN :
-		cocoray.c
-		dither.c
-		fixed.c
-		icamera.c
-		ivec2i.c
-		ivec3i.c
-		imath.c
-		isphere.c
-		;
-	CoCoDisk cocoray.dsk : COCORAY.BIN ;
+	INTRAY = INTRAY.BIN ;
+	CoCoDisk intray.dsk : $(INTRAY) ;
+} else {
+	INTRAY = intray ;
 }
 
+LINKLIBS on $(INTRAY) = -lray ;
 
+Main $(INTRAY) :
+	intray.c
+	;
 
