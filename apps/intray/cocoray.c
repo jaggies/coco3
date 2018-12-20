@@ -45,17 +45,17 @@ int main(int argc, char** argv) {
     }
 
     /* Create the camera */
-    fixed eye = toFixed(3.0f);
+    fixed eye = fromInt(3);
     ivec3(eye, eye, eye, &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
-    cam_create(&from, &at, &up, toFixed(45.0f), toFixed((float) 1.0f), &cam);
+    cam_create(&from, &at, &up, fromInt(45), fromFloat((float) 1.0f), &cam);
 
     /* Create the scene */
-    sp_create(c_zero, c_zero, c_zero, toFixed(0.1f), &sp);
+    sp_create(c_zero, c_zero, c_zero, fromFloat(0.1f), &sp);
 
     Vec3i lightdir;
-    ivec3(toFixed(1), toFixed(1), toFixed(1), &lightdir);
+    ivec3(c_one, c_one, c_one, &lightdir);
     inormalize3(&lightdir);
     printf("Light dir: ");
     ivec3_print(&lightdir);
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
         for (int i = 0; i < WIDTH; i++) {
             iRay ray;
             fixed u = (fixed) ((fresult) c_one * i / WIDTH);
-            fixed tmax = toFixed(31.0f);
+            fixed tmax = fromInt(31);
             hset(i, j, 3); // show which pixel we're working on
             cam_makeRay(&cam, u, v, &ray);
             int color = 0;
@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
                 Vec3i normal;
                 sp_normal(&sp, &ray, tmax, &normal);
                 fixed d = idot3(&lightdir, &normal);
-                color = fmult(fmult(d, kdiff), COLORS << fraction) >> fraction;
+                color = (c_half + fmult(fmult(d, kdiff), COLORS << fraction)) >> fraction;
             }
             color = dither(COLORS, 4, i, j, color);
             hset(i, j, color);

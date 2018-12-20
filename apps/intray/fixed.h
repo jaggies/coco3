@@ -23,11 +23,13 @@ typedef Halfword fixed;
 typedef Word fresult;
 
 extern float toFloat(fixed value);
-extern fixed toFixed(float value);
+extern fixed fromFloat(float value);
+extern fixed fromInt(int value);
 
 extern fixed fmult(fixed a, fixed b);
 extern fixed fdiv(fixed a, fixed b);
 extern fixed fsqrt(fixed value);
+extern fixed ftan(fixed value);
 
 extern const fixed c_zero;
 extern const fixed c_one;
@@ -35,6 +37,7 @@ extern const fixed c_two;
 extern const fixed c_pi;
 extern const fixed c_half;
 extern const fixed c_epsilon;
+extern const fixed c_max; // maximum value
 
 extern long mask;
 

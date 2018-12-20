@@ -10,8 +10,8 @@
 #include "icamera.h"
 #include "imath.h"
 
-const int WIDTH = 40;
-const int height = 20;
+const int WIDTH = 80;
+const int HEIGHT = 40;
 
 int main(int argc, char** argv) {
     Vec3i from;
@@ -21,35 +21,31 @@ int main(int argc, char** argv) {
     iSphere sp;
 
     /* Create the camera */
-    fixed eye = toFixed(2.0f);
-    ivec3(eye, eye, eye, &from);
+    ivec3(c_one, c_zero, c_zero, &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
-    cam_create(&from, &at, &up, toFixed(45.0f), toFixed(1.0f), &cam);
+    cam_create(&from, &at, &up, fromInt(45), fromInt(1), &cam);
+
+    /* Create light */
+    Vec3i lightdir;
+    ivec3(c_zero, -c_one, c_zero, &lightdir);
+    inormalize3(&lightdir);
 
     /* Create the scene */
-    sp_create(c_zero, c_zero, c_zero, toFixed(0.25f), &sp);
-    //sp_print(&sp);
+    sp_create(c_zero, c_zero, c_zero, fromFloat(0.35f), &sp);
 
-    fixed u = 0, v = 0;
-    fixed du = toFixed(1.0f) / (WIDTH-1);
-    fixed dv = toFixed(1.0f) / (height-1);
-    Vec3i lightdir;
-    ivec3(toFixed(1), toFixed(1), toFixed(1), &lightdir);
-    inormalize3(&lightdir);
-    printf("Light dir: ");
-    ivec3_print(&lightdir);
-    for (int j = 0; j < height; j++, v += dv) {
-        u = 0;
-        for (int i = 0; i < WIDTH; i++, u += du) {
+    for (int j = 0; j < HEIGHT; j++) {
+        fixed v = (fixed) ((fresult) c_one * j / HEIGHT);
+        for (int i = 0; i < WIDTH; i++) {
+            fixed tmax = c_max;
+            fixed u = (fixed) ((fresult) c_one * i / WIDTH);
             iRay ray;
-            fixed tmax = toFixed(31.0f);
             cam_makeRay(&cam, u, v, &ray);
             if (sp_isect(&sp, &ray, &tmax)) {
                 Vec3i normal;
                 sp_normal(&sp, &ray, tmax, &normal);
                 fixed d = idot3(&lightdir, &normal);
-                putchar('0' + (d >> (fraction - 3)));
+                putchar(d > 0 ? ('A' + (d >> (fraction - 5))) : '.');
             } else {
                 putchar('.');
             }

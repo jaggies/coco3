@@ -15,7 +15,9 @@ void cam_makeRay(iCamera* camera, fixed u, fixed v, iRay* ray) {
 }
 
 void cam_create(Vec3i* from, Vec3i* at, Vec3i* up, fixed fov, fixed aspect, iCamera* camera) {
-    fixed tanfov2 = toFixed(0.828f); // 2.0f * tanf(Radians(fov / 2.0f));
+    // 2.0f * tanf(Radians(fov / 2.0f));
+    fixed radians = fmult(c_pi, fov / 360);
+    fixed tanfov2 = 2*ftan(radians);
     Vec3i dir, upNormalized, tdu, tdv;
     isub3(at, from, &dir);
     inormalize3(&dir);
