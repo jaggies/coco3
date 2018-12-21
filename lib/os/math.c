@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "os.h"
 
 #define EXP_A 184
 #define EXP_C 16249 
@@ -46,5 +44,9 @@ float fabsf(float x) {
 
 float roundf(float x) {
 	return (float) (int) x;
+}
+
+float sqrtf(float x) {
+	return powf(x, 0.5f);
 }
 
