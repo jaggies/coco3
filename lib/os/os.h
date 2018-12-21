@@ -14,7 +14,7 @@ extern int fprintf(struct FILE* stream, const char* format, ...);
 #else
 #include <stdio.h>
 #include <stdlib.h>
-inline void setHighSpeed(int x) { }
+#include <math.h>
 #endif
 
 #endif // _OS_STDIO_H
