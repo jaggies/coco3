@@ -1,10 +1,9 @@
-#include <cmoc.h>
-#include <coco.h>
+#include "os.h"
 
 typedef int16_t fract;
 
-static fract fraction = 12;
-static fract mask = (((fract)(1) << fraction) - 1);
+static const fract fraction = 12;
+static const fract mask = (((fract)(1) << fraction) - 1);
 static fract two = ((fract)(2) << fraction);
 static fract four = ((fract)(4) << fraction);
 
@@ -17,7 +16,7 @@ float toFloat(fract value) {
     return (float) (value >> fraction) + (float)(value & mask) / mask;
 }
 
-fract mult(fract a, fract b) {
+fract fmult(fract a, fract b) {
     long long x = a;
     long long y = b;
     return (fract) (x * y >> fraction);
@@ -44,15 +43,15 @@ void doMandleInt(float xmin, float xmax, float ymin, float ymax) {
             fract zi = 0;
             int count = 0;
             fract dist;
-            fract zr2 = 0; // initial condition = mult(zr, zr) = 0
-            fract zi2 = 0; // initial condition = mult(zi, zr) = 0
+            fract zr2 = 0; // initial condition = fmult(zr, zr) = 0
+            fract zi2 = 0; // initial condition = fmult(zi, zr) = 0
             do {
                 // z = z^2 + c
                 fract tr = zr2 - zi2 + cr;
-                fract ti = mult(zr << 1, zi) + ci;
+                fract ti = fmult(zr << 1, zi) + ci;
                 zr = tr; zi = ti;
-                zr2 = mult(zr, zr);
-                zi2 = mult(zi, zi);
+                zr2 = fmult(zr, zr);
+                zi2 = fmult(zi, zi);
             } while (count++ < maxCount && (zr2 + zi2) < four);
             putchar(' ' + count);
         }
@@ -87,13 +86,13 @@ void doMandelFloat(float xmin, float xmax, float ymin, float ymax) {
 
 int main()
 {
-    printf("sizeof(fract) = %d\n", sizeof(fract));
-    printf("sizeof(long long) = %d\n", sizeof(long long));
+    printf("sizeof(fract) = %d\n", (int) sizeof(fract));
+    printf("sizeof(long long) = %d\n", (int) sizeof(long long));
     printf("two = %f\n", toFloat(two));
     printf("four = %f\n", toFloat(four));
-    printf("two * four = %f\n", toFloat(mult(two, four)));
+    printf("two * four = %f\n", toFloat(fmult(two, four)));
     printf("two + four = %f\n", toFloat(two + four));
-	setHighSpeed(1);
+	//setHighSpeed(1);
     doMandleInt(-2.0f, 1.0f, -1.25f, 1.25f);
     doMandelFloat(-2.0f, 1.0f, -1.25f, 1.25f);
 	return 0;

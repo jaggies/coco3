@@ -1,8 +1,16 @@
 SubDir TOP apps mandel ;
+SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib coco ;
+SubDirHdrs $(TOP) lib ray ;
 
-Main MANDGFX.BIN : mandgfx.c ;
-CoCoDisk mandel.dsk : MANDGFX.BIN ;
+if $(TARGET) = "coco3" {
+	MANDEL = MANDEL.BIN ;
+	CoCoDisk mandel.dsk : $(MANDEL) ;
+} else {
+    MANDEL = mandel ;
+}
 
-#Main MANDEL.BIN : mandel.c ;
-#CoCoDisk mandel.dsk : MANDEL.BIN ;
+Main $(MANDEL) :
+	mandel.c
+	;
 

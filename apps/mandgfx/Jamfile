@@ -1,0 +1,11 @@
+SubDir TOP apps mandgfx ;
+SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib coco ;
+SubDirHdrs $(TOP) lib ray ;
+
+CoCoDisk mandel.dsk : MANDGFX.BIN ;
+
+Main MANDGFX.BIN :
+	mandgfx.c
+	;
+

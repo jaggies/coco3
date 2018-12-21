@@ -1,0 +1,3 @@
+
+void setHighSpeed(int torf) {
+}

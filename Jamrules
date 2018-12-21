@@ -1,17 +1,27 @@
-#LWTOOLS
-AR = lwar -car ;
-RANLIB = echo ;
+#TARGET = coco3 ;
 
-#CMOC
-CC = cmoc ;
-#LINK = lwlink ;
+OPTIM = -g -O1 ;
+#DEFINES += DEBUG ;
 
-OPTIM = ;
-#CCFLAGS = --verbose ;
-CCFLAGS += -DCOCO -Dconst= ;
-CCFLAGS += --coco ; # Coco .bin file
-#CCFLAGS += --os9 ; # Coco OS9 executable
-ALL_LOCATE_TARGET = $(TOP)/build/coco3 ;
+if $(TARGET) = "coco3" {
+	#LWTOOLS
+	AR = lwar -car ;
+	RANLIB = echo ;
+
+	#CMOC
+	CC = cmoc ;
+	#LINK = lwlink ;
+
+	OPTIM = ;
+	#CCFLAGS = --verbose ;
+	CCFLAGS += -DCOCO -Dconst= ;
+	CCFLAGS += --coco ; # Coco .bin file
+	#CCFLAGS += --os9 ; # Coco OS9 executable
+} else {
+	TARGET = $(OS) ;
+}
+
+ALL_LOCATE_TARGET = $(TOP)/build/$(TARGET) ;
 
 LINK = $(CC) $(CCFLAGS) -L$(ALL_LOCATE_TARGET) ;
 
@@ -24,6 +34,7 @@ rule CoCoDisk
 {
     local _disk = $(<) ;
     local _files = $(>) ;
+	MakeLocate $(<) : $(TOP)/build ;
 	CoCoDiskCreate $(_disk) ;
 	CoCoDiskFromFiles $(_disk) : $(_files) ;
 }
@@ -56,6 +67,7 @@ rule CoCoDiskCreate
 
 actions CoCoDiskCreate
 {
+	rm -f $(<) ;
     $(DECB) dskini $(<) ;
 }
 

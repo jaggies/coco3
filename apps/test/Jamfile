@@ -1,13 +1,20 @@
 SubDir TOP apps test ;
 SubDirHdrs $(TOP) lib os ;
 
-ObjectCcFlags main.o : -DCOCO3 ;
+if $(TARGET) = "coco3" {
+	ObjectCcFlags main.o : -DCOCO3 ;
+	PRINTF = PRINTF.BIN ;
+	FLOAT = FLOAT.BIN ;
+	CoCoDisk float.dsk : $(FLOAT) ;
+	CoCoDisk printf.dsk : $(PRINTF) ;
+} else {
+	PRINTF = printf ;
+	FLOAT = float ;
+}
 
-LINKLIBS on FLOAT.BIN = -los ;
+LINKLIBS on $(FLOAT) = -los ;
 
-Main PRINTF.BIN : printf.c ;
-Main FLOAT.BIN : float.c ;
+Main $(PRINTF) : printf.c ;
+Main $(FLOAT) : float.c ;
 
-CoCoDisk float.dsk : FLOAT.BIN ;
-CoCoDisk printf.dsk : PRINTF.BIN ;
 
