@@ -2,7 +2,7 @@
 
 typedef int16_t fract;
 
-static const fract fraction = 12;
+static const fract fraction = 10;
 static const fract mask = (((fract)(1) << fraction) - 1);
 static fract two = ((fract)(2) << fraction);
 static fract four = ((fract)(4) << fraction);
@@ -32,13 +32,14 @@ void doMandleInt(float xmin, float xmax, float ymin, float ymax) {
     fract ci_min = toFract(ymin);
     fract ci_max = toFract(ymax);
 
-    fract cr_delta = (cr_max - cr_min)/(xres-1);
-    fract ci_delta = (ci_max - ci_min)/(yres-1);
+    fract cr_delta = (cr_max - cr_min);
+    fract ci_delta = (ci_max - ci_min);
 
     fract ci = ci_min;
-    for (int j = 0; j < yres; j++, ci += ci_delta) {
-        fract cr = cr_min;
-        for (int i = 0; i < xres; i++, cr += cr_delta) {
+    for (int j = 0; j < yres; j++) {
+		ci = ci_min + ci_delta * j / (yres-1);
+        for (int i = 0; i < xres; i++) {
+			fract cr = cr_min + cr_delta * i / (xres-1);
             fract zr = 0;
             fract zi = 0;
             int count = 0;
