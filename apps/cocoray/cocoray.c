@@ -67,14 +67,14 @@ int main(int argc, char** argv) {
             fixed tmax = fromInt(31);
             hset(i, j, 3); // show which pixel we're working on
             cam_makeRay(&cam, u, v, &ray);
-            int color = 0;
+            uint8_t color = 0;
             if (sp_isect(&sp, &ray, &tmax)) {
                 Vec3i normal;
                 sp_normal(&sp, &ray, tmax, &normal);
                 fixed d = idot3(&lightdir, &normal);
                 if (d > 0) { // ignore backfaces
-                    color = fmult(d, kdiff) >> ((1+fraction) - 8); // 0..255
-                    color = dither(8, 2, i, j, color);
+                    color = (uint8_t) (fmult(d, kdiff) >> ((1+fraction) - 8)); // 0..255
+                    color = dither(8, 2, (uint8_t) i, (uint8_t) j, color);
                 }
             }
             hset(i, j, color);

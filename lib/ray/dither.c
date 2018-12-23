@@ -5,31 +5,30 @@
  *      Author: jmiller
  */
 
+#include "os.h"
 #include "dither.h"
 
-static const int dmat[4][4] = {
+static const uint8_t threshold[4][4] = {
           { 0, 12,  3, 15},
           { 8,  4, 11,  7},
           { 2, 14,  1, 13},
           {10,  6,  9,  5} };
 
-const int dithBits = 4; // number of effective levels from dithering
+static const uint8_t dithBits = 4; // number of effective levels from dithering
 
-int dither(int inBits, int outBits, int x, int y, int grey) {
-     int thresh, val, err, n;
-     // the threshold for the decision
-     thresh = dmat[x&3][y&3];
-
+uint8_t dither(uint8_t inBits, uint8_t outBits, uint8_t x, uint8_t y, uint8_t grey) {
      // Lower of the two possible values, due to integer division
-     val = grey >> (inBits - outBits);
+     uint8_t val = grey >> (inBits - outBits);
 
      // Error for choosing this value
-     err = grey - (val << (inBits - outBits));
+     uint8_t err = grey - (val << (inBits - outBits));
 
      // Calculate normalized value between 0 and 15 for given error
-     n = err >> (inBits - outBits - dithBits);
-
-    return (n > thresh) ? (val+1) : val;
+     uint8_t t = err >> (inBits - outBits - dithBits);
+     if (t > threshold[x&3][y&3]) {
+         val++;
+     }
+     return val;
  }
 
 
