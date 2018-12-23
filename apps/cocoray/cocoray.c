@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
     inormalize3(&lightdir);
     printf("Light dir: ");
     ivec3_print(&lightdir);
-    fixed kdiff = c_half;
+    fixed kdiff = c_one;
     for (int j = 0; j < HEIGHT; j++) {
         fixed v = (fixed) ((fresult) c_one * j / HEIGHT);
         for (int i = 0; i < WIDTH; i++) {
@@ -72,9 +72,11 @@ int main(int argc, char** argv) {
                 Vec3i normal;
                 sp_normal(&sp, &ray, tmax, &normal);
                 fixed d = idot3(&lightdir, &normal);
-                color = (c_half + fmult(fmult(d, kdiff), fromInt(COLORS))) >> fraction;
+                if (d > 0) { // ignore backfaces
+                    color = fmult(d, kdiff) >> ((1+fraction) - 8); // 0..255
+                }
             }
-            color = dither(COLORS, 4, i, j, color);
+            color = dither(8, 2, i, j, color);
             hset(i, j, color);
         }
     }
