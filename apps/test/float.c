@@ -1,6 +1,11 @@
 #include "os.h"
 #include "math.h"
 
+#ifndef COCO
+extern double pow(double, double);
+extern double sqrt(double);
+#endif
+
 int main(int argc, char**argv)
 {
 	float x = 3.5f;
