@@ -74,9 +74,9 @@ int main(int argc, char** argv) {
                 fixed d = idot3(&lightdir, &normal);
                 if (d > 0) { // ignore backfaces
                     color = fmult(d, kdiff) >> ((1+fraction) - 8); // 0..255
+                    color = dither(8, 2, i, j, color);
                 }
             }
-            color = dither(8, 2, i, j, color);
             hset(i, j, color);
         }
     }
