@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     sp_create(c_zero, c_zero, c_zero, fromFloat(0.35f), &sp);
 
     Vec3i lightdir;
-    ivec3(c_one, c_one, c_one, &lightdir);
+    ivec3(c_one, -c_one, c_one, &lightdir);
     inormalize3(&lightdir);
     printf("Light dir: ");
     ivec3_print(&lightdir);
