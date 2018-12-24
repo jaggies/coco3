@@ -11,9 +11,10 @@
 
 static fixed tmin = 1; // some small number
 
-void sp_create(fixed x, fixed y, fixed z, fixed radius, iSphere* sp) {
+void sp_create(fixed x, fixed y, fixed z, fixed radius, iPhong* shader, iSphere* sp) {
     ivec3(x, y, z, &sp->center);
     sp->r2 = fmult(radius, radius);
+    sp->shader = shader;
 }
 
 int sp_isect(iSphere* sp, iRay* ray, fixed* tmax) {

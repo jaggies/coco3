@@ -1,6 +1,8 @@
 #ifndef _OS_STDIO_H
 #define _OS_STDIO_H
 
+#define Number(a) (sizeof(a) / sizeof(a[0]))
+
 #ifdef COCO
 #include <coco.h>
 #include <cmoc.h>
@@ -14,6 +16,7 @@ extern int fprintf(struct FILE* stream, const char* format, ...);
 #else
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
 #endif
 

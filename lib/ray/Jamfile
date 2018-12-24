@@ -9,5 +9,7 @@ Library libray.a :
 	isphere.c
 	ivec2i.c
 	ivec3i.c
-;
-
+	ilight.c
+	raytrace.c
+	testscene.c
+	;
