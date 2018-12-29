@@ -34,3 +34,18 @@ fixed fsqrt(fixed value) {
     return (fixed) isqrt((fresult) value << fraction);
 }
 
+fixed fpow(fixed x, fixed y) {
+    if (y < 0) {
+        return c_one; // error
+    }
+    if ((y >> fraction) == 0) {
+        return c_one;
+    }
+    // This is super wrong and inefficient. TODO
+    int c = y >> fraction;
+    fixed result = x;
+    while (--c) {
+        result = fmult(result, x);
+    }
+    return x;
+}

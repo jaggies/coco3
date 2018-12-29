@@ -22,14 +22,14 @@ static iPhong shaders[MAXSHADERS];
 static iCamera camera;
 static Scene scene;
 
-Scene* testScene() {
+Scene* testScene(int width, int height) {
     scene.camera = &camera;
     scene.spheres = &spheres[0];
     scene.lights = &lights[0];
     scene.nLight = 0;
     scene.nSphere = 0;
 
-    ivec3(c_one, c_one, c_one, &shaders[0].diffuse);
+    ivec3(c_one, 0, 0, &shaders[0].diffuse);
     ivec3(c_one, c_one, c_one, &shaders[0].specular);
     shaders[0].kDiffuse = c_half;
     shaders[0].kSpecular = c_half;
@@ -48,7 +48,7 @@ Scene* testScene() {
     ivec3(c_zero, c_zero, c_one, &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
-    cam_create(&from, &at, &up, fromInt(45), fromFloat(1.0f), &camera);
+    cam_create(&from, &at, &up, fromInt(45), fromFloat((float) width / height), &camera);
     return &scene;
 }
 

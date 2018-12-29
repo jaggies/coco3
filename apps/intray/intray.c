@@ -12,8 +12,13 @@
 #include "raytrace.h"
 #include "testscene.h"
 
+#ifdef ASCII_ART
 const int WIDTH = 79;
 const int HEIGHT = 35;
+#else
+const int WIDTH = 640;
+const int HEIGHT = 480;
+#endif
 
 void runTests() {
     for (int i = 0; i < 64; i++) {
@@ -23,7 +28,11 @@ void runTests() {
 
 int main(int argc, char** argv) {
     /* Create the scene */
-    Scene *scene = testScene();
+    Scene *scene = testScene(WIDTH, HEIGHT);
+
+#ifndef ASCII_ART
+    printf("P6 %d %d %d\n", WIDTH, HEIGHT, 255);
+#endif
 
     for (int j = 0; j < HEIGHT; j++) {
         fixed v = (fixed) ((fresult) c_one * j / HEIGHT);
@@ -41,12 +50,26 @@ int main(int argc, char** argv) {
                 uint8_t red = (uint8_t) (color.x >> (fraction + 1 - 8)); /* 0..255 */
                 uint8_t grn = (uint8_t) (color.y >> (fraction + 1 - 8)); /* 0..255 */
                 uint8_t blu = (uint8_t) (color.z >> (fraction + 1 - 8)); /* 0..255 */
-                putchar('.' + (red+grn+blu) / 30);
+                #ifdef ASCII_ART
+                    putchar('.' + (red+grn+blu) / 30);
+                #else
+                    putchar(red);
+                    putchar(grn);
+                    putchar(blu);
+                #endif
             } else {
-                putchar('.');
+                #ifdef ASCII_ART
+                    putchar('.');
+                #else
+                    putchar(0);
+                    putchar(0);
+                    putchar(0);
+                #endif
             }
         }
-        putchar('\n');
+        #ifdef ASCII_ART
+            putchar('\n');
+        #endif
     }
     return 0;
 }

@@ -12,5 +12,5 @@ void light_create(Vec3i* dir, Vec3i* color, iLight* light) {
     icopy3(dir, &light->direction);
     inormalize3(&light->direction);
     icopy3(color, &light->color);
-    printf("Light dir: "); ivec3_print(&light->direction);
+    //printf("Light dir: "); ivec3_print(&light->direction);
 }

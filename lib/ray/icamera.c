@@ -22,9 +22,9 @@ void cam_create(Vec3i* from, Vec3i* at, Vec3i* up, fixed fov, fixed aspect, iCam
     isub3(at, from, &dir);
     inormalize3(&dir);
     icopy3(up, &upNormalized); inormalize3(&upNormalized);
-    icross(&dir, &upNormalized, &tdu); inormalize3(&tdu); imult3(&tdu, tanfov2, &tdu);
-    icross(&tdu, &dir, &tdv); inormalize3(&tdv); imult3(&tdv, tanfov2, &tdv);
-    imult3(&tdu, aspect, &tdu);
+    icross(&dir, &upNormalized, &tdu); inormalize3(&tdu); imult3s(&tdu, tanfov2, &tdu);
+    icross(&tdu, &dir, &tdv); inormalize3(&tdv); imult3s(&tdv, tanfov2, &tdv);
+    imult3s(&tdu, aspect, &tdu);
     icopy3(&tdu, &camera->du);
     icopy3(&tdv, &camera->dv);
     icopy3(from, &camera->baseray.point);

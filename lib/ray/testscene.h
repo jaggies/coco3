@@ -10,6 +10,6 @@
 
 #include "scene.h"
 
-Scene* testScene();
+Scene* testScene(int width, int height);
 
 #endif /* LIB_RAY_TESTSCENE_H_ */

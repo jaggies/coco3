@@ -46,9 +46,8 @@ void sp_print(iSphere* sp) {
             toFloat(sp->center.x), toFloat(sp->center.y), toFloat(sp->center.z), toFloat(sp->r2));
 }
 
-void sp_normal(iSphere* sp, iRay* ray, fixed t, Vec3i* normal) {
-    iaddscaled3(&ray->point, t, &ray->dir, normal);
-    isub3(normal, &sp->center, normal);
-    inormalize3(normal);
+void sp_normal(iSphere* sp, iRay* ray, fixed t, Vec3i* inPoint, Vec3i* outNormal) {
+    isub3(inPoint, &sp->center, outNormal);
+    inormalize3(outNormal);
 }
 

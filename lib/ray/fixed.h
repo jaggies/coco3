@@ -30,6 +30,7 @@ extern fixed fmult(fixed a, fixed b);
 extern fixed fdiv(fixed a, fixed b);
 extern fixed fsqrt(fixed value);
 extern fixed ftan(fixed value);
+extern fixed fpow(fixed x, fixed y);
 
 extern const fixed c_zero;
 extern const fixed c_one;

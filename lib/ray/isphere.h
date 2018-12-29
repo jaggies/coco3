@@ -19,7 +19,7 @@ typedef struct _iSphere {
 
 extern void sp_create(fixed x, fixed y, fixed z, fixed radius, iPhong* shader, iSphere* sp);
 extern int sp_isect(iSphere* sp, iRay* ray, fixed* tmax);
-extern void sp_normal(iSphere* sp, iRay* ray, fixed t, Vec3i* normal);
+extern void sp_normal(iSphere* sp, iRay* ray, fixed t, Vec3i* outPoint, Vec3i* outNormal);
 extern void sp_print(iSphere* sp);
 
 #endif /* APPS_INTRAY_ISPHERE_H_ */

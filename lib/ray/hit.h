@@ -10,6 +10,9 @@
 
 typedef struct _Hit {
     fixed t;
+    Vec3i point; // Hit point
+    Vec3i normal; // Normal at point
+    Vec3i reflect; // Reflection direction
     void* object; // hit object
 } Hit;
 

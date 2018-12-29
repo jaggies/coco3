@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     }
 
     /* Create the scene */
-    Scene *scene = testScene();
+    Scene *scene = testScene(WIDTH, HEIGHT);
 
     for (int j = 0; j < HEIGHT; j++) {
         fixed v = (fixed) ((fresult) c_one * j / HEIGHT);
