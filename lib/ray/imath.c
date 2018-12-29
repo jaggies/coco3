@@ -38,14 +38,14 @@ fixed fpow(fixed x, fixed y) {
     if (y < 0) {
         return c_one; // error
     }
-    if ((y >> fraction) == 0) {
+    if (y == 0) {
         return c_one;
     }
     // This is super wrong and inefficient. TODO
-    int c = y >> fraction;
     fixed result = x;
-    while (--c) {
-        result = fmult(result, x);
+    while (y > 0) {
+        result = fmult(x, result);
+        y -= c_one;
     }
-    return x;
+    return result;
 }

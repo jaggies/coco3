@@ -29,13 +29,34 @@ Scene* testScene(fixed aspect) {
     scene.nLight = 0;
     scene.nSphere = 0;
 
-    ivec3(c_one, 0, 0, &shaders[0].diffuse);
-    ivec3(c_one, c_one, c_one, &shaders[0].specular);
-    shaders[0].kDiffuse = c_half;
-    shaders[0].kSpecular = c_half;
-    shaders[0].coefficient = fromInt(20);
+    // shader 0 = red
+    int n = 0;
+    ivec3(c_one, 0, 0, &shaders[n].diffuse);
+    ivec3(c_one, c_one, c_one, &shaders[n].specular);
+    shaders[n].kDiffuse = c_half;
+    shaders[n].kSpecular = c_half;
+    shaders[n].coefficient = fromInt(20);
+    n++;
 
-    sp_create(c_zero, c_zero, c_zero, fromFloat(0.35f), &shaders[0], &spheres[scene.nSphere++]);
+    // shader 1 = green
+    ivec3(0, c_one, 0, &shaders[n].diffuse);
+    ivec3(c_one, c_one, c_one, &shaders[n].specular);
+    shaders[n].kDiffuse = c_half;
+    shaders[n].kSpecular = c_half;
+    shaders[n].coefficient = fromInt(20);
+    n++;
+
+    // shader 2 = blue
+    ivec3(0, 0, c_one, &shaders[n].diffuse);
+    ivec3(c_one, c_one, c_one, &shaders[n].specular);
+    shaders[n].kDiffuse = c_half;
+    shaders[n].kSpecular = c_half;
+    shaders[n].coefficient = fromInt(20);
+    n++;
+
+    sp_create(-c_one, c_zero, c_zero, fromFloat(0.50f), &shaders[0], &spheres[scene.nSphere++]);
+    sp_create(c_zero, c_zero, c_zero, fromFloat(0.50f), &shaders[1], &spheres[scene.nSphere++]);
+    sp_create(c_one, c_zero, c_zero, fromFloat(0.50f), &shaders[2], &spheres[scene.nSphere++]);
 
     Vec3i dir, color;
     ivec3(c_one, -c_one, c_one, &dir);
@@ -45,7 +66,7 @@ Scene* testScene(fixed aspect) {
     Vec3i from;
     Vec3i at;
     Vec3i up;
-    ivec3(c_zero, c_zero, c_one, &from);
+    ivec3(c_zero, c_zero, fromFloat(2.5f), &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
     cam_create(&from, &at, &up, fromInt(45), aspect, &camera);
