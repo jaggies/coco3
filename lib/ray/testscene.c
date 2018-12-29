@@ -22,7 +22,7 @@ static iPhong shaders[MAXSHADERS];
 static iCamera camera;
 static Scene scene;
 
-Scene* testScene(int width, int height) {
+Scene* testScene(fixed aspect) {
     scene.camera = &camera;
     scene.spheres = &spheres[0];
     scene.lights = &lights[0];
@@ -48,7 +48,7 @@ Scene* testScene(int width, int height) {
     ivec3(c_zero, c_zero, c_one, &from);
     ivec3(c_zero, c_zero, c_zero, &at);
     ivec3(c_zero, c_one, c_zero, &up);
-    cam_create(&from, &at, &up, fromInt(45), fromFloat((float) width / height), &camera);
+    cam_create(&from, &at, &up, fromInt(45), aspect, &camera);
     return &scene;
 }
 

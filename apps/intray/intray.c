@@ -28,7 +28,7 @@ void runTests() {
 
 int main(int argc, char** argv) {
     /* Create the scene */
-    Scene *scene = testScene(WIDTH, HEIGHT);
+    Scene *scene = testScene(fromFloat((float) WIDTH / HEIGHT));
 
 #ifndef ASCII_ART
     printf("P6 %d %d %d\n", WIDTH, HEIGHT, 255);
