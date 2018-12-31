@@ -18,6 +18,7 @@ typedef struct _Scene {
     iLight* lights;
     int nSphere;
     int nLight;
+    Vec3i background;
 } Scene;
 
 #endif /* LIB_RAY_SCENE_H_ */

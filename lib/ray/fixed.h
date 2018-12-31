@@ -14,9 +14,9 @@ typedef long Word; // intermediate result (e.g. multiply/divide)
 #define fraction 9
 #else
 #include <stdint.h>
-typedef int16_t Halfword;
-typedef int32_t Word; // intermediate result (e.g. multiply/divide)
-#define fraction 9
+typedef int32_t Halfword;
+typedef int64_t Word; // intermediate result (e.g. multiply/divide)
+#define fraction 24
 #endif
 
 typedef Halfword fixed;
@@ -25,7 +25,7 @@ typedef Word fresult;
 extern float toFloat(fixed value);
 extern fixed fromFloat(float value);
 extern fixed fromInt(int value);
-
+extern fixed clamp(fixed value, fixed min, fixed max);
 extern fixed fmult(fixed a, fixed b);
 extern fixed fdiv(fixed a, fixed b);
 extern fixed fsqrt(fixed value);

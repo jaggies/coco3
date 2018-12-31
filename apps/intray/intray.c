@@ -47,25 +47,19 @@ int main(int argc, char** argv) {
             ivec3(0,0,0, &color);
             if (raytrace(scene, &ray, &hit)) {
                 shade(scene, &ray, &hit, &color);
-                uint8_t red = (uint8_t) (color.x >> (fraction + 1 - 8)); /* 0..255 */
-                uint8_t grn = (uint8_t) (color.y >> (fraction + 1 - 8)); /* 0..255 */
-                uint8_t blu = (uint8_t) (color.z >> (fraction + 1 - 8)); /* 0..255 */
-                #ifdef ASCII_ART
-                    putchar('.' + (red+grn+blu) / 30);
-                #else
-                    putchar(red);
-                    putchar(grn);
-                    putchar(blu);
-                #endif
             } else {
-                #ifdef ASCII_ART
-                    putchar('.');
-                #else
-                    putchar(0);
-                    putchar(0);
-                    putchar(0);
-                #endif
+                color = scene->background;
             }
+            fixed red = color.x >> (fraction - 8); /* 0..255 */
+            fixed grn = color.y >> (fraction - 8); /* 0..255 */
+            fixed blu = color.z >> (fraction - 8); /* 0..255 */
+            #ifdef ASCII_ART
+                putchar('.' + (red+grn+blu) / 30);
+            #else
+                putchar(clamp(red, 0, 255));
+                putchar(clamp(grn, 0, 255));
+                putchar(clamp(blu, 0, 255));
+            #endif
         }
         #ifdef ASCII_ART
             putchar('\n');

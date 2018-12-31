@@ -8,8 +8,6 @@
 #include <stdlib.h> // abs()
 #include "fixed.h"
 
-extern int abs(int);
-
 long mask = ((1 << fraction) - 1);
 
 const fixed c_zero = 0;
@@ -26,6 +24,16 @@ const fixed c_pi = 3.14159f * (1 << fraction);
 
 float toFloat(fixed value) {
     return (float) value / c_one;
+}
+
+fixed clamp(fixed value, fixed min, fixed max) {
+    if (value > max) {
+        return max;
+    }
+    if (value < min) {
+        return min;
+    }
+    return value;
 }
 
 // multiplication with rounding

@@ -29,6 +29,8 @@ Scene* testScene(fixed aspect) {
     scene.nLight = 0;
     scene.nSphere = 0;
 
+    ivec3(c_one / 8, c_one / 6, c_half, &scene.background);
+
     // shader 0 = red
     int n = 0;
     ivec3(c_one, 0, 0, &shaders[n].diffuse);
