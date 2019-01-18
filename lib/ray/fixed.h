@@ -23,6 +23,7 @@ typedef Halfword fixed;
 typedef Word fresult;
 
 extern float toFloat(fixed value);
+extern int8_t toInt8(fixed value);
 extern fixed fromFloat(float value);
 extern fixed fromInt(int value);
 extern fixed clamp(fixed value, fixed min, fixed max);

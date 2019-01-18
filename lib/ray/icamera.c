@@ -5,6 +5,7 @@
  *      Author: jmiller
  */
 
+#include "os.h"
 #include "icamera.h"
 
 void cam_makeRay(iCamera* camera, fixed u, fixed v, iRay* ray) {

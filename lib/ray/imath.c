@@ -34,18 +34,15 @@ fixed fsqrt(fixed value) {
     return (fixed) isqrt((fresult) value << fraction);
 }
 
+fixed power(fixed x, int8_t y)
+{
+    assert(y >= 0);
+    if (y == 0) return c_one;
+    fixed z = power(x, y >> 1);
+    z = fmult(z,z);
+    return ((y&1) == 0) ? z : fmult(x, z);
+}
+
 fixed fpow(fixed x, fixed y) {
-    if (y < 0) {
-        return c_one; // error
-    }
-    if (y == 0) {
-        return c_one;
-    }
-    // This is super wrong and inefficient. TODO
-    fixed result = x;
-    while (y > 0) {
-        result = fmult(x, result);
-        y -= c_one;
-    }
-    return result;
+    return power(x, toInt8(y));
 }

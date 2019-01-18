@@ -4,6 +4,7 @@
  *  Created on: Dec 23, 2018
  *      Author: jmiller
  */
+#include "os.h"
 #include "fixed.h"
 #include "ilight.h"
 #include "isphere.h"

@@ -6,6 +6,7 @@
 #ifdef COCO
 #include <coco.h>
 #include <cmoc.h>
+#define assert(cond) { }
 struct FILE;
 extern struct FILE * fopen(const char* filename, const char* mode);
 extern int feof(struct FILE *fp);
@@ -17,6 +18,7 @@ extern int fprintf(struct FILE* stream, const char* format, ...);
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
 #include <math.h>
 #endif
 

@@ -5,7 +5,7 @@
  *      Author: jmiller
  */
 
-#include <stdlib.h> // abs()
+#include "os.h"
 #include "fixed.h"
 
 long mask = ((1 << fraction) - 1);
@@ -24,6 +24,10 @@ const fixed c_pi = 3.14159f * (1 << fraction);
 
 float toFloat(fixed value) {
     return (float) value / c_one;
+}
+
+int8_t toInt8(fixed value) {
+    return (int8_t) ((value + (1 << (fraction-1))) >> fraction);
 }
 
 fixed clamp(fixed value, fixed min, fixed max) {
