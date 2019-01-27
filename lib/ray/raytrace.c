@@ -83,6 +83,8 @@ void shade(Scene* scene, iRay* ray, Hit* hit, Vec3i* color, uint8_t depth) {
                 ivec3(0, 0, 0, &reflectColor);
                 shade(scene, &reflectedRay, &tmphit, &reflectColor, depth - 1);
                 iaddscaled3(color, sp->shader->kReflect, &reflectColor, color);
+            } else {
+                iaddscaled3(color, sp->shader->kReflect, &scene->background, color);
             }
         }
     }
