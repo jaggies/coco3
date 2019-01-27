@@ -17,5 +17,13 @@ int main(int argc, char**argv)
 	printf("x*y=%f\n", x * y);
 	printf("sqrt(%f)=%f\n", x, sqrt(x));
 	printf("pow(%f,%f)=%f\n", x, y, pow(x,y));
+
+
+	float a = 1.0;
+	for (int i = 0; i < 129; i++) {
+		printf("%g %08x\n", a, *(int*)&a);
+		a *= 2.0;
+	}
+
 	return 0;
 }
