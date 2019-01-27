@@ -1,5 +1,5 @@
 /*
- * raytrace.c
+ * trace.c
  *
  *  Created on: Dec 23, 2018
  *      Author: jmiller
@@ -17,13 +17,13 @@ void updateHit(iSphere* object, iRay* ray, Hit* hit) {
     ireflect3(&ray->dir, &hit->normal, &hit->reflect);
 }
 
-int raytrace(Scene* scene, iRay* ray, Hit* hit) {
+int trace(Scene* scene, iRay* ray, Hit* hit) {
     int hitCount = 0;
     // Find the nearest object
     hit->object = 0;
     for (int i = 0; i < scene->nSphere; i++) {
         iSphere* sphere = &scene->spheres[i];
-        if (sp_isect(sphere, ray, &hit->t)) {
+        if (hit->object != (void*) sphere && sp_isect(sphere, ray, &hit->t)) {
             hit->object = (void*) sphere;
             hitCount++;
         }
@@ -31,7 +31,7 @@ int raytrace(Scene* scene, iRay* ray, Hit* hit) {
     return hitCount;
 }
 
-void shade(Scene* scene, iRay* ray, Hit* hit, Vec3i* color) {
+void shade(Scene* scene, iRay* ray, Hit* hit, Vec3i* color, uint8_t depth) {
     iSphere *sp = (iSphere*) hit->object; // TODO: handle other object types
     updateHit(sp, ray, hit);
 
@@ -65,6 +65,24 @@ void shade(Scene* scene, iRay* ray, Hit* hit, Vec3i* color) {
                 s = fpow(s, sp->shader->coefficient);
                 imult3(&light->color, &sp->shader->specular, &scaledColor);
                 iaddscaled3(color, s, &scaledColor, color);
+            }
+        }
+
+        // Reflected ray
+        if (sp->shader->kReflect > c_zero && depth > 0) {
+            iRay reflectedRay;
+            icopy3(&hit->point, &reflectedRay.point);
+            icopy3(&hit->reflect, &reflectedRay.dir);
+            // nudge the point to avoid self-intersection
+            iaddscaled3(&reflectedRay.point, c_epsilon, &reflectedRay.dir, &reflectedRay.point);
+            Hit tmphit;
+            init_hit(&tmphit);
+            tmphit.object = hit->object; // don't self-intersect
+            if (trace(scene, &reflectedRay, &tmphit)) {
+                Vec3i reflectColor;
+                ivec3(0, 0, 0, &reflectColor);
+                shade(scene, &reflectedRay, &tmphit, &reflectColor, depth - 1);
+                iaddscaled3(color, sp->shader->kReflect, &reflectColor, color);
             }
         }
     }

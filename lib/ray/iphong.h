@@ -13,11 +13,12 @@ typedef struct _Phong {
     Vec3i specular;
     fixed kDiffuse;
     fixed kSpecular;
+    fixed kReflect;
     fixed coefficient; // Specular power
     fixed index; // Index of refraction
 } iPhong;
 
-void make_phong(Vec3i* diff, Vec3i* spec, fixed kDiff, fixed kSpecular, fixed coeff, fixed index,
-        iPhong* phong);
+void make_phong(Vec3i* diff, Vec3i* spec, fixed kDiff, fixed kSpecular, fixed kReflect, fixed coeff,
+        fixed index, iPhong* phong);
 
 #endif /* LIB_RAY_PHONG_H_ */

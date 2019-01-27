@@ -4,6 +4,7 @@ SubDirHdrs $(TOP) lib os ;
 Library libray.a : 
 	dither.c
 	fixed.c
+	hit.c
 	icamera.c
 	imath.c
 	isphere.c

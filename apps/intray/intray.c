@@ -20,6 +20,8 @@ const int WIDTH = 640;
 const int HEIGHT = 480;
 #endif
 
+#define MAXDEPTH 3
+
 void runTests() {
     for (int i = 0; i < 64; i++) {
         printf("sqrt(%f) = %f\n", toFloat(fromInt(i)), toFloat(fsqrt(fromInt(i))));
@@ -42,11 +44,10 @@ int main(int argc, char** argv) {
             Hit hit;
             fixed u = (fixed) ((fresult) c_one * i / WIDTH);
             cam_makeRay(scene->camera, u, v, &ray);
-            hit.t = c_max;
-            hit.object = 0;
+            init_hit(&hit);
             ivec3(0,0,0, &color);
-            if (raytrace(scene, &ray, &hit)) {
-                shade(scene, &ray, &hit, &color);
+            if (trace(scene, &ray, &hit)) {
+                shade(scene, &ray, &hit, &color, MAXDEPTH);
             } else {
                 color = scene->background;
             }

@@ -26,6 +26,8 @@ const int DACBITS = 2;
 #define GBITS 2
 #define BBITS 1
 
+#define MAXDEPTH 3 // depth for reflected rays
+
 // Enables 6309 Native mode for higher speed
 void set6309Native() {
     asm {
@@ -65,11 +67,10 @@ int main(int argc, char** argv) {
             fixed u = (fixed) ((fresult) c_one * i / WIDTH);
             hset(i, j, 15); // show which pixel we're working on
             cam_makeRay(scene->camera, u, v, &ray);
-            hit.t = c_max;
-            hit.object = 0;
+            init_hit(&hit);
             ivec3(0,0,0, &color);
-            if (raytrace(scene, &ray, &hit)) {
-                shade(scene, &ray, &hit, &color);
+            if (trace(scene, &ray, &hit)) {
+                shade(scene, &ray, &hit, &color, MAXDEPTH);
             } else {
                 color = scene->background;
             }

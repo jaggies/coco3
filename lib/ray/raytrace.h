@@ -1,5 +1,5 @@
 /*
- * raytrace.h
+ * trace.h
  *
  *  Created on: Dec 23, 2018
  *      Author: jmiller
@@ -12,7 +12,7 @@
 #include "hit.h"
 #include "scene.h"
 
-int raytrace(Scene* scene, iRay* ray, Hit* hit);
-void shade(Scene* scene, iRay* ray, Hit* hit, Vec3i* color);
+int trace(Scene* scene, iRay* ray, Hit* hit);
+void shade(Scene* scene, iRay* ray, Hit* hit, Vec3i* color, uint8_t depth);
 
 #endif /* LIB_RAY_RAYTRACE_H_ */

@@ -16,4 +16,6 @@ typedef struct _Hit {
     void* object; // hit object
 } Hit;
 
+extern void init_hit(Hit* hit);
+
 #endif /* LIB_RAY_HIT_H_ */

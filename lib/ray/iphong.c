@@ -5,12 +5,13 @@
  *      Author: jmiller
  */
 
-void make_phong(Vec3i* diff, Vec3i* spec, fixed kDiff, fixed kSpecular, fixed coeff, fixed index,
+void make_phong(Vec3i* diff, Vec3i* spec, fixed kDiff, fixed kSpecular, fixed kReflect, fixed coeff, fixed index,
         iPhong* phong) {
     icopy3(diff, phong->diffuse);
     icopy3(spec, phong->specular);
     phong->kDiffuse = kDiff;
     phong->kSpecular = kSpecular;
+    phong->kReflect = kReflect;
     phong->coefficient = coeff;
 }
 

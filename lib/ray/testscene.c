@@ -37,6 +37,7 @@ Scene* testScene(fixed aspect) {
     ivec3(c_one, c_one, c_one, &shaders[n].specular);
     shaders[n].kDiffuse = c_half;
     shaders[n].kSpecular = c_half;
+    shaders[n].kReflect = c_half;
     shaders[n].coefficient = fromInt(20);
     n++;
 
@@ -45,6 +46,7 @@ Scene* testScene(fixed aspect) {
     ivec3(c_one, c_one, c_one, &shaders[n].specular);
     shaders[n].kDiffuse = c_half;
     shaders[n].kSpecular = c_half;
+    shaders[n].kReflect = c_half;
     shaders[n].coefficient = fromInt(20);
     n++;
 
@@ -53,6 +55,7 @@ Scene* testScene(fixed aspect) {
     ivec3(c_one, c_one, c_one, &shaders[n].specular);
     shaders[n].kDiffuse = c_half;
     shaders[n].kSpecular = c_half;
+    shaders[n].kReflect = c_half;
     shaders[n].coefficient = fromInt(20);
     n++;
 
