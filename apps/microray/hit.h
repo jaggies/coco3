@@ -8,6 +8,7 @@
 #ifndef HIT_H_
 #define HIT_H_
 
+#include "fixed.h"
 #include "vec2.h"
 #include "vec3.h"
 #include "shape.h"

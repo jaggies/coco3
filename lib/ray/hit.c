@@ -5,6 +5,7 @@
  *      Author: jmiller
  */
 
+#include "os.h"
 #include "fixed.h"
 #include "ivec3i.h"
 #include "hit.h"
