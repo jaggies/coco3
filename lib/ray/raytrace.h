@@ -9,10 +9,10 @@
 #define LIB_RAY_RAYTRACE_H_
 
 #include "iray.h"
-#include "hit.h"
+#include "ihit.h"
 #include "scene.h"
 
-int trace(Scene* scene, iRay* ray, Hit* hit);
-void shade(Scene* scene, iRay* ray, Hit* hit, Vec3i* color, uint8_t depth);
+int trace(Scene* scene, iRay* ray, iHit* hit);
+void shade(Scene* scene, iRay* ray, iHit* hit, Vec3i* color, uint8_t depth);
 
 #endif /* LIB_RAY_RAYTRACE_H_ */

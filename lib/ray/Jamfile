@@ -4,13 +4,14 @@ SubDirHdrs $(TOP) lib os ;
 Library libray.a : 
 	dither.c
 	fixed.c
-	hit.c
 	icamera.c
+	ihit.c
+	ilight.c
 	imath.c
 	isphere.c
+	itriangle.c
 	ivec2i.c
 	ivec3i.c
-	ilight.c
 	raytrace.c
 	testscene.c
 	;

@@ -7,7 +7,7 @@
 
 #include "os.h"
 #include "scene.h"
-#include "hit.h"
+#include "ihit.h"
 #include "imath.h"
 #include "raytrace.h"
 #include "testscene.h"
@@ -37,11 +37,11 @@ int main(int argc, char** argv) {
 #endif
 
     for (int j = 0; j < HEIGHT; j++) {
-        fixed v = (fixed) ((fresult) c_one * j / HEIGHT);
+        fixed v = c_one - (fixed) ((fresult) c_one * j / HEIGHT);
         for (int i = 0; i < WIDTH; i++) {
             iRay ray;
             Vec3i color;
-            Hit hit;
+            iHit hit;
             fixed u = (fixed) ((fresult) c_one * i / WIDTH);
             cam_makeRay(scene->camera, u, v, &ray);
             init_hit(&hit);

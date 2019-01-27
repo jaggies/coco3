@@ -12,9 +12,9 @@
 #include "iphong.h"
 
 typedef struct _iSphere {
+    iPhong* shader; // This must be first
     Vec3i center;
     fixed r2; // radius squared
-    iPhong* shader;
 } iSphere;
 
 extern void sp_create(fixed x, fixed y, fixed z, fixed radius, iPhong* shader, iSphere* sp);

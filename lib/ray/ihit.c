@@ -8,9 +8,9 @@
 #include "os.h"
 #include "fixed.h"
 #include "ivec3i.h"
-#include "hit.h"
+#include "ihit.h"
 
-void init_hit(Hit* hit) {
+void init_hit(iHit* hit) {
     hit->t = c_max;
     hit->object = 0;
 }
