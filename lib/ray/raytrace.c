@@ -58,6 +58,8 @@ void shade(Scene* scene, iRay* ray, iHit* hit, Vec3i* color, uint8_t depth) {
         iTriangle* tri = (iTriangle*) hit->object;
         shader = tri->shader;
         updateTriangleHit(tri, ray, hit);
+    } else {
+        return; // unsupported
     }
 
     if (shader->kSpecular > c_zero) {
