@@ -59,11 +59,11 @@ int main(int argc, char** argv) {
     Scene *scene = testScene(fromFloat(aspect));
 
     for (int j = 0; j < HEIGHT; j++) {
-        fixed v = (fixed) ((fresult) c_one * j / HEIGHT);
+        fixed v = c_one - (fixed) ((fresult) c_one * j / HEIGHT);
         for (int i = 0; i < WIDTH; i++) {
             iRay ray;
             Vec3i color;
-            Hit hit;
+            iHit hit;
             fixed u = (fixed) ((fresult) c_one * i / WIDTH);
             hset(i, j, 15); // show which pixel we're working on
             cam_makeRay(scene->camera, u, v, &ray);

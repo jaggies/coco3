@@ -5,6 +5,7 @@
  *      Author: jmiller
  */
 
+#include "os.h"
 #include "itriangle.h"
 
 static fixed alphaSave;
