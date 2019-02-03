@@ -6,14 +6,7 @@
 #ifdef COCO
 #include <coco.h>
 #include <cmoc.h>
-#define assert(cond) { }
-struct FILE;
-extern struct FILE * fopen(const char* filename, const char* mode);
-extern int feof(struct FILE *fp);
-extern char * fgets(char* str, int size, struct FILE * stream);
-extern int fclose(struct FILE *stream);
-extern int fputc(int c, struct FILE *stream);
-extern int fprintf(struct FILE* stream, const char* format, ...);
+#include "cstdlib.h"
 #else
 #include <stdio.h>
 #include <stdlib.h>

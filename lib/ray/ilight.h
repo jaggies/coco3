@@ -16,6 +16,6 @@ typedef struct _Light {
     Vec3i color;
 } iLight;
 
-void light_create(Vec3i* dir, Vec3i* color, iLight* light);
+iLight* light_create(Vec3i* dir, Vec3i* color);
 
 #endif /* LIB_RAY_LIGHT_H_ */

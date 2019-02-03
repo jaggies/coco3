@@ -28,15 +28,15 @@ int trace(Scene* scene, iRay* ray, iHit* hit) {
     // Find the nearest object
     hit->object = 0;
     for (int i = 0; i < scene->nSphere; i++) {
-        iSphere* sphere = &scene->spheres[i];
+        iSphere* sphere = scene->spheres[i];
         if (hit->object != (void*) sphere && sp_isect(sphere, ray, &hit->t)) {
             hit->object = (void*) sphere;
             hit->type = TYPE_SPHERE;
             hitCount++;
         }
     }
-    for (int i = 0; i < scene->nSphere; i++) {
-        iTriangle* triangle = &scene->triangles[i];
+    for (int i = 0; i < scene->nTriangle; i++) {
+        iTriangle* triangle = scene->triangles[i];
         if (hit->object != (void*) triangle && tri_isect(triangle, ray, &hit->t)) {
             hit->object = (void*) triangle;
             hit->type = TYPE_TRIANGLE;
@@ -70,7 +70,7 @@ void shade(Scene* scene, iRay* ray, iHit* hit, Vec3i* color, uint8_t depth) {
     // Shade the hit object
     for (int i = 0; i < scene->nLight; i++) {
         Vec3i reflect;
-        iLight* light = &scene->lights[i];
+        iLight* light = scene->lights[i];
         // Diffuse
         if (shader->kDiffuse > c_zero) {
             fixed cosAlpha = idot3(&light->direction, &hit->normal);

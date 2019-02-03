@@ -15,9 +15,9 @@
 
 typedef struct _Scene {
     iCamera* camera;
-    iSphere* spheres;
-    iTriangle* triangles;
-    iLight* lights;
+    iSphere** spheres;
+    iTriangle** triangles;
+    iLight** lights;
     int nSphere;
     int nTriangle;
     int nLight;

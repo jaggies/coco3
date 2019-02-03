@@ -11,13 +11,15 @@
 static fixed alphaSave;
 static fixed betaSave;
 
-void tri_create(Vec3i* p0, Vec3i* p1, Vec3i* p2, iPhong* shader, iTriangle* triangle) {
+iTriangle* tri_create(Vec3i* p0, Vec3i* p1, Vec3i* p2, iPhong* shader) {
+    iTriangle* triangle = (iTriangle*) malloc(sizeof(iTriangle));
     triangle->shader = shader;
     icopy3(p0, &triangle->point);
     isub3(p1, p0, &triangle->edge[0]);
     isub3(p2, p0, &triangle->edge[1]);
     icross(&triangle->edge[0], &triangle->edge[1], &triangle->normal);
     inormalize3(&triangle->normal);
+    return triangle;
 }
 
 int tri_isect(iTriangle* triangle, iRay* ray, fixed* tmax) {

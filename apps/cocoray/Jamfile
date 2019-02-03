@@ -5,7 +5,7 @@ SubDirHdrs $(TOP) lib ray ;
 
 CoCoDisk cocoray.dsk : COCORAY.BIN ;
 
-LINKLIBS on COCORAY.BIN  = -lray ;
+LINKLIBS on COCORAY.BIN  = -lray -los ;
 Depends COCORAY.BIN : libray.a ;
 
 Main COCORAY.BIN :

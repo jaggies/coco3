@@ -16,6 +16,6 @@ typedef struct _iCamera {
 } iCamera;
 
 extern void cam_makeRay(iCamera* camera, fixed u, fixed v, iRay* ray);
-extern void cam_create(Vec3i* from, Vec3i* at, Vec3i* up, fixed fov, fixed aspect, iCamera* camera);
+extern iCamera* cam_create(Vec3i* from, Vec3i* at, Vec3i* up, fixed fov, fixed aspect);
 
 #endif /* APPS_INTRAY_ICAMERA_H_ */

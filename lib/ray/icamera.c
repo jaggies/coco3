@@ -15,8 +15,9 @@ void cam_makeRay(iCamera* camera, fixed u, fixed v, iRay* ray) {
     inormalize3(&ray->dir);
 }
 
-void cam_create(Vec3i* from, Vec3i* at, Vec3i* up, fixed fov, fixed aspect, iCamera* camera) {
+iCamera* cam_create(Vec3i* from, Vec3i* at, Vec3i* up, fixed fov, fixed aspect) {
     // 2.0f * tanf(Radians(fov / 2.0f));
+    iCamera* camera = (iCamera*) malloc(sizeof(iCamera));
     fixed radians = fmult(c_pi, fov / 360);
     fixed tanfov2 = 2*ftan(radians);
     Vec3i dir, upNormalized, tdu, tdv;
@@ -33,6 +34,7 @@ void cam_create(Vec3i* from, Vec3i* at, Vec3i* up, fixed fov, fixed aspect, iCam
 	// camera->dir = dir - 0.5*du - 0.5*dv
     iaddscaled3(&dir, -c_half, &camera->du, &camera->baseray.dir);
     iaddscaled3(&camera->baseray.dir, -c_half, &camera->dv, &camera->baseray.dir);
+    return camera;
 }
 
 
