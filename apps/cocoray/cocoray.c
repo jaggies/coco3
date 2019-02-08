@@ -35,6 +35,67 @@ void set6309Native() {
     }
 }
 
+void makeRgbPalette(const int DACBITS) {
+    int sr = DACBITS - RBITS;
+    int sg = DACBITS - GBITS;
+    int sb = DACBITS - BBITS;
+    for (uint8_t i = 0; i < 16; i++) {
+        uint8_t r = i >> (GBITS + BBITS);
+        uint8_t g = (i >> BBITS) & ((1 << GBITS) - 1);
+        uint8_t b = i & ((1 << BBITS) - 1);
+        paletteRGB(i, r << sr, g << sg, b << sb);
+        printf("Pallete(%d, %d %d %d)\n", i, r << sr, g << sg, b << sb);
+    }
+}
+
+uint8_t ditherRGB(int i, int j, Vec3i* color) {
+    uint8_t red = (uint8_t) (clamp(color->x, 0, c_one) >> (fraction + 1 - 8)); /* 0..255 */
+    red = dither(8, RBITS, (uint8_t) i, (uint8_t) j, red);
+    uint8_t grn = (uint8_t) (clamp(color->y, 0, c_one) >> (fraction + 1 - 8)); /* 0..255 */
+    grn = dither(8, GBITS, (uint8_t) i, (uint8_t) j, grn);
+    uint8_t blu = (uint8_t) (clamp(color->z, 0, c_one) >> (fraction + 1 - 8)); /* 0..255 */
+    blu = dither(8, BBITS, (uint8_t) i, (uint8_t) j, blu);
+    return (red << (GBITS + BBITS)) | (grn << BBITS) | blu;
+}
+
+static Vec3i palette[16]; // 16-color table entries
+
+void makeOptimalPalette() {
+    for (uint8_t i = 0; i < 4; i++) {
+        int val = i << 6;
+        ivec3(val, 0, 0, &palette[i]);
+        ivec3(0, val, 0, &palette[i + 4]);
+        ivec3(0, 0, val, &palette[i + 8]);
+        ivec3(val, val, val, &palette[i + 12]);
+    }
+
+    for (uint8_t i = 0; i < 16; i++) {
+        uint8_t red = (uint8_t) (palette[i].x >> 6);
+        uint8_t grn = (uint8_t) (palette[i].y >> 6);
+        uint8_t blu = (uint8_t) (palette[i].z >> 6);
+        paletteRGB(i, red, grn, blu);
+    }
+}
+
+uint8_t nearest(Vec3i* color) {
+    uint16_t best = 0xffff;
+    uint8_t index = 0;
+    for (uint8_t i = 0; i < 16; i++) {
+        Vec3i v;
+        v.x = clamp(color->x, 0, c_one) >> (fraction + 1 - 8); /* 0..255 */
+        v.y = clamp(color->y, 0, c_one) >> (fraction + 1 - 8); /* 0..255 */
+        v.z = clamp(color->z, 0, c_one) >> (fraction + 1 - 8); /* 0..255 */
+        isub3(&v, &palette[i], &v);
+        imult3s(&v, c_half, &v); // avoid overflow into sign bit
+        fixed dist = idot3(&v, &v);
+        if (dist < best) {
+            index = i;
+            best = dist;
+        }
+    }
+    return index;
+}
+
 int main(int argc, char** argv) {
     /* Speedups */
     set6309Native();
@@ -43,16 +104,8 @@ int main(int argc, char** argv) {
 
     /* Graphics */
     hscreen(GFXMODE);
-    int sr = DACBITS - RBITS;
-    int sg = DACBITS - GBITS;
-    int sb = DACBITS - BBITS;
-    for (uint8_t i = 0; i < 16; i++) {
-        uint8_t r = i >> (GBITS + BBITS);
-        uint8_t g = (i >> BBITS) & ((1<<GBITS) - 1);
-        uint8_t b = i & ((1 << BBITS) - 1);
-        paletteRGB(i, r << sr, g << sg, b << sb);
-        printf("Pallete(%d, %d %d %d)\n", i, r << sr, g << sg, b << sb);
-    }
+    //makeRgbPalette(DACBITS);
+    makeOptimalPalette();
 
     /* Create the scene */
     float aspect = (float) WIDTH / HEIGHT;
@@ -74,14 +127,8 @@ int main(int argc, char** argv) {
             } else {
                 color = scene->background;
             }
-            uint8_t red = (uint8_t) (clamp(color.x, 0, c_one) >> (fraction + 1 - 8)); /* 0..255 */
-            red = dither(8, RBITS, (uint8_t) i, (uint8_t) j, red);
-            uint8_t grn = (uint8_t) (clamp(color.y, 0, c_one) >> (fraction + 1 - 8)); /* 0..255 */
-            grn = dither(8, GBITS, (uint8_t) i, (uint8_t) j, grn);
-            uint8_t blu = (uint8_t) (clamp(color.z, 0, c_one) >> (fraction + 1 - 8)); /* 0..255 */
-            blu = dither(8, BBITS, (uint8_t) i, (uint8_t) j, blu);
-            uint8_t clr =  (red << (GBITS + BBITS)) | (grn << BBITS) | blu;
-            hset(i, j, clr);
+            //hset(i, j, ditherRGB(i, j, &color));
+            hset(i, j, nearest(&color));
         }
     }
 
