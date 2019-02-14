@@ -1,0 +1,14 @@
+SubDir TOP apps palette ;
+SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib coco ;
+SubDirHdrs $(TOP) lib ray ;
+
+CoCoDisk palette.dsk : PALETTE.BIN ;
+
+LINKLIBS on PALETTE.BIN  = -los ;
+Depends PALETTE.BIN : libos.a libray.a ;
+
+Main PALETTE.BIN :
+	palette.c
+	;
+

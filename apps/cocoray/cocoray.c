@@ -124,6 +124,7 @@ int main(int argc, char** argv) {
 
     /* Graphics */
     hscreen(GFXMODE);
+
     //makeRgbPalette(DACBITS);
     makeSimplePalette();
 
