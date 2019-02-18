@@ -10,14 +10,15 @@
 
 const char GFXMODE = HS320x192x16;
 
-#define DYNPAL 16  // number of dynamic palette entries
-#define LINES 200
+#define DYNPAL 2  // number of dynamic palette entries
+#define LINES 192
 
 uint8_t *irqVector = * (uint8_t **) 0xFFF8;
 uint8_t *firqVector = * (uint8_t **) 0xFFF6;
 uint8_t *hsyncCtrl = (uint8_t *) 0xff01;
 uint8_t *vsyncCtrl = (uint8_t *) 0xff03;
 uint8_t *init0 = (uint8_t *) 0xff90;
+uint8_t *irqEn = (uint8_t *) 0xff92;
 uint8_t *firqEn = (uint8_t *) 0xff93;
 uint8_t *palCtrl = (uint8_t *) 0xffb0; // entry of palette 0
 
@@ -42,6 +43,8 @@ void simpleRGB() {
 
 interrupt void horizontalISR() {
     asm {
+        pshs u,b,x // FIRQ is responsible for stacking these
+        ldb firqEn // clear FIRQ
         ldb #DYNPAL
         ldu data
         ldx palCtrl
@@ -51,28 +54,37 @@ interrupt void horizontalISR() {
         decb
         bne loop
         stu data
+        puls u,b,x
     }
 }
 
 interrupt void verticalISR() {
-    if (*firqEn & 0x08) { // VBORD irq
-        data = &pal[0];
+    asm {
+        ldb irqEn // clear IRQ
+        ldu pal
+        stu data
     }
+}
+
+void setFirq(interrupt void (*fptr)()) {
+    *firqVector = 0x7E;  // extended JMP extension
+    *(void **) (firqVector + 1) = (void *) fptr;
+}
+
+void setIrq(interrupt void (*fptr)()) {
+    *irqVector = 0x7E;  // extended JMP extension
+    *(void **) (irqVector + 1) = (void *) fptr;
 }
 
 void enableVideoIRQs() {
     disableInterrupts();
 
-    // Horizontal setup
-    *hsyncCtrl = 0xf7; // enable Horizontal IRQ
-    *irqVector = 0x7E;  // extended JMP extension
-    *(void **) (irqVector + 1) = (void *) horizontalISR;
+    *init0 |= 0x30; // GIME FIRQ and IRQ output enabled
+    *firqEn |= 0x10; // horizontal boarder firq enabled
+    *irqEn |= 0x08; // vertical irq enabled
 
-    // Vertical setup
-    *firqVector = 0x7E;  // extended JMP extension
-    *(void **) (firqVector + 1) = (void *) verticalISR;
-    *init0 |= 0x10; // GIME FIRQ output enabled
-    *firqEn = 0x08; // vertical boarder firq enabled
+    setIrq(verticalISR);
+    setFirq(horizontalISR);
 
     enableInterrupts();
 }
@@ -99,14 +111,13 @@ int main(int argc, char** argv) {
     simpleRGB();
 
     /* Draw pixels */
-    for (int j = 0; j < 200; j++) {
+    for (int j = 0; j < 192; j++) {
         for (int i = 0; i < 320; i++) {
-            hset(i, j, (uint8_t) (i / 20));
+            hset(i, j, (uint8_t) (i >> 4));
         }
     }
 
     /* Load per-line palette */
-    enableVideoIRQs();
     pal = sbrk(DYNPAL*LINES);
     uint8_t* ptr = pal;
     for (uint8_t l = 0; l < LINES; l++) {
@@ -117,6 +128,7 @@ int main(int argc, char** argv) {
             *ptr++ = toPal(r, g, b);
         }
     }
+    enableVideoIRQs();
 
     while (1)
         ;
