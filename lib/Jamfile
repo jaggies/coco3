@@ -1,5 +1,6 @@
 SubDir TOP lib ;
 
+SubInclude TOP lib cc3 ;
 SubInclude TOP lib os ;
 SubInclude TOP lib ray ;
 

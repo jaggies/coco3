@@ -6,10 +6,11 @@
  */
 
 #include "os.h"
+#include "cc3hw.h"
+#include "cc3gfx.h"
 #include "isphere.h"
 #include "icamera.h"
 #include "imath.h"
-#include "cocogfx.h"
 #include "dither.h"
 #include "raytrace.h"
 #include "testscene.h"
@@ -27,13 +28,6 @@ const int DACBITS = 2;
 #define BBITS 1
 
 #define MAXDEPTH 3 // depth for reflected rays
-
-// Enables 6309 Native mode for higher speed
-void set6309Native() {
-    asm {
-        ldmd  #$01
-    }
-}
 
 void makeRgbPalette(const int DACBITS) {
     int sr = DACBITS - RBITS;
@@ -61,13 +55,28 @@ uint8_t ditherRGB(int i, int j, Vec3i* color) {
 
 static Vec3i palette[16]; // 16-color table entries
 
+void makeGrayPalette() {
+    for (uint8_t i = 0; i < 16; i++) {
+        fixed b = (i & 3) * (c_one - 1) / 3;
+        fixed g = (i & 3) * (c_one - 1) / 3;
+        fixed r = (i & 3) * (c_one - 1) / 3;
+        ivec3(r, g, b, &palette[i]); // gray
+    }
+
+    for (uint8_t i = 0; i < 16; i++) {
+        uint8_t red = (uint8_t) (palette[i].x >> (fraction + 6 - 8));
+        uint8_t grn = (uint8_t) (palette[i].y >> (fraction + 6 - 8));
+        uint8_t blu = (uint8_t) (palette[i].z >> (fraction + 6 - 8));
+        paletteRGB(i, red, grn, blu);
+    }
+}
+
 void makeSimplePalette() {
-    for (uint8_t i = 0; i < 4; i++) {
-        fixed val = (c_one - 1) * i / (4-1);
-        ivec3(val, 0, 0, &palette[i]); // red
-        ivec3(0, val, 0, &palette[i + 4]); // green
-        ivec3(0, 0, val, &palette[i + 8]); // blue
-        ivec3(val, val, val, &palette[i + 12]); // gray
+    for (uint8_t i = 0; i < 16; i++) {
+        fixed b = (i & 1) ? (c_one - 1) : 0;
+        fixed g = ((i >> 1) & 3) * (c_one - 1) / 3;
+        fixed r = ((i >> 3) & 1) ? (c_one - 1) : 0;
+        ivec3(r, g, b, &palette[i]); // gray
     }
 
     for (uint8_t i = 0; i < 16; i++) {
@@ -124,8 +133,8 @@ int main(int argc, char** argv) {
 
     /* Graphics */
     hscreen(GFXMODE);
+    *(uint8_t*) (0xff99) |= 0x20; // 200 lines per field
 
-    //makeRgbPalette(DACBITS);
     makeSimplePalette();
 
     /* Create the scene */
