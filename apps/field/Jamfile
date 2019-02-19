@@ -1,0 +1,15 @@
+SubDir TOP apps field ;
+
+SubDirHdrs $(TOP) lib cc3 ;
+SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib ray ;
+
+CoCoDisk field.dsk : FIELD.BIN ;
+
+LINKLIBS on FIELD.BIN  = -lcc3 -los ;
+Depends FIELD.BIN : libos.a libray.a ;
+
+Main FIELD.BIN :
+	field.c
+	;
+
