@@ -93,10 +93,9 @@ int main(int argc, char** argv) {
             uint8_t r = (p & 4) ? (l & 3) : 0;
             uint8_t g = (p & 2) ? (l & 3) : 0;
             uint8_t b = (p & 1) ? (l & 3) : 0;
-            *ptr++ = toPal(r, g, b);
+            *ptr++ = toPalette(r, g, b);
         }
     }
-    printf("HELLO, WORLD!\n");
     enableVideoIRQs();
 
     while (1)

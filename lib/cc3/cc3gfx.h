@@ -9,7 +9,11 @@
 #define LIB_COCO3_CC3GFX_H_
 
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
-extern uint8_t toPal(uint8_t r, uint8_t g, uint8_t b);
+extern uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b);
+
+extern void setPixel(uint16_t x, uint16_t y, uint8_t clr);
+extern uint8_t getPixel(uint16_t x, uint16_t y);
+
 
 #define HS320x192x4 1
 #define HS320x192x16 2
