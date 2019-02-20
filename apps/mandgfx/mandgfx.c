@@ -1,6 +1,6 @@
 #include <cmoc.h>
 #include <coco.h>
-#include "cocogfx.h"
+#include "cc3gfx.h"
 
 typedef int16_t fract;
 
