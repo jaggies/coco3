@@ -56,9 +56,8 @@ void enableVideoIRQs() {
     *firqEn |= 0x10; // horizontal boarder firq enabled
     *irqEn |= 0x08; // vertical irq enabled
 
-    // This does bad things. WHY!?
-     *hsyncCtrl &= 0xfe; // disable historic PIA Hsync IRQ
-     *vsyncCtrl &= 0xfe; // disable historic PIA Vsync IRQ
+    *hsyncCtrl &= 0xfe; // disable historic PIA Hsync IRQ
+    *vsyncCtrl &= 0xfe; // disable historic PIA Vsync IRQ
 
     setIrq(verticalISR);
     setFirq(horizontalISR);
