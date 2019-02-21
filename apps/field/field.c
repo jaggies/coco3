@@ -22,8 +22,9 @@ interrupt void verticalISR() {
         palCtrl[i] = toPalette(r, g, b);
     }
     field = field < 2 ? (field+1) : 0;
-    uint8_t x = *irqEn; // clear irqs
-    uint8_t y = *firqEn;
+    asm {
+        ldb [firqEn]
+    }
 }
 
 void enableVideoIRQs() {
@@ -31,6 +32,8 @@ void enableVideoIRQs() {
     *init0 = 0x5c; // GIME CC3, MMU, DRAM, 16k/16k ROM, FIRQ_en
     *irqEn = 0x00; // DISABLE IRQs
     *firqEn = 0x08; // FIRQ for vertical ISR
+    *hsyncCtrl &= 0xfe; // disable historic PIA Hsync IRQ
+    *vsyncCtrl &= 0xfe; // disable historic PIA Vsync IRQ
     setFirq(verticalISR);
     enableInterrupts();
 }
