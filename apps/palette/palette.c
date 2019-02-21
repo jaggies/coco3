@@ -28,8 +28,7 @@ void simpleRGB() {
 
 interrupt void horizontalISR() {
     asm {
-        pshs a,b,u,x // FIRQ is responsible for stacking these
-        ldb firqEn // clear FIRQ
+        ldb [firqEn]  // clear FIRQ
         ldb #DYNPAL
         ldu data
         ldx palCtrl
@@ -39,13 +38,12 @@ interrupt void horizontalISR() {
         decb
         bne loop
         stu data
-        puls a,b,u,x
     }
 }
 
 interrupt void verticalISR() {
     asm {
-        ldb irqEn // clear IRQ
+        ldb [irqEn] // clear IRQ
         ldu paletteData
         stu data
     }
@@ -59,8 +57,8 @@ void enableVideoIRQs() {
     *irqEn |= 0x08; // vertical irq enabled
 
     // This does bad things. WHY!?
-    // *hsyncCtrl &= 0xfe; // disable historic PIA Hsync IRQ
-    // *vsyncCtrl &= 0xfe; // disable historic PIA Vsync IRQ
+     *hsyncCtrl &= 0xfe; // disable historic PIA Hsync IRQ
+     *vsyncCtrl &= 0xfe; // disable historic PIA Vsync IRQ
 
     setIrq(verticalISR);
     setFirq(horizontalISR);
