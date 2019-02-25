@@ -56,9 +56,9 @@ void memset24(uint32_t addr, uint8_t value, uint8_t mask, uint16_t length) {
     while (length > 0) {
         const uint16_t size = min(PAGESIZE - offset, length);
         uint16_t ptr = MEMWINDOW + offset;
-        const uint16_t end = ptr + size;
         *PAGE = page;
         if (mask) {
+            const uint16_t end = ptr + size;
             while (ptr < end) {
                 uint8_t tmp = *(uint8_t*)ptr;
                 tmp &= ~mask;

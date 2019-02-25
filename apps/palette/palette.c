@@ -74,20 +74,23 @@ int main(int argc, char** argv) {
     /* Graphics */
     setMode(320, LINES, 4);
     simpleRGB();
-    for (uint8_t i = 0; i < 16; i++)
+    for (uint8_t i = 0; i < 16; i++) {
         clear(i);
+    }
 
     /* Draw pixels */
-    for (int j = 0; j < LINES; j++) {
-        for (int i = 0; i < 320; i++) {
-            setPixel(i, j, i >> 4);
+    int height = getHeight();
+    int width = getWidth();
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
+            setPixel(i, j, i);
         }
     }
 
     /* Load per-line palette */
     paletteData = sbrk(DYNPAL*LINES);
     uint8_t* ptr = paletteData;
-    for (uint8_t l = 0; l < LINES; l++) {
+    for (uint8_t l = 0; l < height; l++) {
         for (uint8_t p = 0; p < DYNPAL; p++) {
             uint8_t r = (p & 4) ? (l & 3) : 0;
             uint8_t g = (p & 2) ? (l & 3) : 0;

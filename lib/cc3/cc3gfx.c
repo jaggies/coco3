@@ -30,6 +30,7 @@
 
 static uint16_t widthPixels = 0;
 static uint16_t heightPixels = 0;
+static uint8_t bytesPerRow = 0; // TODO: use 16-bit math if 256-color modes ever are a thing
 static uint16_t bufferSizeBytes = 0;
 static uint8_t bpp = 0;
 static uint32_t gfxBase = 0x60000L;
@@ -49,9 +50,9 @@ uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
 int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     uint8_t vrr = 0; // video resolution register setting when done
     switch (depth) {
-        case 1: bpp = depth; vrr |= CRES_1BPP; bufferSizeBytes = xres * yres >> 3; break;
-        case 2: bpp = depth; vrr |= CRES_2BPP; bufferSizeBytes = xres * yres >> 2; break;
-        case 4: bpp = depth; vrr |= CRES_4BPP; bufferSizeBytes = xres * yres >> 1; break;
+        case 1: bpp = depth; vrr |= CRES_1BPP; break;
+        case 2: bpp = depth; vrr |= CRES_2BPP; break;
+        case 4: bpp = depth; vrr |= CRES_4BPP; break;
         default: return 0;
     }
     switch (xres) {
@@ -67,6 +68,8 @@ int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
         case 225: heightPixels = 225; vrr |= LPF_225; break;
         default: return 0;
     }
+    bytesPerRow = (uint8_t) (xres * bpp >> 3);
+    bufferSizeBytes = bytesPerRow * yres;
     *videoResolution = vrr;
     *videoMode = 0x80; // graphics mode, 60Hz
     *init0 = 0x4c; // Coco3 mode & MMU enabled
@@ -95,32 +98,39 @@ void clear(uint8_t color) {
     memset24(gfxBase, pixels, 0, bufferSizeBytes);
 }
 
+// TODO: Use function pointers rather than logic
 void setPixel(uint16_t x, uint16_t y, uint8_t clr) {
     uint8_t mask;
     uint8_t bit;
     uint8_t shift;
-    uint32_t byteOffset;
+    uint16_t byteOffset;
     switch (bpp) {
         case 1:
-            bit = 7 - ((uint8_t)x & 7); // pixels fill in from left
+            bit = ~(uint8_t)x & 7; // pixels fill in from MSB right
             clr = (clr & 1) << bit;
-            mask = (1 << bit);
-            byteOffset = (x + y * widthPixels) >> 3;
+            mask = ((uint8_t)1 << bit);
+            byteOffset = (x >> 3) + y * bytesPerRow;
             break;
         case 2:
-            bit = 3 - ((uint8_t)x & 3); // pixels fill in from left
+            bit = ~(uint8_t)x & 3; // pixels fill in from MSB right
             shift = bit << 1;
             clr = (clr & 0x3) << shift;
-            mask = 0x3 << shift;
-            byteOffset = (x + y * widthPixels) >> 2;
+            mask = (uint8_t) 0x3 << shift;
+            byteOffset = (x >> 2) + y * bytesPerRow;
             break;
         case 4:
-            bit = 1 - ((uint8_t)x & 1); // pixels fill in from left
-            shift = bit << 2;
-            clr = (clr & 0xf) << shift;
-            mask = 0xf << shift;
-            byteOffset = (x + y * widthPixels) >> 1;
+            mask = x & 1 ? 0x0f : 0xf0;
+            clr = x & 1 ? (clr & 0x0f) : ((clr & 0x0f) << 4);
+            byteOffset = (x >> 1) + y * bytesPerRow;
             break;
     }
     memset24(gfxBase + byteOffset, clr, mask, 1);
+}
+
+uint16_t getWidth() {
+    return widthPixels;
+}
+
+uint16_t getHeight() {
+    return heightPixels;
 }
