@@ -10,6 +10,7 @@ if $(TARGET) = "coco3" {
 } else {
 	PRINTF = printf ;
 	FLOAT = float ;
+	Main memset24 : memset24.c ;
 }
 
 LINKLIBS on $(FLOAT) = -los ;

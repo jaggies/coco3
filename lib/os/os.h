@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <math.h>
+#define interrupt
 #endif
 
 #endif // _OS_STDIO_H

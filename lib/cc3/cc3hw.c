@@ -15,17 +15,16 @@ uint8_t *vsyncCtrl = (uint8_t *) 0xff03;
 uint8_t *init0 = (uint8_t *) 0xff90;
 uint8_t *irqEn = (uint8_t *) 0xff92;
 uint8_t *firqEn = (uint8_t *) 0xff93;
+uint8_t *vertScroll = (uint8_t*) 0xff9c;
 uint8_t *palCtrl = (uint8_t *) 0xffb0; // entry of palette 0
-uint8_t *vertOffset = (uint8_t*) 0xff9d; // vertical offset, bits [18:3]
+uint16_t *vertOffset = (uint16_t*) 0xff9d; // vertical offset, bits [18:3]
+uint8_t *videoMode = (uint8_t*) 0xff98; // video resolution register
+uint8_t *videoResolution = (uint8_t*) 0xff99; // video resolution register
 
-uint8_t* mmuEntry0000 = (uint8_t*) 0xffa0;
-uint8_t* mmuEntry2000 = (uint8_t*) 0xffa1;
-uint8_t* mmuEntry4000 = (uint8_t*) 0xffa2;
-uint8_t* mmuEntry6000 = (uint8_t*) 0xffa3;
-uint8_t* mmuEntry8000 = (uint8_t*) 0xffa4;
-uint8_t* mmuEntryA000 = (uint8_t*) 0xffa5;
-uint8_t* mmuEntryC000 = (uint8_t*) 0xffa6;
-uint8_t* mmuEntryE000 = (uint8_t*) 0xffa7;
+#define MEMWINDOW 0x8000
+#define PAGE MMU8000
+#define PAGEBITS 13
+#define PAGESIZE (1 << PAGEBITS)
 
 // Enables 6309 Native mode for higher performance
 void set6309Native() {
@@ -44,3 +43,37 @@ void setIrq(interrupt void (*fptr)()) {
     *(void **) (irqVector + 1) = (void *) fptr;
 }
 
+uint16_t min(uint16_t a, uint16_t b) {
+    return a < b ? a : b;
+}
+
+// Set maximum of 64k-1 bytes to any 24-bit page
+void memset24(uint32_t addr, uint8_t value, uint8_t mask, uint16_t length) {
+    disableInterrupts();
+    uint8_t page = (uint8_t) (addr >> 13);
+    uint16_t offset = (uint16_t) (addr & 0x1fffL); // initial offset in page
+    const uint8_t oldMMU = *PAGE;
+    while (length > 0) {
+        const uint16_t size = min(PAGESIZE - offset, length);
+        uint16_t ptr = MEMWINDOW + offset;
+        const uint16_t end = ptr + size;
+        *PAGE = page;
+        if (mask) {
+            while (ptr < end) {
+                uint8_t tmp = *(uint8_t*)ptr;
+                tmp &= ~mask;
+                tmp |= value;
+                *(uint8_t*)ptr++ = tmp;
+            }
+        } else {
+            while (ptr < end) {
+                *(uint8_t*)ptr++ = value;
+            }
+        }
+        length -= size;
+        page++;
+        offset = 0;
+    }
+    *PAGE = oldMMU;
+    enableInterrupts();
+}

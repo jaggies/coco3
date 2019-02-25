@@ -12,7 +12,7 @@
 const char GFXMODE = HS320x192x16;
 
 #define DYNPAL 2 // number of dynamic palette entries
-#define LINES 192
+#define LINES 200
 
 uint8_t* paletteData;
 uint8_t* data;
@@ -72,13 +72,14 @@ int main(int argc, char** argv) {
     setHighSpeed(1);
 
     /* Graphics */
-    hscreen(GFXMODE);
+    setMode(320, LINES, 4);
     simpleRGB();
+    clear(0xf);
 
     /* Draw pixels */
-    for (int j = 0; j < 192; j++) {
+    for (int j = 0; j < LINES; j++) {
         for (int i = 0; i < 320; i++) {
-            hset(i, j, (uint8_t) (i >> 4));
+            setPixel(i, j, i >> 4);
         }
     }
 
