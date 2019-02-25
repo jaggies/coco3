@@ -66,9 +66,7 @@ void memset24(uint32_t addr, uint8_t value, uint8_t mask, uint16_t length) {
                 *(uint8_t*)ptr++ = tmp;
             }
         } else {
-            while (ptr < end) {
-                *(uint8_t*)ptr++ = value;
-            }
+            memset((uint8_t*)ptr, value, size); // TODO: optimize memset with 16-bit STD
         }
         length -= size;
         page++;

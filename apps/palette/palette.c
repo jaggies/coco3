@@ -74,7 +74,8 @@ int main(int argc, char** argv) {
     /* Graphics */
     setMode(320, LINES, 4);
     simpleRGB();
-    clear(0xf);
+    for (uint8_t i = 0; i < 16; i++)
+        clear(i);
 
     /* Draw pixels */
     for (int j = 0; j < LINES; j++) {
