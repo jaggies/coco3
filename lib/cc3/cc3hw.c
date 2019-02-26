@@ -8,21 +8,12 @@
 #include "os.h"
 #include "cc3hw.h"
 
-uint8_t *irqVector = * (uint8_t **) 0xFFF8;
-uint8_t *firqVector = * (uint8_t **) 0xFFF6;
-uint8_t *hsyncCtrl = (uint8_t *) 0xff01;
-uint8_t *vsyncCtrl = (uint8_t *) 0xff03;
-uint8_t *init0 = (uint8_t *) 0xff90;
-uint8_t *irqEn = (uint8_t *) 0xff92;
-uint8_t *firqEn = (uint8_t *) 0xff93;
-uint8_t *vertScroll = (uint8_t*) 0xff9c;
-uint8_t *palCtrl = (uint8_t *) 0xffb0; // entry of palette 0
-uint16_t *vertOffset = (uint16_t*) 0xff9d; // vertical offset, bits [18:3]
-uint8_t *videoMode = (uint8_t*) 0xff98; // video resolution register
-uint8_t *videoResolution = (uint8_t*) 0xff99; // video resolution register
+uint8_t *FIRQ_VECTOR = * (uint8_t **) 0xFFF6;
+uint8_t *IRQ_VECTOR = * (uint8_t **) 0xFFF8;
+uint8_t *NMI_VECTOR = * (uint8_t **) 0xFFFC;
 
-#define MEMWINDOW 0x8000
-#define PAGE MMU8000
+#define MEMWINDOW 0xc000
+#define PAGE MMUC000
 #define PAGEBITS 13
 #define PAGESIZE (1 << PAGEBITS)
 
@@ -34,13 +25,18 @@ void set6309Native() {
 }
 
 void setFirq(interrupt void (*fptr)()) {
-    *firqVector = 0x7E;  // extended JMP extension
-    *(void **) (firqVector + 1) = (void *) fptr;
+    *FIRQ_VECTOR = 0x7E;  // extended JMP extension
+    *(void **) (FIRQ_VECTOR + 1) = (void *) fptr;
 }
 
 void setIrq(interrupt void (*fptr)()) {
-    *irqVector = 0x7E;  // extended JMP extension
-    *(void **) (irqVector + 1) = (void *) fptr;
+    *IRQ_VECTOR = 0x7E;  // extended JMP extension
+    *(void **) (IRQ_VECTOR + 1) = (void *) fptr;
+}
+
+void setNMI(interrupt void (*fptr)()) {
+    *NMI_VECTOR = 0x7E;  // extended JMP extension
+    *(void **) (NMI_VECTOR + 1) = (void *) fptr;
 }
 
 uint16_t min(uint16_t a, uint16_t b) {
@@ -58,6 +54,7 @@ void memset24(uint32_t addr, uint8_t value, uint8_t mask, uint16_t length) {
         uint16_t ptr = MEMWINDOW + offset;
         *PAGE = page;
         if (mask) {
+            value &= mask;
             const uint16_t end = ptr + size;
             while (ptr < end) {
                 uint8_t tmp = *(uint8_t*)ptr;

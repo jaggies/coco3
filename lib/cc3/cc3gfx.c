@@ -70,11 +70,11 @@ int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     }
     bytesPerRow = (uint8_t) (xres * bpp >> 3);
     bufferSizeBytes = bytesPerRow * yres;
-    *videoResolution = vrr;
-    *videoMode = 0x80; // graphics mode, 60Hz
-    *init0 = 0x4c; // Coco3 mode & MMU enabled
-    *vertScroll = 0; // clear vertical scroll register
-    *vertOffset = gfxBase >> 3;
+    *VIDEO_RES = vrr;
+    *VIDEO_MODE = 0x80; // graphics mode, 60Hz
+    *INIT0 = 0x4c; // Coco3 mode & MMU enabled
+    *VERT_SCROLL = 0; // clear vertical scroll register
+    *VERT_OFFSET = gfxBase >> 3;
 
     return 1;
 }

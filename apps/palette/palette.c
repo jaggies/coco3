@@ -28,10 +28,10 @@ void simpleRGB() {
 
 interrupt void horizontalISR() {
     asm {
-        ldb [firqEn]  // clear FIRQ
+        ldb 0xff93  // clear FIRQ
         ldb #DYNPAL
         ldu data
-        ldx palCtrl
+        ldx #0xffb0
     loop:
         lda ,u+
         sta ,x+
@@ -43,24 +43,29 @@ interrupt void horizontalISR() {
 
 interrupt void verticalISR() {
     asm {
-        ldb [irqEn] // clear IRQ
+        ldb 0xff92 // clear IRQ
         ldu paletteData
         stu data
     }
 }
 
+interrupt void nmiISR() {
+
+}
+
 void enableVideoIRQs() {
     disableInterrupts();
 
-    *init0 |= 0x30; // GIME FIRQ and IRQ output enabled
-    *firqEn |= 0x10; // horizontal boarder firq enabled
-    *irqEn |= 0x08; // vertical irq enabled
+    *INIT0 |= 0x30; // GIME FIRQ and IRQ output enabled
+    *FIRQ_EN |= 0x10; // horizontal boarder firq enabled
+    *IRQ_EN |= 0x08; // vertical irq enabled
 
-    *hsyncCtrl &= 0xfe; // disable historic PIA Hsync IRQ
-    *vsyncCtrl &= 0xfe; // disable historic PIA Vsync IRQ
+    *HSYNC_CTRL &= 0xfe; // disable historic PIA Hsync IRQ
+    *VSYNC_CTRL &= 0xfe; // disable historic PIA Vsync IRQ
 
     setIrq(verticalISR);
     setFirq(horizontalISR);
+    setNMI(nmiISR);
 
     enableInterrupts();
 }
@@ -83,7 +88,7 @@ int main(int argc, char** argv) {
     int width = getWidth();
     for (int j = 0; j < height; j++) {
         for (int i = 0; i < width; i++) {
-            setPixel(i, j, i);
+            setPixel(i, j, (uint8_t) i);
         }
     }
 

@@ -8,18 +8,20 @@
 #ifndef LIB_COCO3_CC3HW_H_
 #define LIB_COCO3_CC3HW_H_
 
-extern const uint8_t *irqVector; // MC6809E IRQ vector in memory
-extern const uint8_t *firqVector; // MC6809E FIRQ vector in memory
-extern const uint8_t *hsyncCtrl;
-extern const uint8_t *vsyncCtrl;
-extern const uint8_t *init0;
-extern const uint8_t *irqEn; // IRQ enable register in GIME chip
-extern const uint8_t *firqEn; // FIRQ enable register in GIME chip
-extern const uint8_t *palCtrl; // Palette entry 0
-extern const uint16_t *vertOffset; // Graphics memory offset, bits [18:3]
-extern const uint8_t *vertScroll; // vertical scroll register
-extern const uint8_t *videoResolution; // Video resolution register
-extern const uint8_t *videoMode;
+extern const uint8_t *NMI_VECTOR; // MC6809E NMI vector in memory
+extern const uint8_t *IRQ_VECTOR; // MC6809E IRQ vector in memory
+extern const uint8_t *FIRQ_VECTOR; // MC6809E FIRQ vector in memory
+
+#define HSYNC_CTRL ((uint8_t *) 0xff01)
+#define VSYNC_CTRL ((uint8_t *) 0xff03)
+#define INIT0 ((uint8_t *) 0xff90)
+#define IRQ_EN ((uint8_t *) 0xff92) // IRQ enable register in GIME chip
+#define FIRQ_EN ((uint8_t *) 0xff93) // FIRQ enable register in GIME chip
+#define VERT_SCROLL ((uint8_t*) 0xff9c)  // vertical scroll register
+#define PALETTE_BASE ((uint8_t *) 0xffb0) // entry of palette 0
+#define VERT_OFFSET ((uint16_t*) 0xff9d) // vertical offset, bits [18:3]
+#define VIDEO_MODE ((uint8_t*) 0xff98) // video mode control register
+#define VIDEO_RES ((uint8_t*) 0xff99) // video resolution register
 
 #define MMU0000 ((uint8_t*) 0xffa0)
 #define MMU2000 ((uint8_t*) 0xffa1)
@@ -34,5 +36,6 @@ extern void set6309Native(); // Enables 6309 Native mode for higher performance
 extern void memset24(uint32_t addr, uint8_t value, uint8_t mask, uint16_t length);
 extern void setFirq(interrupt void (*fptr)());
 extern void setIrq(interrupt void (*fptr)());
+extern void setNMI(interrupt void (*fptr)());
 
 #endif /* LIB_COCO3_CC3HW_H_ */
