@@ -17,6 +17,18 @@ uint8_t *NMI_VECTOR = * (uint8_t **) 0xFFFC;
 #define PAGEBITS 13
 #define PAGESIZE (1 << PAGEBITS)
 
+// These allow faster manipulation of 32-bit addresses
+struct QuickShift8_16_8 {
+    uint8_t a;
+    uint16_t b;
+    uint8_t c;
+};
+
+struct SplitWord {
+    uint16_t upper;
+    uint16_t lower;
+};
+
 // Enables 6309 Native mode for higher performance
 void set6309Native() {
     asm {
@@ -46,8 +58,8 @@ uint16_t min(uint16_t a, uint16_t b) {
 void memset1(uint32_t addr, uint8_t value, uint8_t mask) {
     disableInterrupts();
     const uint8_t oldMMU = *PAGE;
-    *PAGE = (uint8_t) (addr >> 13);
-    uint8_t* ptr = (uint8_t*) MEMWINDOW + (((uint16_t) addr) & 0x1fff);
+    *PAGE = (uint8_t)((*(struct QuickShift8_16_8*) &addr).b >> 5);
+    uint8_t* ptr = (uint8_t*) MEMWINDOW + ((*(struct SplitWord*) &addr).lower & 0x1fff);
     *ptr &= ~mask;
     *ptr |= value;
     *PAGE = oldMMU;
