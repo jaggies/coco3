@@ -43,8 +43,21 @@ uint16_t min(uint16_t a, uint16_t b) {
     return a < b ? a : b;
 }
 
+void memset1(uint32_t addr, uint8_t value, uint8_t mask) {
+    disableInterrupts();
+    const uint8_t oldMMU = *PAGE;
+    *PAGE = (uint8_t) (addr >> 13);
+    uint8_t* ptr = (uint8_t*) MEMWINDOW + (((uint16_t) addr) & 0x1fff);
+    uint8_t tmp = *ptr;
+    tmp &= ~mask;
+    tmp |= value;
+    *(uint8_t*)ptr = tmp;
+    *PAGE = oldMMU;
+    enableInterrupts();
+}
+
 // Set maximum of 64k-1 bytes to any 24-bit page
-void memset24(uint32_t addr, uint8_t value, uint8_t mask, uint16_t length) {
+void memset24(uint32_t addr, uint8_t value, uint16_t length) {
     disableInterrupts();
     uint8_t page = (uint8_t) (addr >> 13);
     uint16_t offset = (uint16_t) (addr & 0x1fffL); // initial offset in page
@@ -53,18 +66,7 @@ void memset24(uint32_t addr, uint8_t value, uint8_t mask, uint16_t length) {
         const uint16_t size = min(PAGESIZE - offset, length);
         uint16_t ptr = MEMWINDOW + offset;
         *PAGE = page;
-        if (mask) {
-            value &= mask;
-            const uint16_t end = ptr + size;
-            while (ptr < end) {
-                uint8_t tmp = *(uint8_t*)ptr;
-                tmp &= ~mask;
-                tmp |= value;
-                *(uint8_t*)ptr++ = tmp;
-            }
-        } else {
-            memset((uint8_t*)ptr, value, size); // TODO: optimize memset with 16-bit STD
-        }
+        memset((uint8_t*)ptr, value, size); // TODO: optimize memset with 16-bit STD
         length -= size;
         page++;
         offset = 0;

@@ -13,7 +13,7 @@ extern uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b);
 
 extern int setMode(uint16_t xres, uint16_t yres, uint8_t depth);
 extern void clear(uint8_t color);
-extern void setPixel(uint16_t x, uint16_t y, uint8_t clr);
+extern void (*setPixel)(uint16_t x, uint16_t y, uint8_t clr);
 extern uint8_t getPixel(uint16_t x, uint16_t y);
 extern uint16_t getWidth();
 extern uint16_t getHeight();

@@ -33,7 +33,8 @@ extern const uint8_t *FIRQ_VECTOR; // MC6809E FIRQ vector in memory
 #define MMUE000 ((uint8_t*) 0xffa7)
 
 extern void set6309Native(); // Enables 6309 Native mode for higher performance
-extern void memset24(uint32_t addr, uint8_t value, uint8_t mask, uint16_t length);
+extern void memset1(uint32_t addr, uint8_t value, uint8_t mask);
+extern void memset24(uint32_t addr, uint8_t value, uint16_t length);
 extern void setFirq(interrupt void (*fptr)());
 extern void setIrq(interrupt void (*fptr)());
 extern void setNMI(interrupt void (*fptr)());
