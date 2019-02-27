@@ -38,7 +38,12 @@ static uint32_t gfxBase = 0x60000L;
 static void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr);
 static void setPixel2bpp(uint16_t x, uint16_t y, uint8_t clr);
 static void setPixel4bpp(uint16_t x, uint16_t y, uint8_t clr);
+static void setPixels1bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
+static void setPixels2bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
+static void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
+
 void (*setPixel)(uint16_t x, uint16_t y, uint8_t clr);
+void (*setPixels)(uint16_t x, uint16_t y, uint8_t clr, uint16_t n);
 
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
 uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
@@ -55,9 +60,9 @@ uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
 int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     uint8_t vrr = 0; // video resolution register setting when done
     switch (depth) {
-        case 1: bpp = depth; vrr |= CRES_1BPP; setPixel = setPixel1bpp; break;
-        case 2: bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; break;
-        case 4: bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; break;
+        case 1: bpp = depth; vrr |= CRES_1BPP; setPixel = setPixel1bpp; setPixels = setPixels1bpp;break;
+        case 2: bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; setPixels = setPixels2bpp; break;
+        case 4: bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; setPixels = setPixels4bpp; break;
         default: return 0;
     }
     switch (xres) {
@@ -137,10 +142,76 @@ void setPixel4bpp(uint16_t x, uint16_t y, uint8_t clr) {
     memset1(gfxBase + byteOffset, clr, mask);
 }
 
+void setPixels1bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
+    memcpy24(gfxBase + (x >> 3) + y * bytesPerRow, clr, n);
+}
+
+void setPixels2bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
+    memcpy24(gfxBase + (x >> 2) + y * bytesPerRow, clr, n);
+}
+
+void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
+    memcpy24(gfxBase + (x >> 1) + y * bytesPerRow, clr, n);
+}
+
+uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {
+    uint16_t count;
+    switch (bpp) {
+        case 1:
+            count = n >> 3;
+            while (n) {
+                uint8_t tmp = 0;
+                for (uint8_t bit = 0; bit < 8; bit++) {
+                    tmp <<= 1; // TODO: this causes extra shift of 0, but left-justifies correctly
+                    if (n) {
+                        tmp |= (*in++) & 1;
+                        n--;
+                    }
+                }
+                *out++ = tmp;
+            }
+        break;
+        case 2:
+            count = n >> 2;
+            while (n) {
+                uint8_t tmp = 0;
+                for (uint8_t bit = 0; bit < 4; bit++) {
+                    tmp <<= 2; // TODO: this causes extra shift of 0, but left-justifies correctly
+                    if (n) {
+                        tmp |= (*in++) & 3;
+                        n--;
+                    }
+
+                }
+                *out++ = tmp;
+            }
+        break;
+        case 4:
+            count = n >> 1;
+            while (n) {
+                uint8_t tmp = 0;
+                for (uint8_t pixel = 0; pixel < 2; pixel++) {
+                    tmp <<= 4; // TODO: this causes extra shift of 0, but left-justifies correctly
+                    if (n) {
+                        tmp |= (*in++) & 0x0f;
+                        n--;
+                    }
+                }
+                *out++ = tmp;
+            }
+        break;
+    }
+    return count;
+}
+
 uint16_t getWidth() {
     return widthPixels;
 }
 
 uint16_t getHeight() {
     return heightPixels;
+}
+
+uint16_t getBytesPerRow() {
+    return bytesPerRow;
 }
