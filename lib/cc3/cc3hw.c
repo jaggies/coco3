@@ -83,3 +83,20 @@ void memset24(uint32_t addr, uint8_t value, uint16_t length) {
     *PAGE = oldMMU;
     enableInterrupts();
 }
+
+void memcpy24(uint32_t dst, uint8_t* src, uint16_t length) {
+    disableInterrupts();
+    uint8_t page = (uint8_t) (dst >> 13);
+    uint16_t offset = (uint16_t) (dst & 0x1fffL); // initial offset in page
+    const uint8_t oldMMU = *PAGE;
+    while (length > 0) {
+        const uint16_t size = min(PAGESIZE - offset, length);
+        uint16_t ptr = MEMWINDOW + offset;
+        *PAGE = page++;
+        memcpy((uint8_t*)ptr, src, size); // TODO: optimize memset with 16-bit STD
+        length -= size;
+        offset = 0;
+    }
+    *PAGE = oldMMU;
+    enableInterrupts();
+}
