@@ -11,8 +11,12 @@
 
 const char GFXMODE = HS320x192x16;
 
-#define DYNPAL 2 // number of dynamic palette entries
-#define LINES 200
+#define WIDTH 320
+#define HEIGHT 200
+#define VBLANK (262 - HEIGHT)
+#define DEPTH 4
+
+#define DYNPAL 4 // number of dynamic palette entries that can be swapped per line
 
 uint8_t* paletteData;
 uint8_t* data;
@@ -28,16 +32,18 @@ void simpleRGB() {
 
 interrupt void horizontalISR() {
     asm {
+        pshs x,y,u
         ldb 0xff93  // clear FIRQ
-        ldb #DYNPAL
+        ldb #(DYNPAL/2)
         ldu data
         ldx #0xffb0
     loop:
-        lda ,u+
-        sta ,x+
+        ldy ,u++
+        sty ,x++
         decb
         bne loop
         stu data
+        puls x,y,u
     }
 }
 
@@ -77,25 +83,30 @@ int main(int argc, char** argv) {
     setHighSpeed(1);
 
     /* Graphics */
-    setMode(320, LINES, 4);
+    setMode(WIDTH, HEIGHT, DEPTH);
     simpleRGB();
-    for (uint8_t i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < (1 << DEPTH); i++) {
         clear(i);
     }
 
     /* Draw pixels */
     int height = getHeight();
     int width = getWidth();
+    uint8_t* buffer = (uint8_t*) sbrk(WIDTH);
+    for (int i = 0; i < width; i++) {
+       buffer[i] = (uint8_t) i & 0x0f;
+    }
+
+    uint16_t bytes = packPixels(buffer, buffer, WIDTH);
+
     for (int j = 0; j < height; j++) {
-        for (int i = 0; i < width; i++) {
-            setPixel(i, j, (uint8_t) i);
-        }
+        setPixels(0, j, buffer, bytes);
     }
 
     /* Load per-line palette */
-    paletteData = sbrk(DYNPAL*LINES);
+    paletteData = (uint8_t*) sbrk(DYNPAL*(height+VBLANK));
     uint8_t* ptr = paletteData;
-    for (uint8_t l = 0; l < height; l++) {
+    for (uint8_t l = 0; l < height+VBLANK; l++) {
         for (uint8_t p = 0; p < DYNPAL; p++) {
             uint8_t r = (p & 4) ? (l & 3) : 0;
             uint8_t g = (p & 2) ? (l & 3) : 0;
