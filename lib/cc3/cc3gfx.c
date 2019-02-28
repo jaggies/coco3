@@ -33,7 +33,7 @@ static uint16_t heightPixels = 0;
 static uint8_t bytesPerRow = 0; // TODO: use 16-bit math if 256-color modes ever are a thing
 static uint16_t bufferSizeBytes = 0;
 static uint8_t bpp = 0;
-static uint32_t gfxBase = 0x60000L;
+static uint32_t gfxBase;
 
 static void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr);
 static void setPixel2bpp(uint16_t x, uint16_t y, uint8_t clr);
@@ -84,9 +84,13 @@ int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     *VIDEO_MODE = 0x80; // graphics mode, 60Hz
     *INIT0 = 0x4c; // Coco3 mode & MMU enabled
     *VERT_SCROLL = 0; // clear vertical scroll register
-    *VERT_OFFSET = gfxBase >> 3;
+    setGraphicsBase(0x60000L); // set to default location
 
     return 1;
+}
+
+void setPalette(uint8_t index, uint8_t r, uint8_t g, uint8_t b) {
+    *(PALETTE_BASE+(index&0xf)) = toPalette(r, g, b);
 }
 
 void clear(uint8_t color) {
@@ -204,6 +208,11 @@ uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {
     return count;
 }
 
+void setGraphicsBase(uint32_t base) {
+    gfxBase = base;
+    *(uint16_t*) VERT_OFFSET = (uint16_t) (base >> 3);
+}
+
 uint16_t getWidth() {
     return widthPixels;
 }
@@ -214,4 +223,8 @@ uint16_t getHeight() {
 
 uint16_t getBytesPerRow() {
     return bytesPerRow;
+}
+
+uint16_t getFrameSize() {
+    return bufferSizeBytes;
 }

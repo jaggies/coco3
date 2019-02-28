@@ -12,6 +12,7 @@
 extern uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b);
 
 extern int setMode(uint16_t xres, uint16_t yres, uint8_t depth);
+extern void setPalette(uint8_t index, uint8_t r, uint8_t g, uint8_t b);
 extern void clear(uint8_t color);
 
 // Sets one pixel at location (x,y) in current graphics mode
@@ -29,10 +30,15 @@ extern void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 // Returns number of bytes written to output
 extern uint16_t packPixels(uint8_t* const in, uint8_t * out, uint16_t n);
 
+// Sets the graphics library to render at the given base address and points
+// the GIME video register to it.
+extern void setGraphicsBase(uint32_t base);
+
 extern uint8_t getPixel(uint16_t x, uint16_t y);
 extern uint16_t getWidth();
 extern uint16_t getHeight();
 extern uint16_t getBytesPerRow();
+extern uint16_t getFrameSize();
 
 #define HS320x192x4 1
 #define HS320x192x16 2

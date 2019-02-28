@@ -19,6 +19,7 @@ extern const uint8_t *FIRQ_VECTOR; // MC6809E FIRQ vector in memory
 #define FIRQ_EN ((uint8_t *) 0xff93) // FIRQ enable register in GIME chip
 #define VERT_SCROLL ((uint8_t*) 0xff9c)  // vertical scroll register
 #define PALETTE_BASE ((uint8_t *) 0xffb0) // entry of palette 0
+#define HORIZ_OFFSET ((uint8_t *) 0xff9f) // vertical offset, bits [18:3]
 #define VERT_OFFSET ((uint16_t*) 0xff9d) // vertical offset, bits [18:3]
 #define VIDEO_MODE ((uint8_t*) 0xff98) // video mode control register
 #define VIDEO_RES ((uint8_t*) 0xff99) // video resolution register
