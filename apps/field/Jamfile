@@ -6,7 +6,7 @@ SubDirHdrs $(TOP) lib ray ;
 
 CoCoDisk field.dsk : FIELD.BIN ;
 
-LINKLIBS on FIELD.BIN  = -lcc3 -los ;
+LINKLIBS on FIELD.BIN  = -lcc3 -los -lray ;
 Depends FIELD.BIN : libos.a libray.a ;
 
 Main FIELD.BIN :

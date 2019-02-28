@@ -9,21 +9,22 @@
 #include "coco.h"
 #include "cc3hw.h"
 #include "cc3gfx.h"
+#include "dither.h"
 
 uint8_t field = 0;
 #define XRES 320
-#define YRES 225
-#define DEPTH 4
+#define YRES 200
+#define DEPTH 2
+
+uint32_t frameBase[3]; // Graphics pointer to each frame
+uint8_t palette[3][16]; // palettes for each of the frames
 
 interrupt void verticalISR() {
-    for (uint8_t i = 0; i < 16; i++) {
-        uint8_t v = i & 3;
-        uint8_t r = field == 0 ? v : 0;
-        uint8_t g = field == 1 ? v : 0;
-        uint8_t b = field == 2 ? v : 0;
-        PALETTE_BASE[i] = toPalette(r, g, b);
+    *(uint16_t*) VERT_OFFSET = frameBase[field] >> 3;
+    for (uint8_t i = 0; i < 4; i++) {
+        PALETTE_BASE[i] = palette[field][i];
     }
-    field = field < 2 ? (field+1) : 0;
+    field = field < 2 ? (field + 1) : 0;
     asm {
         ldb 0xff93
     }
@@ -40,25 +41,48 @@ void enableVideoIRQs() {
     enableInterrupts();
 }
 
+#define gfrac 7 // number of fractional bits
+
 int main(int argc, char** argv) {
     /* Speedups */
     set6309Native();
     initCoCoSupport();
     setHighSpeed(1);
 
-    /* Graphics */
     setMode(XRES, YRES, DEPTH);
 
-    uint8_t* buffer = (uint8_t*) sbrk(XRES);
-    for (int i = 0; i < XRES; i++) {
-        buffer[i] = (uint8_t) (i>>4) & 0xf;
+    uint8_t* pixels[3];
+    pixels[0] = (uint8_t*) sbrk(XRES);
+    pixels[1] = (uint8_t*) sbrk(XRES);
+    pixels[2] = (uint8_t*) sbrk(XRES);
+
+    for (int frame = 0; frame < 3; frame++) {
+        frameBase[frame] = frame * (uint32_t) getFrameSize();
+        setGraphicsBase(frameBase[frame]);
+        clear(0xf);
+        for (uint8_t i = 0; i < 16; i++) {
+            uint8_t r = frame == 0 ? i : 0;
+            uint8_t g = frame == 1 ? i : 0;
+            uint8_t b = frame == 2 ? i : 0;
+            palette[frame][i] = toPalette(r, g, b);
+            setPalette(i, r, g, b);
+        }
     }
 
-    int size = packPixels(buffer, buffer, XRES);
-
-    /* Draw pixels */
     for (int j = 0; j < YRES; j++) {
-        setPixels(0, j, buffer, size);
+        for (int i = 0; i < XRES; i++) {
+            uint8_t r = (uint8_t) (i * 64 / XRES);
+            uint8_t g = 63 - r;
+            uint8_t b = (uint8_t) (j * 64 / YRES);
+            pixels[0][i] = dith6x2((uint8_t) i, (uint8_t) j, r);
+            pixels[1][i] = dith6x2((uint8_t) i, (uint8_t) j, g);
+            pixels[2][i] = dith6x2((uint8_t) i, (uint8_t) j, b);
+        }
+        for (int k = 0; k < 3; k++) {
+            setGraphicsBase(frameBase[k]);
+            int bytes = packPixels(pixels[k], pixels[k], XRES);
+            setPixels(0, j, pixels[k], bytes);
+        }
     }
 
     enableVideoIRQs();
