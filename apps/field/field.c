@@ -32,12 +32,12 @@ interrupt void verticalISR() {
 
 void enableVideoIRQs() {
     disableInterrupts();
-    *INIT0 = 0x5c; // GIME CC3, MMU, DRAM, 16k/16k ROM, FIRQ_en
-    *IRQ_EN = 0x00; // DISABLE IRQs
-    *FIRQ_EN = 0x08; // FIRQ for vertical ISR
+    *INIT0 = 0x7c; // GIME CC3, MMU, DRAM, 16k/16k ROM, IRQ_en, FIRQ_en
+    *IRQ_EN = 0x08; // DISABLE IRQs
+    *FIRQ_EN = 0x00; // FIRQ for vertical ISR
     *HSYNC_CTRL &= 0xfe; // disable historic PIA Hsync IRQ
     *VSYNC_CTRL &= 0xfe; // disable historic PIA Vsync IRQ
-    setFirq(verticalISR);
+    setIrq(verticalISR);
     enableInterrupts();
 }
 
@@ -69,6 +69,8 @@ int main(int argc, char** argv) {
         }
     }
 
+    enableVideoIRQs();
+
     for (int j = 0; j < YRES; j++) {
         for (int i = 0; i < XRES; i++) {
             uint8_t r = (uint8_t) (i * 64 / XRES);
@@ -84,8 +86,6 @@ int main(int argc, char** argv) {
             setPixels(0, j, pixels[k], bytes);
         }
     }
-
-    enableVideoIRQs();
 
     while (1)
         ;
