@@ -20,7 +20,9 @@ extern void (*setPixel)(uint16_t x, uint16_t y, uint8_t clr);
 // Sets multiple pixels starting at location (x,y) for n bytes in length.
 // Assumes pixels are packed into the native screen format, e.g. 2 pixels per byte
 // in 16-color mode.
+//
 // Note: x must land on a byte boundary. Use setPixel() to handle unaligned pixels.
+// Returns number of bytes written.
 extern void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 
 // Pack pixels from 1 pixel per byte to native pixel format chosen by setMode().

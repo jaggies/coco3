@@ -94,6 +94,7 @@ void memcpy24(uint32_t dst, uint8_t* src, uint16_t length) {
         uint16_t ptr = MEMWINDOW + offset;
         *PAGE = page++;
         memcpy((uint8_t*)ptr, src, size); // TODO: optimize memset with 16-bit STD
+        src += size;
         length -= size;
         offset = 0;
     }
