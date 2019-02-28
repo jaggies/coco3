@@ -10,8 +10,10 @@
 #include "cc3hw.h"
 #include "cc3gfx.h"
 
-const char GFXMODE = HS320x192x16;
 uint8_t field = 0;
+#define XRES 320
+#define YRES 225
+#define DEPTH 4
 
 interrupt void verticalISR() {
     for (uint8_t i = 0; i < 16; i++) {
@@ -45,13 +47,18 @@ int main(int argc, char** argv) {
     setHighSpeed(1);
 
     /* Graphics */
-    hscreen(GFXMODE);
+    setMode(XRES, YRES, DEPTH);
+
+    uint8_t* buffer = (uint8_t*) sbrk(XRES);
+    for (int i = 0; i < XRES; i++) {
+        buffer[i] = (uint8_t) (i>>4) & 0xf;
+    }
+
+    int size = packPixels(buffer, buffer, XRES);
 
     /* Draw pixels */
-    for (int j = 0; j < 192; j++) {
-        for (int i = 0; i < 320; i++) {
-            hset(i, j, (uint8_t) (i >> 4));
-        }
+    for (int j = 0; j < YRES; j++) {
+        setPixels(0, j, buffer, size);
     }
 
     enableVideoIRQs();
