@@ -31,4 +31,16 @@ uint8_t dither(uint8_t inBits, uint8_t outBits, uint8_t x, uint8_t y, uint8_t gr
      return val;
  }
 
+// Dither 6 bits down to 2 bits
+uint8_t dith6x2(uint8_t x, uint8_t y, uint8_t grey) {
+    grey = (grey + (grey << 1)) >> 2; // = grey *3/4
+    const uint8_t idx = ((y&3) << 2) | (x & 3);
+    uint8_t result = grey >> 4;
+    int d = ((uint8_t*)threshold)[idx];
+    if ((grey & 0x0f) > d) {
+        result++;
+    }
+    return result;
+}
+
 

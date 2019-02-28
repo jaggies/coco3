@@ -9,5 +9,6 @@
 #define APPS_INTRAY_DITHER_H_
 
 uint8_t dither(uint8_t inBits, uint8_t outBits, uint8_t x, uint8_t y, uint8_t grey);
+uint8_t dith6x2(uint8_t x, uint8_t y, uint8_t grey);
 
 #endif /* APPS_INTRAY_DITHER_H_ */
