@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 
     for (int frame = 0; frame < 3; frame++) {
         frameBase[frame] = frame * (uint32_t) getFrameSize();
-        setGraphicsBase(frameBase[frame]);
+        setGraphicsDrawBase(frameBase[frame]);
         clear(0xf);
         for (uint8_t i = 0; i < 16; i++) {
             uint8_t r = frame == 0 ? i : 0;
@@ -81,9 +81,8 @@ int main(int argc, char** argv) {
             pixels[2][i] = dith6x2((uint8_t) i, (uint8_t) j, b);
         }
         for (int k = 0; k < 3; k++) {
-            setGraphicsBase(frameBase[k]);
-            int bytes = packPixels(pixels[k], pixels[k], XRES);
-            setPixels(0, j, pixels[k], bytes);
+            setGraphicsDrawBase(frameBase[k]);
+            setPixels(0, j, pixels[k], packPixels(pixels[k], pixels[k], XRES));
         }
     }
 

@@ -84,7 +84,8 @@ int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     *VIDEO_MODE = 0x80; // graphics mode, 60Hz
     *INIT0 = 0x4c; // Coco3 mode & MMU enabled
     *VERT_SCROLL = 0; // clear vertical scroll register
-    setGraphicsBase(0x60000L); // set to default location
+    setGraphicsDrawBase(0x60000L); // set to default ECB location
+    setGraphicsViewBase(0x60000L);
 
     return 1;
 }
@@ -208,8 +209,11 @@ uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {
     return count;
 }
 
-void setGraphicsBase(uint32_t base) {
+void setGraphicsDrawBase(uint32_t base) {
     gfxBase = base;
+}
+
+void setGraphicsViewBase(uint32_t base) {
     *(uint16_t*) VERT_OFFSET = (uint16_t) (base >> 3);
 }
 
