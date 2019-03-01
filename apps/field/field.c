@@ -26,18 +26,27 @@ interrupt void verticalISR() {
     }
     field = field < 2 ? (field + 1) : 0;
     asm {
-        ldb 0xff93
+        ldb 0xff92 // clear IRQ
+        ldb 0xff93 // clear FIRQ
+    }
+}
+
+interrupt void horizontalISR() {
+    asm {
+        ldb 0xff92 // clear IRQ
+        ldb 0xff93 // clear FIRQ
     }
 }
 
 void enableVideoIRQs() {
     disableInterrupts();
-    *INIT0 = 0x7c; // GIME CC3, MMU, DRAM, 16k/16k ROM, IRQ_en, FIRQ_en
+    *INIT0 = 0x6c; // GIME CC3, MMU, DRAM, 16k/16k ROM, IRQ_en, FIRQ_en
     *IRQ_EN = 0x08; // DISABLE IRQs
     *FIRQ_EN = 0x00; // FIRQ for vertical ISR
     *HSYNC_CTRL &= 0xfe; // disable historic PIA Hsync IRQ
     *VSYNC_CTRL &= 0xfe; // disable historic PIA Vsync IRQ
     setIrq(verticalISR);
+    setFirq(horizontalISR);
     enableInterrupts();
 }
 
