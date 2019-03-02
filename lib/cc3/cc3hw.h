@@ -41,4 +41,6 @@ extern void setFirq(interrupt void (*fptr)());
 extern void setIrq(interrupt void (*fptr)());
 extern void setNMI(interrupt void (*fptr)());
 
+extern uint8_t* fmemset(uint8_t*, uint8_t, size_t);
+
 #endif /* LIB_COCO3_CC3HW_H_ */

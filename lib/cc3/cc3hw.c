@@ -76,7 +76,7 @@ void memset24(uint32_t addr, uint8_t value, uint16_t length) {
         const uint16_t size = min(PAGESIZE - offset, length);
         uint16_t ptr = MEMWINDOW + offset;
         *PAGE = page++;
-        memset((uint8_t*)ptr, value, size); // TODO: optimize memset with 16-bit STD
+        fmemset((uint8_t*)ptr, value, size); // TODO: optimize memset with 16-bit STD
         length -= size;
         offset = 0;
     }
