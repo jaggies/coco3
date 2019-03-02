@@ -16,6 +16,9 @@ const char GFXMODE = HS320x192x16;
 #define VBLANK (262 - HEIGHT)
 #define DEPTH 4
 
+#define HBRD 0x10 // IRQ_EN/FIRQ_EN enables
+#define VBRD 0x08
+
 #define DYNPAL 16 // number of dynamic palette entries that can be swapped per line
 
 uint8_t* paletteData;
@@ -31,24 +34,22 @@ void simpleRGB() {
 }
 
 // Note: trashes x, y and w for performance reasons... BEWARE!
-interrupt void horizontalISR() {
+interrupt void firqISR() {
     asm {
-        lda 0xff93  // clear IRQs
-        ldb #DYNPAL // 6309 ONLY
-        clra
-        tfr d,w
+        lda 0xff93  // clear FIRQs
+        anda #VBRD
+        bne vert
+    horiz:
         ldx data
         ldy #0xffb0
+        ldw #DYNPAL // 6309 ONLY
         tfm x+,y+ // 6309 ONLY
         stx data
-    }
-}
-
-interrupt void verticalISR() {
-    asm {
-        ldb 0xff92 // clear IRQ
-        ldu paletteData
-        stu data
+        rti
+    vert:
+        ldx paletteData
+        stx data
+        rti
     }
 }
 
@@ -56,14 +57,13 @@ void enableVideoIRQs() {
     disableInterrupts();
 
     *INIT0 |= 0x30; // GIME FIRQ and IRQ output enabled
-    *FIRQ_EN |= 0x10; // horizontal boarder firq enabled
-    *IRQ_EN |= 0x08; // vertical irq enabled
+    *FIRQ_EN |= HBRD | VBRD; // horizontal boarder firq enabled
+    *IRQ_EN |= 0x00; // vertical irq enabled
 
     *HSYNC_CTRL &= 0xfe; // disable historic PIA Hsync IRQ
     *VSYNC_CTRL &= 0xfe; // disable historic PIA Vsync IRQ
 
-    setIrq(verticalISR);
-    setFirq(horizontalISR);
+    setFirq(firqISR);
 
     enableInterrupts();
 }
@@ -99,10 +99,11 @@ int main(int argc, char** argv) {
     paletteData = (uint8_t*) sbrk(DYNPAL*(height+VBLANK));
     uint8_t* ptr = paletteData;
     for (int l = 0; l < height+VBLANK; l++) {
+        uint8_t clr = ((uint8_t)l & 3);
         for (uint8_t p = 0; p < DYNPAL; p++) {
-            uint8_t r = (p & 4) ? (l & 3) : 0;
-            uint8_t g = (p & 2) ? (l & 3) : 0;
-            uint8_t b = (p & 1) ? (l & 3) : 0;
+            uint8_t r = ((p+l) & 4) ? clr : 0;
+            uint8_t g = ((p+l) & 2) ? clr : 0;
+            uint8_t b = ((p+l) & 1) ? clr : 0;
             *ptr++ = toPalette(r, g, b);
         }
     }
