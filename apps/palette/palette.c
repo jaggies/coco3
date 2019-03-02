@@ -16,7 +16,7 @@ const char GFXMODE = HS320x192x16;
 #define VBLANK (262 - HEIGHT)
 #define DEPTH 4
 
-#define DYNPAL 4 // number of dynamic palette entries that can be swapped per line
+#define DYNPAL 16 // number of dynamic palette entries that can be swapped per line
 
 uint8_t* paletteData;
 uint8_t* data;
@@ -30,20 +30,17 @@ void simpleRGB() {
     }
 }
 
+// Note: trashes x, y and w for performance reasons... BEWARE!
 interrupt void horizontalISR() {
     asm {
-        pshs x,y,u
-        ldb 0xff93  // clear FIRQ
-        ldb #(DYNPAL/2)
-        ldu data
-        ldx #0xffb0
-    loop:
-        ldy ,u++
-        sty ,x++
-        decb
-        bne loop
-        stu data
-        puls x,y,u
+        lda 0xff93  // clear IRQs
+        ldb #DYNPAL // 6309 ONLY
+        clra
+        tfr d,w
+        ldx data
+        ldy #0xffb0
+        tfm x+,y+ // 6309 ONLY
+        stx data
     }
 }
 
@@ -53,10 +50,6 @@ interrupt void verticalISR() {
         ldu paletteData
         stu data
     }
-}
-
-interrupt void nmiISR() {
-
 }
 
 void enableVideoIRQs() {
@@ -71,7 +64,6 @@ void enableVideoIRQs() {
 
     setIrq(verticalISR);
     setFirq(horizontalISR);
-    setNMI(nmiISR);
 
     enableInterrupts();
 }
@@ -106,7 +98,7 @@ int main(int argc, char** argv) {
     /* Load per-line palette */
     paletteData = (uint8_t*) sbrk(DYNPAL*(height+VBLANK));
     uint8_t* ptr = paletteData;
-    for (uint8_t l = 0; l < height+VBLANK; l++) {
+    for (int l = 0; l < height+VBLANK; l++) {
         for (uint8_t p = 0; p < DYNPAL; p++) {
             uint8_t r = (p & 4) ? (l & 3) : 0;
             uint8_t g = (p & 2) ? (l & 3) : 0;
