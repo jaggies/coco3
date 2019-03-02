@@ -12,8 +12,8 @@
 #include "dither.h"
 
 uint8_t field = 0;
-#define XRES 320
-#define YRES 200
+#define XRES 640
+#define YRES 225
 #define DEPTH 2
 
 uint32_t frameBase[3]; // Graphics pointer to each frame
@@ -80,14 +80,17 @@ int main(int argc, char** argv) {
 
     enableVideoIRQs();
 
-    for (int j = 0; j < YRES; j++) {
+    for (uint16_t j = 0; j < YRES; j++) {
         uint8_t b = (uint8_t) (j * 64 / YRES);
-        for (int i = 0; i < XRES; i++) {
-            uint8_t r = (uint8_t) (i * 64 / XRES);
-            uint8_t g = 63 - r;
-            pixels[0][i] = dither6x2((uint8_t) i, (uint8_t) j, r);
-            pixels[1][i] = dither6x2((uint8_t) i, (uint8_t) j, g);
-            pixels[2][i] = dither6x2((uint8_t) i, (uint8_t) j, b);
+        uint8_t* red = &pixels[0][0];
+        uint8_t* grn = &pixels[1][0];
+        uint8_t* blu = &pixels[2][0];
+        for (uint16_t i = 0; i < XRES; i++) {
+            uint8_t r = (uint8_t)(i & 0x3f);
+            uint8_t g = (uint8_t)(i / (XRES/64));
+            *red++ = dither6x2((uint8_t) i, (uint8_t) j, r);
+            *grn++ = dither6x2((uint8_t) i, (uint8_t) j, g);
+            *blu++ = dither6x2((uint8_t) i, (uint8_t) j, b);
         }
         for (int k = 0; k < 3; k++) {
             setGraphicsDrawBase(frameBase[k]);
