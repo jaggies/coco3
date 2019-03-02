@@ -1,13 +1,12 @@
 SubDir TOP lib ray ;
 SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib math ;
 
 Library libray.a : 
 	dither.c
-	fixed.c
 	icamera.c
 	ihit.c
 	ilight.c
-	imath.c
 	isphere.c
 	itriangle.c
 	ivec2i.c

@@ -1,4 +1,4 @@
-#TARGET = coco3 ;
+TARGET = coco3 ;
 
 OPTIM = -g -O1 ;
 #DEFINES += DEBUG ;
@@ -6,6 +6,7 @@ OPTIM = -g -O1 ;
 if $(TARGET) = "coco3" {
 	#LWTOOLS
 	AR = lwar -car ;
+	AS = cmoc -c ;
 	RANLIB = echo ;
 
 	#CMOC
@@ -16,6 +17,7 @@ if $(TARGET) = "coco3" {
 	#CCFLAGS = --verbose ;
 	CCFLAGS += -DCOCO -Dconst= ;
 	CCFLAGS += --coco ; # Coco .bin file
+	#CCFLAGS += -S ;
 	#CCFLAGS += --os9 ; # Coco OS9 executable
 } else {
 	TARGET = $(OS) ;

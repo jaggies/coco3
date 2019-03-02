@@ -1,0 +1,7 @@
+SubDir TOP lib math ;
+SubDirHdrs $(TOP) lib os ;
+
+Library libos.a : 
+	fixed.c
+	imath.c
+	;

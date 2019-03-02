@@ -1,5 +1,6 @@
 SubDir TOP apps intray ;
 SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib math ;
 SubDirHdrs $(TOP) lib coco ;
 SubDirHdrs $(TOP) lib ray ;
 
