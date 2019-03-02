@@ -1,7 +1,9 @@
 SubDir TOP lib cc3 ;
 SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib ray ;
 
 Library libcc3.a : 
 	cc3gfx.c
 	cc3hw.c
+	cc3util.c
 	;
