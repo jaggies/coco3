@@ -81,13 +81,13 @@ int main(int argc, char** argv) {
     enableVideoIRQs();
 
     for (int j = 0; j < YRES; j++) {
+        uint8_t b = (uint8_t) (j * 64 / YRES);
         for (int i = 0; i < XRES; i++) {
             uint8_t r = (uint8_t) (i * 64 / XRES);
             uint8_t g = 63 - r;
-            uint8_t b = (uint8_t) (j * 64 / YRES);
-            pixels[0][i] = dith6x2((uint8_t) i, (uint8_t) j, r);
-            pixels[1][i] = dith6x2((uint8_t) i, (uint8_t) j, g);
-            pixels[2][i] = dith6x2((uint8_t) i, (uint8_t) j, b);
+            pixels[0][i] = dither6x2((uint8_t) i, (uint8_t) j, r);
+            pixels[1][i] = dither6x2((uint8_t) i, (uint8_t) j, g);
+            pixels[2][i] = dither6x2((uint8_t) i, (uint8_t) j, b);
         }
         for (int k = 0; k < 3; k++) {
             setGraphicsDrawBase(frameBase[k]);
