@@ -8,4 +8,5 @@ Library libcc3.a :
 	cc3hw.c
 	cc3util.c
 	fmemset.asm
+	fastmult.asm
 	;

@@ -1,4 +1,5 @@
 SubDir TOP lib math ;
+SubDirHdrs $(TOP) lib cc3 ;
 SubDirHdrs $(TOP) lib os ;
 
 Library libos.a : 

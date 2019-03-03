@@ -1,4 +1,5 @@
 SubDir TOP apps test ;
+SubDirHdrs $(TOP) lib cc3 ;
 SubDirHdrs $(TOP) lib os ;
 
 if $(TARGET) = "coco3" {
@@ -13,7 +14,9 @@ if $(TARGET) = "coco3" {
 	Main memset24 : memset24.c ;
 }
 
+DEPENDS $(PRINTF) : libcc3.a libos.a ;
 LINKLIBS on $(FLOAT) = -los ;
+LINKLIBS on $(PRINTF) = -los -lcc3 ;
 
 Main $(PRINTF) : printf.c ;
 Main $(FLOAT) : float.c ;
