@@ -17,8 +17,6 @@
 
 const int WIDTH = 320; // Render width / height
 const int HEIGHT = 200;
-const int COLORS = 32;
-const char GFXMODE = HS320x192x16;
 const int DPYWIDTH = 320;
 const int DPYHEIGHT = 200;
 const int DACBITS = 2;
@@ -38,7 +36,7 @@ void makePalette() {
         uint8_t red = (uint8_t) (palette[i].x >> (fraction - 2));
         uint8_t grn = (uint8_t) (palette[i].y >> (fraction - 2));
         uint8_t blu = (uint8_t) (palette[i].z >> (fraction - 2));
-        paletteRGB(i, red, grn, blu);
+        setPalette(i, red, grn, blu);
     }
 }
 
@@ -87,10 +85,9 @@ int main(int argc, char** argv) {
     setHighSpeed(1);
 
     /* Graphics */
-    hscreen(GFXMODE);
-    *(uint8_t*) (0xff99) |= 0x20; // 200 lines per field
-
+    setMode(DPYWIDTH, DPYHEIGHT, 4);
     makePalette();
+    clear(0);
 
     /* Create the scene */
     float aspect = (float) WIDTH / HEIGHT;
@@ -117,7 +114,7 @@ int main(int argc, char** argv) {
             color.z = clamp(color.z, 0, c_one);
             //hset(i, j, ditherRGB(i, j, &color));
             //hset(i, j, nearest(&color));
-            hset(i, j, diffusion(&color, i == 0));
+            setPixel(i, j, diffusion(&color, i == 0));
         }
     }
 
