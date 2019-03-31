@@ -6,8 +6,8 @@ SubDirHdrs $(TOP) lib ray ;
 
 CoCoDisk palette.dsk : PALETTE.BIN ;
 
-LINKLIBS on PALETTE.BIN  = -lcc3 -los ;
-Depends PALETTE.BIN : libos.a libray.a ;
+LINKLIBS on PALETTE.BIN  = -lcc3 -los -lray ;
+Depends PALETTE.BIN : libos.a libcc3.a libray.a ;
 
 Main PALETTE.BIN :
 	palette.c

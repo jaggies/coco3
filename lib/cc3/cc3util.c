@@ -21,6 +21,18 @@ static uint8_t redShift = 0;
 static uint8_t grnShift = 0;
 static uint8_t blushift = 0;
 
+uint16_t min(uint16_t a, uint16_t b) {
+    return a < b ? a : b;
+}
+
+uint16_t max(uint16_t a, uint16_t b) {
+    return a > b ? a : b;
+}
+
+int16_t abs(int16_t v) {
+    return v >= 0 ? v : -v;
+}
+
 void makeRgbPalette(uint8_t rbits, uint8_t gbits, uint8_t bbits) {
     uint8_t sr = DACBITS - (redBits = rbits);
     uint8_t sg = DACBITS - (grnBits = gbits);

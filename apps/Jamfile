@@ -2,7 +2,9 @@ SubDir TOP apps ;
 if $(TARGET) = "coco3" {
 	SubInclude TOP apps cocoray ;
 	SubInclude TOP apps field ;
+	SubInclude TOP apps lines ;
 	SubInclude TOP apps palette ;
+	SubInclude TOP apps rects ;
 	SubInclude TOP apps mandgfx ;
 	#SubInclude TOP apps microray ;
 }

@@ -1,0 +1,14 @@
+SubDir TOP apps lines ;
+
+SubDirHdrs $(TOP) lib cc3 ;
+SubDirHdrs $(TOP) lib os ;
+
+CoCoDisk lines.dsk : LINES.BIN ;
+
+LINKLIBS on LINES.BIN  = -lcc3 -los -lray ; 
+Depends LINES.BIN : libos.a libcc3.a ;
+
+Main LINES.BIN :
+	lines.c
+	;
+

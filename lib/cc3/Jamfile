@@ -6,6 +6,8 @@ SubDirHdrs $(TOP) lib ray ;
 Library libcc3.a : 
 	cc3gfx.c
 	cc3hw.c
+	cc3line.c
+	cc3rect.c
 	cc3util.c
 	fmemset.asm
 	fastmult.asm

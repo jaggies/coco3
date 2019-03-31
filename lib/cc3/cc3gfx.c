@@ -43,7 +43,8 @@ static void setPixels2bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 static void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 
 void (*setPixel)(uint16_t x, uint16_t y, uint8_t clr);
-void (*setPixels)(uint16_t x, uint16_t y, uint8_t clr, uint16_t n);
+void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
+void (*fillPixels)(uint16_t x, uint16_t y, uint8_t clr, uint16_t n);
 
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
 uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
@@ -60,9 +61,13 @@ uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
 int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     uint8_t vrr = 0; // video resolution register setting when done
     switch (depth) {
-        case 1: bpp = depth; vrr |= CRES_1BPP; setPixel = setPixel1bpp; setPixels = setPixels1bpp;break;
-        case 2: bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; setPixels = setPixels2bpp; break;
-        case 4: bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; setPixels = setPixels4bpp; break;
+        case 1: bpp = depth; vrr |= CRES_1BPP; setPixel = setPixel1bpp; setPixels = setPixels1bpp;
+        fillPixels = fillPixels1bpp;
+        break;
+        case 2: bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; setPixels = setPixels2bpp;
+        fillPixels = fillPixels2bpp; break;
+        case 4: bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; setPixels = setPixels4bpp;
+        fillPixels = fillPixels4bpp; break;
         default: return 0;
     }
     switch (xres) {
@@ -94,23 +99,28 @@ void setPalette(uint8_t index, uint8_t r, uint8_t g, uint8_t b) {
     *(PALETTE_BASE+(index&0xf)) = toPalette(r, g, b);
 }
 
-void clear(uint8_t color) {
+// Pack color into a byte such that all pixels are set to the same color
+uint8_t packColor(uint8_t color) {
     uint8_t pixels;
     switch (bpp) {
-        case 1: pixels = color & 1;
-                pixels |= pixels << 1;
-                pixels |= pixels << 2;
-                pixels |= pixels << 4;
-                break;
-        case 2: pixels = color & 3;
-                pixels |= pixels << 2;
-                pixels |= pixels << 4;
-                break;
-        case 4: pixels = color & 0x0f;
-                pixels |= pixels << 4;
-                break;
+        case 1:
+            pixels = (color & 1) ? 0xff : 0x00;
+        break;
+        case 2:
+            pixels = color & 3;
+            pixels |= pixels << 2;
+            pixels |= pixels << 4;
+        break;
+        case 4:
+            pixels = color & 0x0f;
+            pixels |= pixels << 4;
+        break;
     }
-    memset24(gfxBase, pixels, bufferSizeBytes);
+    return pixels;
+}
+
+void clear(uint8_t color) {
+    memset24(gfxBase, packColor(color), bufferSizeBytes);
 }
 
 void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr) {
@@ -148,15 +158,42 @@ void setPixel4bpp(uint16_t x, uint16_t y, uint8_t clr) {
 }
 
 void setPixels1bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
+    assert((x & 3) == 0);
     memcpy24(gfxBase + (x >> 3) + y * bytesPerRow, clr, n);
 }
 
 void setPixels2bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
+    assert((x & 3) == 0);
     memcpy24(gfxBase + (x >> 2) + y * bytesPerRow, clr, n);
 }
 
 void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
+    assert((x & 1) == 0);
     memcpy24(gfxBase + (x >> 1) + y * bytesPerRow, clr, n);
+}
+
+void fillPixels1bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
+    // TODO: handle unaligned first and last pixels!
+    memset24(gfxBase + (x >> 3) + y * bytesPerRow, packColor(clr), n >> 3);
+}
+
+void fillPixels2bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
+    // TODO: handle unaligned first and last pixels!
+    memset24(gfxBase + (x >> 2) + y * bytesPerRow, packColor(clr), n >> 2);
+}
+
+void fillPixels4bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
+    if (x & 1) {
+        setPixel(x, y, clr); // TODO: avoid this extra calculation by re-using addr below
+        x++;
+        n--;
+    }
+    if (n & 1) {
+        setPixel(x+n-1, y, clr); // TODO: avoid this extra calculation by re-using addr below
+        n--;
+    }
+    uint32_t addr = gfxBase + (x >> 1) + y * bytesPerRow;
+    memset24(addr, packColor(clr), n >> 1);
 }
 
 uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {

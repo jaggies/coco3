@@ -7,6 +7,7 @@
 
 #include "os.h"
 #include "cc3hw.h"
+#include "cc3util.h"
 
 uint8_t *FIRQ_VECTOR = * (uint8_t **) 0xFFF6;
 uint8_t *IRQ_VECTOR = * (uint8_t **) 0xFFF8;
@@ -49,10 +50,6 @@ void setIrq(interrupt void (*fptr)()) {
 void setNMI(interrupt void (*fptr)()) {
     *NMI_VECTOR = 0x7E;  // extended JMP extension
     *(void **) (NMI_VECTOR + 1) = (void *) fptr;
-}
-
-uint16_t min(uint16_t a, uint16_t b) {
-    return a < b ? a : b;
 }
 
 void memset1(uint32_t addr, uint8_t value, uint8_t mask) {
