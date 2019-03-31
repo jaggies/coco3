@@ -1,4 +1,4 @@
-TARGET = coco3 ;
+#TARGET = coco3 ;
 
 OPTIM = -g -O1 ;
 #DEFINES += DEBUG ;
@@ -19,6 +19,8 @@ if $(TARGET) = "coco3" {
 	CCFLAGS += --coco ; # Coco .bin file
 	#CCFLAGS += -S ;
 	#CCFLAGS += --os9 ; # Coco OS9 executable
+	# Oops, emulators have faulty implementation of HD6309 MULD instruction
+	DEFINES += MULD_WAR ; 
 } else {
 	TARGET = $(OS) ;
 }

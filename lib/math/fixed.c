@@ -42,7 +42,11 @@ fixed clamp(fixed value, fixed min, fixed max) {
 
 // multiplication with rounding
 fixed fmult(fixed a, fixed b) {
+#ifdef MULD_WAR // Oops. Emulators treat this as *unsigned* multiply :/
+    return (fixed) (((int32_t)a * (int32_t)b + (int32_t)c_half) >> fraction);
+#else
     return (fixed) ((fastmult(a,b) + c_half) >> fraction);
+#endif
 }
 
 fixed fdiv(fixed a, fixed b) {
