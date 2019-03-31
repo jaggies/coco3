@@ -19,10 +19,10 @@ int main(int argc, char**argv)
 	printf("pow(%f,%f)=%f\n", x, y, pow(x,y));
 
 
-	float a = 1.0;
+	float a = 1.0f;
 	for (int i = 0; i < 129; i++) {
-		printf("%g %08x\n", a, *(int*)&a);
-		a *= 2.0;
+		printf("%f %08x\n", a, *(int*)&a);
+		a *= 2.0f;
 	}
 
 	return 0;
