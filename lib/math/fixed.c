@@ -9,8 +9,7 @@
 #include "cc3hw.h"
 #include "fixed.h"
 
-long mask = ((1 << fraction) - 1);
-
+const fixed c_fraction_mask = ((1 << fraction) - 1);
 const fixed c_zero = 0;
 const fixed c_half = 1 << (fraction - 1);
 const fixed c_one = 1 << fraction;
