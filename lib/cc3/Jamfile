@@ -9,6 +9,7 @@ Library libcc3.a :
 	cc3line.c
 	cc3rect.c
 	cc3util.c
+	dither.c
 	fmemset.asm
 	fastmult.asm
 	;

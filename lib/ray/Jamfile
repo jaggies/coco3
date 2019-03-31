@@ -3,7 +3,6 @@ SubDirHdrs $(TOP) lib os ;
 SubDirHdrs $(TOP) lib math ;
 
 Library libray.a : 
-	dither.c
 	icamera.c
 	ihit.c
 	ilight.c
