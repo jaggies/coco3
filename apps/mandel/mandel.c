@@ -1,8 +1,6 @@
 #include "os.h"
 #include "fixed.h"
 
-typedef int16_t fract;
-
 #define XRES 78
 #define YRES 24
 
