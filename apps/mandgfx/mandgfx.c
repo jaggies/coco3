@@ -1,74 +1,56 @@
-#include <cmoc.h>
-#include <coco.h>
+#include "os.h"
+#include "fixed.h"
+#include "cc3hw.h"
 #include "cc3gfx.h"
 
-typedef int16_t fract;
-
-static fract fraction = 10;
-static fract mask = (((fract)(1) << fraction) - 1);
-static fract two = ((fract)(2) << fraction);
-static fract four = ((fract)(4) << fraction);
-
-fract xres = 320;
-fract yres = 192;
-
-int maxCount = 64; // max printable ASCII letter = 127
-
-float toFloat(fract value) {
-    return (float) (value >> fraction) + (float)(value & mask) / mask;
-}
-
-fract fmult(fract a, fract b) {
-    long long x = a;
-    long long y = b;
-    return (fract) (x * y >> fraction);
-}
-
-fract toFract(float value) {
-    return (fract) (value * (1 << fraction));
-}
+#define XRES 320
+#define YRES 200
+#define DEPTH 4
+#define MAXCOUNT 64
 
 void doMandleInt(float xmin, float xmax, float ymin, float ymax) {
-    fract cr_min = toFract(xmin);
-    fract cr_max = toFract(xmax);
-    fract ci_min = toFract(ymin);
-    fract ci_max = toFract(ymax);
+    const fixed cr_min = fromFloat(xmin);
+    const fixed cr_max = fromFloat(xmax);
+    const fixed ci_min = fromFloat(ymin);
+    const fixed ci_max = fromFloat(ymax);
 
-    fract cr_delta = (cr_max - cr_min);
-    fract ci_delta = (ci_max - ci_min);
+    const fixed cr_delta = (cr_max - cr_min) / (XRES-1);
+    const fixed ci_delta = (ci_max - ci_min) / (YRES-1);
 
-    fract ci = ci_min;
-    for (int j = 0; j < yres; j++) {
-		fract ci = ci_min + ci_delta * j / (yres-1);
-        for (int i = 0; i < xres; i++) {
-			fract cr = cr_min + cr_delta * i / (xres-1);
-            fract zr = 0;
-            fract zi = 0;
+    const fixed c_four = c_two << 1;
+
+    fixed ci = ci_min;
+    for (int j = 0; j < YRES; j++) {
+		fixed cr = cr_min;
+        for (int i = 0; i < XRES; i++) {
+            fixed zr = 0;
+            fixed zi = 0;
+            fixed zr2 = 0; // initial condition = fmult(zr, zr) = 0
+            fixed zi2 = 0; // initial condition = fmult(zi, zr) = 0
             uint8_t count = 0;
-            fract dist;
-            fract zr2 = 0; // initial condition = fmult(zr, zr) = 0
-            fract zi2 = 0; // initial condition = fmult(zi, zr) = 0
             do {
                 // z = z^2 + c
-                fract tr = zr2 - zi2 + cr;
-                fract ti = fmult(zr << 1, zi) + ci;
+                fixed tr = zr2 - zi2 + cr;
+                fixed ti = fmult(zr << 1, zi) + ci;
                 zr = tr; zi = ti;
                 zr2 = fmult(zr, zr);
                 zi2 = fmult(zi, zi);
-            } while (count++ < maxCount && (zr2 + zi2) < four);
-			hset(i, j, (count-1)%16);
+            } while (count++ < MAXCOUNT && (zr2 + zi2) < c_four);
+			setPixel(i, j, (count-1) & 0x0f);
+			cr += cr_delta;
         }
+        ci += ci_delta;
     }
 }
 
 void doMandelFloat(float xmin, float xmax, float ymin, float ymax) {
-    float cr_delta = (xmax - xmin)/(xres-1);
-    float ci_delta = (ymax - ymin)/(yres-1);
+    float cr_delta = (xmax - xmin)/(XRES-1);
+    float ci_delta = (ymax - ymin)/(YRES-1);
 
     float ci = ymin;
-    for (int j = 0; j < yres; j++, ci += ci_delta) {
+    for (int j = 0; j < YRES; j++, ci += ci_delta) {
         float cr = xmin;
-        for (int i = 0; i < xres; i++, cr += cr_delta) {
+        for (int i = 0; i < XRES; i++, cr += cr_delta) {
             float zr = 0;
             float zi = 0;
             uint8_t count = 0;
@@ -79,16 +61,9 @@ void doMandelFloat(float xmin, float xmax, float ymin, float ymax) {
                 float ti = 2.0f * zr * zi;
                 zr = tr + cr;
                 zi = ti + ci;
-            } while ((count++ < maxCount) && (zr*zr + zi*zi) < 4.0f);
-			hset(i, j, (count-1)%16);
+            } while ((count++ < MAXCOUNT) && (zr*zr + zi*zi) < 4.0f);
+            setPixel(i, j, (count-1)%16);
         }
-    }
-}
-
-// Enables 6309 Native mode for higher speed
-void set6309Native() {
-    asm {
-        ldmd  #$01
     }
 }
 
@@ -97,13 +72,14 @@ int main()
 	set6309Native();
 	initCoCoSupport();
 	setHighSpeed(1);
+	setMode(XRES, YRES, DEPTH);
+	clear(0x7);
 	for (uint8_t i = 0; i < 16; i++) {
-		uint8_t red = 3*(i >> 3);
+		uint8_t blu = i & 1 ? 3 : 0;
 		uint8_t grn = (i >> 1) & 3;
-		uint8_t blu = 3*(i & 1);
-		paletteRGB(i, red, grn, blu);
+		uint8_t red = (i >> 3) & 1 ? 3 : 0;
+		setPalette(i, red, grn, blu);
 	}
-    hscreen(HS320x192x16);
 	doMandleInt(-2.0f, 1.0f, -1.25f, 1.25f);
     doMandelFloat(-2.0f, 1.0f, -1.25f, 1.25f);
 	return 0;

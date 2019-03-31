@@ -1,10 +1,14 @@
 SubDir TOP apps mandgfx ;
 SubDirHdrs $(TOP) lib cc3 ;
-SubDirHdrs $(TOP) lib os ;
 SubDirHdrs $(TOP) lib coco ;
+SubDirHdrs $(TOP) lib math ;
+SubDirHdrs $(TOP) lib os ;
 SubDirHdrs $(TOP) lib ray ;
 
 CoCoDisk mandgfx.dsk : MANDGFX.BIN ;
+
+Depends MANDGFX.BIN : libcc3.a libos.a ;
+LINKLIBS on MANDGFX.BIN = -lcc3 -los ;
 
 Main MANDGFX.BIN :
 	mandgfx.c
