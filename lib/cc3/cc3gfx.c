@@ -124,36 +124,28 @@ void clear(uint8_t color) {
 }
 
 void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr) {
-    uint8_t mask;
-    uint8_t bit;
-    uint8_t shift;
     uint16_t byteOffset;
-    bit = ~(uint8_t)x & 7; // pixels fill in from MSB right
+    uint8_t bit = ~(uint8_t)x & 7; // pixels fill in from MSB right
     clr = (clr & 1) << bit;
-    mask = ((uint8_t)1 << bit);
+    uint8_t mask = ((uint8_t)1 << bit);
     byteOffset = (x >> 3) + y * bytesPerRow;
     memset1(gfxBase + byteOffset, clr, mask);
 }
 
 void setPixel2bpp(uint16_t x, uint16_t y, uint8_t clr) {
-    uint8_t mask;
-    uint8_t bit;
-    uint8_t shift;
     uint16_t byteOffset;
-    bit = ~(uint8_t)x & 3; // pixels fill in from MSB right
-    shift = bit << 1;
+    uint8_t bit = ~(uint8_t)x & 3; // pixels fill in from MSB right
+    uint8_t shift = bit << 1;
     clr = (clr & 0x3) << shift;
-    mask = (uint8_t) 0x3 << shift;
+    uint8_t mask = (uint8_t) 0x3 << shift;
     byteOffset = (x >> 2) + y * bytesPerRow;
     memset1(gfxBase + byteOffset, clr, mask);
 }
 
 void setPixel4bpp(uint16_t x, uint16_t y, uint8_t clr) {
-    uint8_t mask;
-    uint16_t byteOffset;
-    mask = x & 1 ? 0x0f : 0xf0;
+    uint8_t mask = x & 1 ? 0x0f : 0xf0;
     clr = x & 1 ? (clr & 0x0f) : ((clr & 0x0f) << 4);
-    byteOffset = (x >> 1) + y * bytesPerRow;
+    uint16_t byteOffset = (x >> 1) + y * bytesPerRow;
     memset1(gfxBase + byteOffset, clr, mask);
 }
 
