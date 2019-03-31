@@ -42,6 +42,6 @@ extern void setIrq(interrupt void (*fptr)());
 extern void setNMI(interrupt void (*fptr)());
 
 extern uint8_t* fmemset(uint8_t*, uint8_t, size_t);
-extern uint32_t fastmult(uint16_t a, uint16_t b);
+extern int32_t fastmult(int16_t a, int16_t b);
 
 #endif /* LIB_COCO3_CC3HW_H_ */

@@ -1,6 +1,7 @@
 SubDir TOP apps mandel ;
 SubDirHdrs $(TOP) lib os ;
 SubDirHdrs $(TOP) lib coco ;
+SubDirHdrs $(TOP) lib math ;
 SubDirHdrs $(TOP) lib ray ;
 
 if $(TARGET) = "coco3" {
@@ -9,6 +10,10 @@ if $(TARGET) = "coco3" {
 } else {
     MANDEL = mandel ;
 }
+
+Depends $(MANDEL) : libos.a libcc3.a ;
+
+LINKLIBS on $(MANDEL) = -los -lcc3 ;
 
 Main $(MANDEL) :
 	mandel.c
