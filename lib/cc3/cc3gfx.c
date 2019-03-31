@@ -28,12 +28,7 @@
 #define HRES4 (4 << 2) // 512x1bpp or 256x2bpp
 #define HRES2 (2 << 2) // 256x1bpp
 
-static uint16_t widthPixels = 0;
-static uint16_t heightPixels = 0;
-static uint8_t bytesPerRow = 0; // TODO: use 16-bit math if 256-color modes ever are a thing
-static uint16_t bufferSizeBytes = 0;
-static uint8_t bpp = 0;
-static uint32_t gfxBase;
+GfxState gfx;
 
 static void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr);
 static void setPixel2bpp(uint16_t x, uint16_t y, uint8_t clr);
@@ -61,30 +56,30 @@ uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
 int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     uint8_t vrr = 0; // video resolution register setting when done
     switch (depth) {
-        case 1: bpp = depth; vrr |= CRES_1BPP; setPixel = setPixel1bpp; setPixels = setPixels1bpp;
+        case 1: gfx.bpp = depth; vrr |= CRES_1BPP; setPixel = setPixel1bpp; setPixels = setPixels1bpp;
         fillPixels = fillPixels1bpp;
         break;
-        case 2: bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; setPixels = setPixels2bpp;
+        case 2: gfx.bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; setPixels = setPixels2bpp;
         fillPixels = fillPixels2bpp; break;
-        case 4: bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; setPixels = setPixels4bpp;
+        case 4: gfx.bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; setPixels = setPixels4bpp;
         fillPixels = fillPixels4bpp; break;
         default: return 0;
     }
     switch (xres) {
-        case 160: widthPixels = 160; vrr |= (depth == 4 ? HRES6 : 0); break;
-        case 256: widthPixels = 256; vrr |= (depth == 4 ? HRES6 : depth == 2 ? HRES4 : depth == 1 ? HRES2 : 0); break;
-        case 320: widthPixels = 320; vrr |= (depth == 4 ? HRES7 : depth == 2 ? HRES5 : 0); break;
-        case 640: widthPixels = 640; vrr |= (depth == 2 ? HRES7 : depth == 1 ? HRES5 : 0); break;
+        case 160: gfx.width_pixels = 160; vrr |= (depth == 4 ? HRES6 : 0); break;
+        case 256: gfx.width_pixels = 256; vrr |= (depth == 4 ? HRES6 : depth == 2 ? HRES4 : depth == 1 ? HRES2 : 0); break;
+        case 320: gfx.width_pixels = 320; vrr |= (depth == 4 ? HRES7 : depth == 2 ? HRES5 : 0); break;
+        case 640: gfx.width_pixels = 640; vrr |= (depth == 2 ? HRES7 : depth == 1 ? HRES5 : 0); break;
         default: return 0;
     }
     switch (yres) {
-        case 192: heightPixels = 192; vrr |= LPF_192; break;
-        case 200: heightPixels = 200; vrr |= LPF_200; break;
-        case 225: heightPixels = 225; vrr |= LPF_225; break;
+        case 192: gfx.height_pixels = 192; vrr |= LPF_192; break;
+        case 200: gfx.height_pixels = 200; vrr |= LPF_200; break;
+        case 225: gfx.height_pixels = 225; vrr |= LPF_225; break;
         default: return 0;
     }
-    bytesPerRow = (uint8_t) (xres * bpp >> 3);
-    bufferSizeBytes = bytesPerRow * yres;
+    gfx.bytes_per_row = (uint8_t) (xres * gfx.bpp >> 3);
+    gfx.buffer_size_bytes = gfx.bytes_per_row * yres;
     *VIDEO_RES = vrr;
     *VIDEO_MODE = 0x80; // graphics mode, 60Hz
     *INIT0 = 0x4c; // Coco3 mode & MMU enabled
@@ -102,7 +97,7 @@ void setPalette(uint8_t index, uint8_t r, uint8_t g, uint8_t b) {
 // Pack color into a byte such that all pixels are set to the same color
 uint8_t packColor(uint8_t color) {
     uint8_t pixels;
-    switch (bpp) {
+    switch (gfx.bpp) {
         case 1:
             pixels = (color & 1) ? 0xff : 0x00;
         break;
@@ -120,7 +115,7 @@ uint8_t packColor(uint8_t color) {
 }
 
 void clear(uint8_t color) {
-    memset24(gfxBase, packColor(color), bufferSizeBytes);
+    memset24(gfx.base_addr, packColor(color), gfx.buffer_size_bytes);
 }
 
 void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr) {
@@ -128,8 +123,8 @@ void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr) {
     uint8_t bit = ~(uint8_t)x & 7; // pixels fill in from MSB right
     clr = (clr & 1) << bit;
     uint8_t mask = ((uint8_t)1 << bit);
-    byteOffset = (x >> 3) + y * bytesPerRow;
-    memset1(gfxBase + byteOffset, clr, mask);
+    byteOffset = (x >> 3) + y * gfx.bytes_per_row;
+    memset1(gfx.base_addr + byteOffset, clr, mask);
 }
 
 void setPixel2bpp(uint16_t x, uint16_t y, uint8_t clr) {
@@ -138,40 +133,40 @@ void setPixel2bpp(uint16_t x, uint16_t y, uint8_t clr) {
     uint8_t shift = bit << 1;
     clr = (clr & 0x3) << shift;
     uint8_t mask = (uint8_t) 0x3 << shift;
-    byteOffset = (x >> 2) + y * bytesPerRow;
-    memset1(gfxBase + byteOffset, clr, mask);
+    byteOffset = (x >> 2) + y * gfx.bytes_per_row;
+    memset1(gfx.base_addr + byteOffset, clr, mask);
 }
 
 void setPixel4bpp(uint16_t x, uint16_t y, uint8_t clr) {
     uint8_t mask = x & 1 ? 0x0f : 0xf0;
     clr = x & 1 ? (clr & 0x0f) : ((clr & 0x0f) << 4);
-    uint16_t byteOffset = (x >> 1) + y * bytesPerRow;
-    memset1(gfxBase + byteOffset, clr, mask);
+    uint16_t byteOffset = (x >> 1) + y * gfx.bytes_per_row;
+    memset1(gfx.base_addr + byteOffset, clr, mask);
 }
 
 void setPixels1bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
     assert((x & 3) == 0);
-    memcpy24(gfxBase + (x >> 3) + y * bytesPerRow, clr, n);
+    memcpy24(gfx.base_addr + (x >> 3) + y * gfx.bytes_per_row, clr, n);
 }
 
 void setPixels2bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
     assert((x & 3) == 0);
-    memcpy24(gfxBase + (x >> 2) + y * bytesPerRow, clr, n);
+    memcpy24(gfx.base_addr + (x >> 2) + y * gfx.bytes_per_row, clr, n);
 }
 
 void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
     assert((x & 1) == 0);
-    memcpy24(gfxBase + (x >> 1) + y * bytesPerRow, clr, n);
+    memcpy24(gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row, clr, n);
 }
 
 void fillPixels1bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
     // TODO: handle unaligned first and last pixels!
-    memset24(gfxBase + (x >> 3) + y * bytesPerRow, packColor(clr), n >> 3);
+    memset24(gfx.base_addr + (x >> 3) + y * gfx.bytes_per_row, packColor(clr), n >> 3);
 }
 
 void fillPixels2bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
     // TODO: handle unaligned first and last pixels!
-    memset24(gfxBase + (x >> 2) + y * bytesPerRow, packColor(clr), n >> 2);
+    memset24(gfx.base_addr + (x >> 2) + y * gfx.bytes_per_row, packColor(clr), n >> 2);
 }
 
 void fillPixels4bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
@@ -184,13 +179,13 @@ void fillPixels4bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
         setPixel(x+n-1, y, clr); // TODO: avoid this extra calculation by re-using addr below
         n--;
     }
-    uint32_t addr = gfxBase + (x >> 1) + y * bytesPerRow;
+    uint32_t addr = gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row;
     memset24(addr, packColor(clr), n >> 1);
 }
 
 uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {
     uint16_t count;
-    switch (bpp) {
+    switch (gfx.bpp) {
         case 1:
             count = n >> 3;
             while (n) {
@@ -239,7 +234,7 @@ uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {
 }
 
 void setGraphicsDrawBase(uint32_t base) {
-    gfxBase = base;
+    gfx.base_addr = base;
 }
 
 void setGraphicsViewBase(uint32_t base) {
@@ -247,17 +242,17 @@ void setGraphicsViewBase(uint32_t base) {
 }
 
 uint16_t getWidth() {
-    return widthPixels;
+    return gfx.width_pixels;
 }
 
 uint16_t getHeight() {
-    return heightPixels;
+    return gfx.height_pixels;
 }
 
 uint16_t getBytesPerRow() {
-    return bytesPerRow;
+    return gfx.bytes_per_row;
 }
 
 uint16_t getFrameSize() {
-    return bufferSizeBytes;
+    return gfx.buffer_size_bytes;
 }

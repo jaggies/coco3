@@ -9,8 +9,6 @@
 #include "cc3hw.h"
 #include "cc3gfx.h"
 
-const char GFXMODE = HS320x192x16;
-
 #define WIDTH 320
 #define HEIGHT 200
 #define VBLANK (262 - HEIGHT)
