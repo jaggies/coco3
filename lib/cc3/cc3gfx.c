@@ -44,12 +44,12 @@ void (*fillPixels)(uint16_t x, uint16_t y, uint8_t clr, uint16_t n);
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
 uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
     uint8_t result = 0;
-    result = (result | ((r >> 1) & 1)) << 1;
-    result = (result | ((g >> 1) & 1)) << 1;
-    result = (result | ((b >> 1) & 1)) << 1;
-    result = (result | (r & 1)) << 1;
-    result = (result | (g & 1)) << 1;
-    result = (result | (b & 1));
+    result |= (r & 2) << 4;
+    result |= (g & 2) << 3;
+    result |= (b & 2) << 2;
+    result |= (r & 1) << 2;
+    result |= (g & 1) << 1;
+    result |= (b & 1);
     return result;
 }
 

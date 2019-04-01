@@ -6,12 +6,16 @@ if $(TARGET) = "coco3" {
 	ObjectCcFlags main.o : -DCOCO3 ;
 	PRINTF = PRINTF.BIN ;
 	FLOAT = FLOAT.BIN ;
+	FIXED24 = FIXED24.BIN ;
 	CoCoDisk float.dsk : $(FLOAT) ;
 	CoCoDisk printf.dsk : $(PRINTF) ;
+	#CoCoDisk fixed24.dsk : $(FIXED24) ;
 } else {
 	PRINTF = printf ;
 	FLOAT = float ;
-	Main memset24 : memset24.c ;
+	FIXED24 = fixed24 ;
+	Main $(FIXED24) : fixed24.c ;
+	Main $(MEMSET24) : memset24.c ;
 }
 
 DEPENDS $(PRINTF) : libcc3.a libos.a ;

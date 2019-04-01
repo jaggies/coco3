@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include "cstring.h"
 
 #if 0 // defined in ECB
 size_t strlen(const char *str) {

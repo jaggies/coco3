@@ -55,10 +55,9 @@ void setNMI(interrupt void (*fptr)()) {
 void memset1(uint32_t addr, uint8_t value, uint8_t mask) {
     disableInterrupts();
     const uint8_t oldMMU = *PAGE;
-    *PAGE = (uint8_t)((*(struct QuickShift8_16_8*) &addr).b >> 5);
-    uint8_t* ptr = (uint8_t*) MEMWINDOW + ((*(struct SplitWord*) &addr).lower & 0x1fff);
-    *ptr &= ~mask;
-    *ptr |= value;
+    *PAGE = (uint8_t)(addr >> 13);
+    uint8_t* ptr = (uint8_t*) MEMWINDOW + (addr & 0x1fff);
+    *ptr = (*ptr & (~mask)) | value;
     *PAGE = oldMMU;
     enableInterrupts();
 }

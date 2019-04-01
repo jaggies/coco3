@@ -9,7 +9,7 @@
 #define LIB_COCO3_CC3GFX_H_
 
 typedef struct _GfxState {
-    uint16_t width_pixels;
+    int16_t width_pixels;
     uint16_t height_pixels;
     uint8_t bytes_per_row; // TODO: use 16-bit math if 256-color modes ever are a thing
     uint16_t buffer_size_bytes;
