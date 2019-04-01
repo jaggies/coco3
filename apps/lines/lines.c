@@ -18,11 +18,11 @@
 #define SIZE 50
 
 void simpleRGB() {
-    for (uint8_t i = 0; i < 4; i++) {
-        paletteRGB(i, i, 0, 0); // red
-        paletteRGB(i+4, 0, i, 0); // green
-        paletteRGB(i+8, 0, 0, i); // blue
-        paletteRGB(i+12, i, i, i); // white
+    for (uint8_t i = 0; i < 16; i++) {
+        uint8_t red = (i & 1) ? 3 : 0;
+        uint8_t grn = (i >> 1) & 3;
+        uint8_t blu = ((i >> 3) & 1) ? 3 : 0;
+        setPalette(i, red, grn, blu);
     }
 }
 
@@ -41,12 +41,13 @@ int main(int argc, char** argv) {
     const int height = getHeight();
     const int width = getWidth();
 
-    rect(WIDTH/2-SIZE, HEIGHT/2-SIZE, WIDTH/2 + SIZE, HEIGHT/2 + SIZE, 0x0e, false);
+    rect(WIDTH/2-SIZE, HEIGHT/2-SIZE, WIDTH/2 + SIZE, HEIGHT/2 + SIZE, 0x0f, false);
 
     for (int i = 0; i < 4; i++) {
+        uint8_t clrs[] = { 0x01, 0x06, 0x08, 0x0f };
         int x = WIDTH/2 + (i & 1 ? -SIZE : SIZE);
         int y = HEIGHT/2 + ((i>>1) & 1 ? -SIZE : SIZE);
-        line(WIDTH/2, HEIGHT/2, x, y, (uint8_t) (i * 4 + 3));
+        line(WIDTH/2, HEIGHT/2, x, y, clrs[i]);
     }
 
     sleep(4);

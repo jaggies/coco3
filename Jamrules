@@ -1,4 +1,4 @@
-#TARGET = coco3 ;
+TARGET = coco3 ;
 
 OPTIM = -g -O1 ;
 #DEFINES += DEBUG ;
