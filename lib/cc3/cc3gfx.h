@@ -15,6 +15,10 @@ typedef struct _GfxState {
     uint16_t buffer_size_bytes;
     uint8_t bpp;
     uint32_t base_addr;
+    int16_t base_y_offset;
+    int16_t rasterX;
+    int16_t rasterY;
+    uint8_t color;
 } GfxState;
 
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
