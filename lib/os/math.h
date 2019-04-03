@@ -19,6 +19,8 @@ extern float fabsf(float x);
 extern float pow(float x, float y);
 extern float round(float x);
 extern float powf(float x, float y);
+extern float sin(float x);
+extern float cos(float x);
 #else 
 #include <math.h>
 #endif

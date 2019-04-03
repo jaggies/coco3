@@ -1,5 +1,7 @@
 SubDir TOP lib os ;
 
+SubDirHdrs $(TOP) lib math ;
+
 if $(TARGET) = "coco3" {
     Library libos.a : hostcompat.c math.c cstdlib.c ; # string.c	;
 } else {

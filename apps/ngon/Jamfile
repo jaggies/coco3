@@ -1,0 +1,14 @@
+SubDir TOP apps ngon ;
+
+SubDirHdrs $(TOP) lib cc3 ;
+SubDirHdrs $(TOP) lib os ;
+
+CoCoDisk ngon.dsk : NGON.BIN ;
+
+LINKLIBS on NGON.BIN  = -lcc3 -los -lray ; 
+Depends NGON.BIN : libos.a libcc3.a ;
+
+Main NGON.BIN :
+	ngon.c
+	;
+

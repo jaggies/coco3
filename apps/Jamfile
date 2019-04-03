@@ -3,6 +3,7 @@ if $(TARGET) = "coco3" {
 	SubInclude TOP apps cocoray ;
 	SubInclude TOP apps field ;
 	SubInclude TOP apps lines ;
+	SubInclude TOP apps ngon ;
 	SubInclude TOP apps palette ;
 	SubInclude TOP apps rects ;
 	SubInclude TOP apps mandgfx ;

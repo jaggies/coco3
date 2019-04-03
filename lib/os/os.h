@@ -7,6 +7,7 @@
 #include <coco.h>
 #include <cmoc.h>
 #include "cstdlib.h"
+#include "math.h"
 #else
 #include <stdio.h>
 #include <stdlib.h>
