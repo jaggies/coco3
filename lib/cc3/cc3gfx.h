@@ -16,6 +16,7 @@ typedef struct _GfxState {
     uint8_t bpp;
     uint32_t base_addr;
     int16_t base_y_offset;
+    uint8_t pixel_mask; // current pixel masks (varies with position)
     int16_t rasterX;
     int16_t rasterY;
     uint8_t color;

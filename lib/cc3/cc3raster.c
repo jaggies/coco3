@@ -15,6 +15,7 @@ void rasterPos(int x, int y) {
     gfx.base_y_offset = y * gfx.bytes_per_row;
     gfx.rasterX = x;
     gfx.rasterY = y;
+    gfx.pixel_mask = x & 1 ? 0x0f : 0xf0; // TODO: other depths
 }
 
 void rasterColor(uint8_t color) {
@@ -28,22 +29,21 @@ void rasterSet() {
     const uint32_t addr = gfx.base_addr + offset;
     const uint8_t oldPage = *PAGE_SELECT;
 
-    // TODO: Handle other bit depths
-    uint8_t mask = gfx.rasterX & 1 ? 0x0f : 0xf0;
-
-    *PAGE_SELECT = (uint8_t) (addr >> 13);
+    *PAGE_SELECT = (uint8_t) (addr >> PAGE_BITS);
     uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (offset & 0x1fff);
-    *ptr = (*ptr & (~mask)) | (gfx.color & mask);
+    *ptr = (*ptr & (~gfx.pixel_mask)) | (gfx.color & gfx.pixel_mask);
     *PAGE_SELECT = oldPage;
     enableInterrupts();
 }
 
 void rasterIncX() {
     gfx.rasterX++;
+    gfx.pixel_mask = ~gfx.pixel_mask; // TODO: Handle other depths
 }
 
 void rasterDecX() {
     gfx.rasterX--;
+    gfx.pixel_mask = ~gfx.pixel_mask; // TODO: Handle other depths
 }
 
 void rasterIncY() {
