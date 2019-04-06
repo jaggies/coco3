@@ -13,7 +13,7 @@ if $(TARGET) = "coco3" {
 	CC = cmoc ;
 	#LINK = lwlink ;
 
-	OPTIM = ;
+	OPTIM = -O2 ;
 	#CCFLAGS = --verbose ;
 	CCFLAGS += -DCOCO -Dconst= ;
 	CCFLAGS += --coco ; # Coco .bin file

@@ -25,11 +25,11 @@ void rasterColor(uint8_t color) {
 
 void rasterSet() {
     disableInterrupts();
-    const uint16_t offset = gfx.base_y_offset + (gfx.rasterX >> 1);
+    const uint16_t offset = gfx.base_y_offset + (gfx.rasterX >> 1); // TODO: other bit depths
     const uint32_t addr = gfx.base_addr + offset;
     const uint8_t oldPage = *PAGE_SELECT;
 
-    *PAGE_SELECT = (uint8_t) (addr >> PAGE_BITS);
+    *PAGE_SELECT = gfx.base_page + (uint8_t) (offset >> PAGE_BITS) ;
     uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (offset & 0x1fff);
     *ptr = (*ptr & (~gfx.pixel_mask)) | (gfx.color & gfx.pixel_mask);
     *PAGE_SELECT = oldPage;
