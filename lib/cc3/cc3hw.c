@@ -13,18 +13,6 @@ uint8_t *FIRQ_VECTOR = * (uint8_t **) 0xFFF6;
 uint8_t *IRQ_VECTOR = * (uint8_t **) 0xFFF8;
 uint8_t *NMI_VECTOR = * (uint8_t **) 0xFFFC;
 
-// These allow faster manipulation of 32-bit addresses
-struct QuickShift8_16_8 {
-    uint8_t a;
-    uint16_t b;
-    uint8_t c;
-};
-
-struct SplitWord {
-    uint16_t upper;
-    uint16_t lower;
-};
-
 // Enables 6309 Native mode for higher performance
 void set6309Native() {
     asm {

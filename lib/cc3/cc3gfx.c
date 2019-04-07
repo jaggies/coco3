@@ -234,6 +234,7 @@ uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {
 }
 
 void setGraphicsDrawBase(uint32_t base) {
+    assert((base & 0x1fff) == 0); // must be on a page boundary
     gfx.base_addr = base;
     gfx.base_page = (uint8_t) (base >> PAGE_BITS) & (uint8_t) 0xff;
 }

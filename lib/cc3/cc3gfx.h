@@ -56,10 +56,10 @@ extern void (*fillPixels)(uint16_t x, uint16_t y, uint8_t clr, uint16_t n);
 // Returns number of bytes written to output
 extern uint16_t packPixels(uint8_t* const in, uint8_t * out, uint16_t n);
 
-// Sets the graphics library to draw at the given base address
+// Sets the graphics library to draw at the given base address. Must be on an MMU page boundary.
 extern void setGraphicsDrawBase(uint32_t base);
 
-// Sets the graphics library to display at the given base address
+// Sets the graphics library to display at the given base address.
 extern void setGraphicsViewBase(uint32_t base);
 
 // Gets the pixel value at location (x, y)
