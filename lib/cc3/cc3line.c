@@ -24,14 +24,13 @@ void line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint8_t clr) {
     int count = max(dx, dy);
     int16_t err = dx - dy;
     disableInterrupts();
+    const uint8_t oldPage = *PAGE_SELECT;
     do {
         const uint16_t offset = gfx.base_y_offset + (gfx.rasterX >> 1); // TODO: other bit depths
-        const uint8_t oldPage = *PAGE_SELECT;
 
         *PAGE_SELECT = gfx.base_page + (uint8_t) (offset >> PAGE_BITS);
         uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (offset & 0x1fff);
         *ptr = (*ptr & (~gfx.pixel_mask)) | (gfx.color & gfx.pixel_mask);
-        *PAGE_SELECT = oldPage;
 
         int16_t e2 = err << 1;
         if (e2 < dx) {
@@ -44,5 +43,6 @@ void line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint8_t clr) {
             gfx.pixel_mask = ~gfx.pixel_mask; // inline rasterInc/DecX
         }
     } while (count--);
+    *PAGE_SELECT = oldPage;
     enableInterrupts();
 }
