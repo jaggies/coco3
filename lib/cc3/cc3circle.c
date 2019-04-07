@@ -10,27 +10,31 @@
 #include "cc3raster.h"
 #include "cc3circle.h"
 
+// Draw circle using the midpoint algorithm.
 void circle(int16_t xc, int16_t yc, int16_t radius, uint8_t clr) {
-    int16_t x = 0, y = radius;
-    int16_t d = 3 - 2 * radius;
-    rasterColor(clr);
+    if (radius <= 0) {
+        setPixel(xc, yc, clr);
+        return;
+    }
+
+    int16_t x = radius, y = 0;
+    int16_t midpoint = 1 - radius;
     do {
-        rasterPos(xc + x, yc + y); rasterSet();
-        rasterPos(xc - x, yc + y); rasterSet();
-        rasterPos(xc + y, yc + x); rasterSet();
-        rasterPos(xc - y, yc + x); rasterSet();
-        rasterPos(xc + x, yc - y); rasterSet();
-        rasterPos(xc - x, yc - y); rasterSet();
-        rasterPos(xc + y, yc - x); rasterSet();
-        rasterPos(xc - y, yc - x); rasterSet();
-        x++;
-        if (d > 0) {
-            y--;
-            d = d + 4 * (x - y) + 10;
-        } else {
-            d = d + 4 * x + 6;
+        setPixel(x + xc, y + yc, clr);
+        setPixel(-x + xc, y + yc, clr);
+        setPixel(x + xc, -y + yc, clr);
+        setPixel(-x + xc, -y + yc, clr);
+        setPixel(y + xc, x + yc, clr);
+        setPixel(-y + xc, x + yc, clr);
+        setPixel(y + xc, -x + yc, clr);
+        setPixel(-y + xc, -x + yc, clr);
+
+        y++;
+        if (midpoint <= 0) { // midpoint inside or on the perimeter
+            midpoint = midpoint + (y << 1) + 1;
+        } else { // midpoint outside the perimeter
+            x--;
+            midpoint = midpoint + ((y - x) << 1) + 1;
         }
-    } while (y >= x);
+    } while (x >= y);
 }
-
-
