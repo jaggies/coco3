@@ -10,9 +10,11 @@
 #include "cc3util.h"
 #include "cc3raster.h"
 
+extern GfxState gfx;
+
 void line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint8_t clr) {
-    void (*stepX)() = x0 < x1 ? rasterIncX : rasterDecX;
-    void (*stepY)() = y0 < y1 ? rasterIncY : rasterDecY;
+    int16_t stepX = x0 < x1 ? 1 : -1;
+    int16_t stepY = y0 < y1 ? (int16_t) gfx.bytes_per_row : -(int16_t)gfx.bytes_per_row;
     const int16_t dx = abs(x1-x0);
     const int16_t dy = abs(y1-y0);
 
@@ -25,11 +27,12 @@ void line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint8_t clr) {
         int16_t e2 = err << 1;
         if (e2 <  dx) {
            err += dx;
-           stepY();
+           gfx.base_y_offset += stepY; // inline rasterInc/DecY
         }
         if (e2 > -dy) {
-           err -= dy;
-           stepX();
+            err -= dy;
+            gfx.rasterX += stepX;
+            gfx.pixel_mask = ~gfx.pixel_mask; // inline rasterInc/DecX
         }
     } while (count--);
 }
