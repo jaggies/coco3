@@ -1,5 +1,6 @@
 SubDir TOP apps ;
 if $(TARGET) = "coco3" {
+	SubInclude TOP apps circles ;
 	SubInclude TOP apps cocoray ;
 	SubInclude TOP apps field ;
 	SubInclude TOP apps lines ;
