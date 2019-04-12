@@ -1,0 +1,14 @@
+SubDir TOP apps triangles ;
+
+SubDirHdrs $(TOP) lib cc3 ;
+SubDirHdrs $(TOP) lib os ;
+
+CoCoDisk triangles.dsk : TRIANGLES.BIN ;
+
+LINKLIBS on TRIANGLES.BIN  = -lcc3 -los -lray ; 
+Depends TRIANGLES.BIN : libos.a libcc3.a ;
+
+Main TRIANGLES.BIN :
+	triangles.c
+	;
+

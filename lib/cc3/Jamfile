@@ -4,7 +4,7 @@ SubDirHdrs $(TOP) lib os ;
 SubDirHdrs $(TOP) lib ray ;
 
 if $(TARGET) = "coco3" {
-	Library libcc3.a : cc3gfx.c cc3hw.c cc3line.c cc3raster.c cc3rect.c cc3util.c dither.c fmemset.asm fastmult.asm ;
+	Library libcc3.a : cc3gfx.c cc3hw.c cc3line.c cc3raster.c cc3rect.c cc3triangle.c cc3util.c dither.c fmemset.asm fastmult.asm ;
 } else {
 	Library libcc3.a : cc3stubs.c ;
 }
