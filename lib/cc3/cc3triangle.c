@@ -50,9 +50,7 @@ static void walkedge(Edge* e) {
 static void dospan(Edge *edge1, Edge *edge2, uint8_t clr) {
     int minx = min(edge1->xs, edge2->xs);
     int maxx = max(edge1->xs, edge2->xs);
-    for (int i = minx; i < maxx; i++) {
-        setPixel(i, edge1->ys, clr);
-    }
+    fillPixels(edge1->xs, edge1->ys, clr, maxx - minx);
 }
 
 void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr)
