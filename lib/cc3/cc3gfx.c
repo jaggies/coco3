@@ -170,6 +170,8 @@ void fillPixels2bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
 }
 
 void fillPixels4bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
+    if (!n) return;
+
     if (x & 1) {
         setPixel(x, y, clr); // TODO: avoid this extra calculation by re-using addr below
         x++;
