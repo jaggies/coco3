@@ -96,6 +96,7 @@ void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
 
     // Lower segment
     if (drawLower) {
+        createEdge(v1, v2, &edge1); // edge2 is the longest, so use edge1 to walk remaining segment
         do {
             // TODO: this could be a lot more efficient using memset()
             line(edge1.v[X], edge1.v[Y], edge2.v[X], edge2.v[Y], clr);

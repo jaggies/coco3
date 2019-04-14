@@ -107,18 +107,22 @@ void testpoly() {
 enum { X=0, Y};
 
 void testCases() {
-    Vertex verts[] = { { TRI_SIZE/2, 0}, { 0, TRI_SIZE }, { TRI_SIZE, TRI_SIZE } };
+    Vertex flatt[] = { { TRI_SIZE/2, TRI_SIZE}, { 0, 0 }, { TRI_SIZE, 0 } };
+    Vertex flatb[] = { { TRI_SIZE/2, 0}, { 0, TRI_SIZE }, { TRI_SIZE, TRI_SIZE } };
+    Vertex left[] = { { TRI_SIZE, 0}, { 0, TRI_SIZE/2 }, { TRI_SIZE, TRI_SIZE } };
+    Vertex right[] = { { 0, 0}, { TRI_SIZE, TRI_SIZE/2 }, { 0, TRI_SIZE } };
     int8_t cases[][3] = { {0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0} };
     for (uint8_t i = 0; i < 6; i++) {
-        int16_t v0[2], v1[2], v2[2];
-        v0[X] = verts[cases[i][0]].x;
-        v1[X] = verts[cases[i][1]].x;
-        v2[X] = verts[cases[i][2]].x;
-        v0[Y] = verts[cases[i][0]].y;
-        v1[Y] = verts[cases[i][1]].y;
-        v2[Y] = verts[cases[i][2]].y;
-
-        triangle(&v0, &v1, &v2, i);
+        triangle(&flatb[cases[i][0]].x, &flatb[cases[i][1]].x, &flatb[cases[i][2]].x, i);
+    }
+    for (uint8_t i = 0; i < 6; i++) {
+        triangle(&flatt[cases[i][0]].x, &flatt[cases[i][1]].x, &flatt[cases[i][2]].x, i);
+    }
+    for (uint8_t i = 0; i < 6; i++) {
+        triangle(&left[cases[i][0]].x, &left[cases[i][1]].x, &left[cases[i][2]].x, i);
+    }
+    for (uint8_t i = 0; i < 6; i++) {
+        triangle(&right[cases[i][0]].x, &right[cases[i][1]].x, &right[cases[i][2]].x, i);
     }
 }
 
@@ -138,12 +142,12 @@ int main(int argc, char** argv) {
     const int width = getWidth();
 
     testCases();
-
-    sleep(100);
+    sleep(5);
+    clear(0x8); // blue
 
     testpoly();
-
     sleep(100);
+    clear(0x8); // blue
 
     int16_t v[3][2];
     while (1) {
