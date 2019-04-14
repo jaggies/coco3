@@ -10,89 +10,96 @@
 #include "cc3gfx.h"
 #include "cc3util.h"
 #include "cc3triangle.h"
+#include "cc3line.h"
 
-typedef struct _Edge { /* DDA stuff */
-    int dx, dy, sx, sy, incx, incy, inc, xs, ys, x, y;
+enum { X = 0, Y = 1 }; // TODO: move some place more common
+
+typedef struct _Edge {
+    int16_t v[2]; // Current X and Y
+    int16_t stepX; // Amount to step (1 or -1)
+    int16_t stepY;
+    int16_t err; // current error
+    int16_t dx; // total number of x pixels
+    int16_t dy; // total number of y pixels
+    uint16_t count;
 } Edge;
 
-enum { X = 0, Y = 1 };
-
-static void createedge(Edge *e, int *p1, int *p2) {
-    e->x = e->y = 0;
-    e->dx = p2[X] - p1[X];
-    e->dy = p2[Y] - p1[Y];
-    e->sx = (e->dx < 0) ? -1 : ((e->dx == 0) ? 0 : 1);
-    e->sy = (e->dy < 0) ? -1 : ((e->dy == 0) ? 0 : 1);
-    e->incx = abs(e->dx);
-    e->incy = abs(e->dy);
-    e->inc = max(e->incx, e->incy);
-    e->xs = p1[X];
-    e->ys = p1[Y];
+// Creates an edge starting at v0 and ending at v1.
+static void createEdge(const int16_t* v0, const int16_t* v1, Edge* edge) {
+    edge->v[X] = v0[X];
+    edge->v[Y] = v0[Y];
+    edge->stepX = v0[X] < v1[X] ? 1 : -1;
+    edge->stepY = v0[Y] < v1[Y] ? 1 : -1;
+    edge->dx = abs(v1[X] - v0[X]);
+    edge->dy = abs(v1[Y] - v0[Y]);
+    edge->count = max(edge->dx, edge->dy);
+    edge->err = edge->dx - edge->dy;
 }
 
-static void walkedge(Edge* e) {
-    int ychanged = 0;
-    while (1) {
-        e->x += e->incx;
-        e->y += e->incy;
-        if (e->x > e->inc) {
-            e->x -= e->inc;
-            e->xs += e->sx;
+static void printEdge(Edge* edge) {
+    printf("xy(%d,%d) step(%d,%d) dxdy(%d,%d), count:%d, err:%d\n", edge->v[X], edge->v[Y],
+            edge->stepX, edge->stepY, edge->dx, edge->dy, edge->count, edge->err);
+}
+
+// Walks an edge using Bresenham's algorithm. Returns remaining count when Y changes.
+static int walkEdge(Edge* edge) {
+    bool ychanged = false;
+    while (edge->count && !ychanged) {
+        edge->count--;
+        int16_t e2 = edge->err << 1;
+        if (e2 < edge->dx) {
+            edge->err += edge->dx;
+            edge->v[Y] += edge->stepY;
+            ychanged = true;
         }
-        if (e->y > e->inc) {
-            e->y -= e->inc;
-            e->ys += e->sy;
-            break;
+        if (e2 > -edge->dy) {
+            edge->err -= edge->dy;
+            edge->v[X] += edge->stepX;
         }
     }
+    return edge->count > 0;
 }
 
-static void dospan(Edge *edge1, Edge *edge2, uint8_t clr) {
-    int minx = min(edge1->xs, edge2->xs);
-    int maxx = max(edge1->xs, edge2->xs);
-    fillPixels(edge1->xs, edge1->ys, clr, maxx - minx);
-}
-
-void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr)
-{
+void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
     Edge edge1, edge2; // The current two edges we're walking
     const int* tmp;
 
-    // Sort by Y coordinate
+    // Sort by Y coordinates.
     if (v0[Y] > v1[Y]) {
-        tmp = v0;
-        v0 = v1;
-        v1 = tmp;
+        tmp = v0; v0 = v1; v1 = tmp;
     }
     if (v1[Y] > v2[Y]) {
-        tmp = v1;
-        v1 = v2;
-        v2 = tmp;
+        tmp = v1; v1 = v2; v2 = tmp;
         if (v0[Y] > v1[Y]) {
-            tmp = v0;
-            v0 = v1;
-            v1 = tmp;
+            tmp = v0; v0 = v1; v1 = tmp;
         }
     }
 
-    createedge(&edge1, v0, v1);
-    createedge(&edge2, v0, v2);
-
-    // Upper segment
-    while (edge1.ys != v1[Y]) {
-        walkedge(&edge1);
-        walkedge(&edge2);
-        dospan(&edge1, &edge2, clr);
+    bool drawLower = false;
+    if (v0[Y] == v1[Y]) { // flat on the top (v2[Y] >= either, or degenerate)
+        createEdge(v0, v2, &edge1);
+        createEdge(v1, v2, &edge2);
+    } else if (v1[Y] == v2[Y]) { // flat on the bottom (v0[Y] >= either, or degenerate)
+        createEdge(v0, v1, &edge1);
+        createEdge(v0, v2, &edge2);
+    } else { // break into two halves
+        createEdge(v0, v1, &edge1);
+        createEdge(v0, v2, &edge2);
+        drawLower = true;
     }
 
+    // Upper segment
+    do {
+        // TODO: this could be a lot more efficient using memset()
+        line(edge1.v[X], edge1.v[Y], edge2.v[X], edge2.v[Y], clr);
+    } while (walkEdge(&edge1) && walkEdge(&edge2));
+
     // Lower segment
-    int save = edge1.y;
-    createedge(&edge1, v1, v2);
-    edge1.y = save;
-    while (edge2.ys != v2[Y]) {
-        walkedge(&edge1);
-        walkedge(&edge2);
-        dospan(&edge1, &edge2, clr);
+    if (drawLower) {
+        do {
+            // TODO: this could be a lot more efficient using memset()
+            line(edge1.v[X], edge1.v[Y], edge2.v[X], edge2.v[Y], clr);
+        } while (walkEdge(&edge1) && walkEdge(&edge2));
     }
 }
 

@@ -21,6 +21,7 @@ static uint8_t redShift = 0;
 static uint8_t grnShift = 0;
 static uint8_t blushift = 0;
 
+// HMM. These should have unsigned versions too..
 uint16_t min(uint16_t a, uint16_t b) {
     return a < b ? a : b;
 }
