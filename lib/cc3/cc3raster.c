@@ -11,7 +11,7 @@
 
 extern GfxState gfx;
 
-void rasterPos(int x, int y) {
+void rasterPos(int16_t x, int16_t y) {
     gfx.base_y_offset = y * gfx.bytes_per_row;
     gfx.rasterX = x;
     gfx.rasterY = y;
