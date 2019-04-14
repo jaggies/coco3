@@ -24,6 +24,11 @@ typedef struct _Edge {
     uint16_t count;
 } Edge;
 
+//static void printEdge(Edge* edge) {
+//    printf("xy(%d,%d) step(%d,%d) dxdy(%d,%d), count:%d, err:%d\n", edge->v[X], edge->v[Y],
+//            edge->stepX, edge->stepY, edge->dx, edge->dy, edge->count, edge->err);
+//}
+
 // Creates an edge starting at v0 and ending at v1.
 static void createEdge(const int16_t* v0, const int16_t* v1, Edge* edge) {
     edge->v[X] = v0[X];
@@ -36,13 +41,8 @@ static void createEdge(const int16_t* v0, const int16_t* v1, Edge* edge) {
     edge->err = edge->dx - edge->dy;
 }
 
-static void printEdge(Edge* edge) {
-    printf("xy(%d,%d) step(%d,%d) dxdy(%d,%d), count:%d, err:%d\n", edge->v[X], edge->v[Y],
-            edge->stepX, edge->stepY, edge->dx, edge->dy, edge->count, edge->err);
-}
-
 // Walks an edge using Bresenham's algorithm. Returns remaining count when Y changes.
-static int walkEdge(Edge* edge) {
+static uint8_t walkEdge(Edge* edge) {
     bool ychanged = false;
     while (edge->count && !ychanged) {
         edge->count--;
@@ -75,32 +75,29 @@ void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
         }
     }
 
-    bool drawLower = false;
     if (v0[Y] == v1[Y]) { // flat on the top (v2[Y] >= either, or degenerate)
         createEdge(v0, v2, &edge1);
         createEdge(v1, v2, &edge2);
-    } else if (v1[Y] == v2[Y]) { // flat on the bottom (v0[Y] >= either, or degenerate)
+    } else {
         createEdge(v0, v1, &edge1);
         createEdge(v0, v2, &edge2);
-    } else { // break into two halves
-        createEdge(v0, v1, &edge1);
-        createEdge(v0, v2, &edge2);
-        drawLower = true;
     }
 
-    // Upper segment
+    // TODO: this could be a lot more efficient using memset() instead of line()
     do {
-        // TODO: this could be a lot more efficient using memset()
         line(edge1.v[X], edge1.v[Y], edge2.v[X], edge2.v[Y], clr);
-    } while (walkEdge(&edge1) && walkEdge(&edge2));
+        walkEdge(&edge1);
+        walkEdge(&edge2);
+    } while (edge1.count);
 
-    // Lower segment
-    if (drawLower) {
-        createEdge(v1, v2, &edge1); // edge2 is the longest, so use edge1 to walk remaining segment
+    // edge2 is longest because we sort vertices by Y, so walk additional segment if not finished
+    if (edge2.count) {
+        createEdge(v1, v2, &edge1);
         do {
-            // TODO: this could be a lot more efficient using memset()
             line(edge1.v[X], edge1.v[Y], edge2.v[X], edge2.v[Y], clr);
-        } while (walkEdge(&edge1) && walkEdge(&edge2));
+            walkEdge(&edge1);
+            walkEdge(&edge2);
+        } while (edge2.count);
     }
 }
 
