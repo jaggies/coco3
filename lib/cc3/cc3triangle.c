@@ -15,7 +15,8 @@
 enum { X = 0, Y = 1 }; // TODO: move some place more common
 
 typedef struct _Edge {
-    int16_t v[2]; // Current X and Y
+    int16_t x; // Current X and Y
+    int16_t y;
     int16_t stepX; // Amount to step (1 or -1)
     int16_t stepY;
     int16_t err; // current error
@@ -31,8 +32,8 @@ typedef struct _Edge {
 
 // Creates an edge starting at v0 and ending at v1.
 static void createEdge(const int16_t* v0, const int16_t* v1, Edge* edge) {
-    edge->v[X] = v0[X];
-    edge->v[Y] = v0[Y];
+    edge->x = v0[X];
+    edge->y = v0[Y];
     edge->stepX = v0[X] < v1[X] ? 1 : -1;
     edge->stepY = v0[Y] < v1[Y] ? 1 : -1;
     edge->dx = abs(v1[X] - v0[X]);
@@ -49,21 +50,19 @@ static void walkEdge(Edge* edge) {
         int16_t e2 = edge->err << 1;
         if (e2 < edge->dx) {
             edge->err += edge->dx;
-            edge->v[Y] += edge->stepY;
+            edge->y += edge->stepY;
             ychanged = true;
         }
         if (e2 > -edge->dy) {
             edge->err -= edge->dy;
-            edge->v[X] += edge->stepX;
+            edge->x += edge->stepX;
         }
     }
 }
 
 void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
-    Edge edge1, edge2; // The current two edges we're walking
-    const int* tmp;
-
     // Sort by Y coordinates.
+    const int* tmp;
     if (v0[Y] > v1[Y]) {
         tmp = v0; v0 = v1; v1 = tmp;
     }
@@ -74,28 +73,37 @@ void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
         }
     }
 
+    Edge edge1, edge2; // The current two edges we're walking
+    bool swap; // True if edge2 is on the left
     if (v0[Y] == v1[Y]) { // flat on the top (v2[Y] >= either, or degenerate)
         createEdge(v0, v2, &edge1);
         createEdge(v1, v2, &edge2);
+        swap = v0[X] > v1[X];
     } else {
         createEdge(v0, v1, &edge1);
         createEdge(v0, v2, &edge2);
+        swap = v1[X] > v2[X];
     }
 
-    // TODO: this could be a lot more efficient using memset() instead of line()
+    // Always render left to right
+    Edge* we1 = swap ? &edge2 : &edge1;
+    Edge* we2 = swap ? &edge1 : &edge2;
+
     do {
-        line(edge1.v[X], edge1.v[Y], edge2.v[X], edge2.v[Y], clr);
+        int16_t cnt = we2->x - we1->x;
+        if (cnt > 0)
+            fillPixels(we1->x, we2->y, clr, cnt);
         walkEdge(&edge1);
         walkEdge(&edge2);
     } while (edge1.count);
 
     // edge2 is longest because we sort vertices by Y, so walk additional segment if not finished
     if (edge2.count) {
-        // Hmm. Sometimes edge2.y doesnt' start at the same place. For now use edge2
+        // Hmm. Sometimes edge2.y doesn't start at the same place. For now use edge2
         // as the source of truth for Y. TODO.
         createEdge(v1, v2, &edge1);
         do {
-            line(edge1.v[X], edge2.v[Y], edge2.v[X], edge2.v[Y], clr);
+            fillPixels(min(edge1.x, edge2.x), edge2.y, clr, abs(edge1.x - edge2.x));
             walkEdge(&edge1);
             walkEdge(&edge2);
         } while (edge2.count);
