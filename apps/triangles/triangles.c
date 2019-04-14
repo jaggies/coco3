@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
     clear(0x8); // blue
 
     testpoly();
-    sleep(100);
+    sleep(5);
     clear(0x8); // blue
 
     int16_t v[3][2];

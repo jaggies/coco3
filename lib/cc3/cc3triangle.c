@@ -42,7 +42,7 @@ static void createEdge(const int16_t* v0, const int16_t* v1, Edge* edge) {
 }
 
 // Walks an edge using Bresenham's algorithm. Returns remaining count when Y changes.
-static uint8_t walkEdge(Edge* edge) {
+static void walkEdge(Edge* edge) {
     bool ychanged = false;
     while (edge->count && !ychanged) {
         edge->count--;
@@ -57,7 +57,6 @@ static uint8_t walkEdge(Edge* edge) {
             edge->v[X] += edge->stepX;
         }
     }
-    return edge->count > 0;
 }
 
 void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
@@ -92,9 +91,11 @@ void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
 
     // edge2 is longest because we sort vertices by Y, so walk additional segment if not finished
     if (edge2.count) {
+        // Hmm. Sometimes edge2.y doesnt' start at the same place. For now use edge2
+        // as the source of truth for Y. TODO.
         createEdge(v1, v2, &edge1);
         do {
-            line(edge1.v[X], edge1.v[Y], edge2.v[X], edge2.v[Y], clr);
+            line(edge1.v[X], edge2.v[Y], edge2.v[X], edge2.v[Y], clr);
             walkEdge(&edge1);
             walkEdge(&edge2);
         } while (edge2.count);
