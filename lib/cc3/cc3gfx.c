@@ -8,6 +8,7 @@
 #include "os.h"
 #include "cc3hw.h"
 #include "cc3gfx.h"
+#include "cc3raster.h"
 
 // TODO: Define these by graphics mode...
 #define BPP 4
@@ -30,16 +31,16 @@
 
 GfxState gfx;
 
-static void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr);
-static void setPixel2bpp(uint16_t x, uint16_t y, uint8_t clr);
-static void setPixel4bpp(uint16_t x, uint16_t y, uint8_t clr);
+static void setPixel1bpp(uint16_t x, uint16_t y);
+static void setPixel2bpp(uint16_t x, uint16_t y);
+static void setPixel4bpp(uint16_t x, uint16_t y);
 static void setPixels1bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 static void setPixels2bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 static void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 
-void (*setPixel)(uint16_t x, uint16_t y, uint8_t clr);
+void (*setPixel)(uint16_t x, uint16_t y);
 void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
-void (*fillPixels)(uint16_t x, uint16_t y, uint8_t clr, uint16_t n);
+void (*fillPixels)(uint16_t x, uint16_t y, uint16_t n);
 
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
 uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
@@ -60,9 +61,11 @@ int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
         fillPixels = fillPixels1bpp;
         break;
         case 2: gfx.bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; setPixels = setPixels2bpp;
-        fillPixels = fillPixels2bpp; break;
+        fillPixels = fillPixels2bpp;
+        break;
         case 4: gfx.bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; setPixels = setPixels4bpp;
-        fillPixels = fillPixels4bpp; break;
+        fillPixels = fillPixels4bpp;
+        break;
         default: return 0;
     }
     switch (xres) {
@@ -118,30 +121,31 @@ void clear(uint8_t color) {
     memset24(gfx.base_addr, packColor(color), gfx.buffer_size_bytes);
 }
 
-void setPixel1bpp(uint16_t x, uint16_t y, uint8_t clr) {
-    uint16_t byteOffset;
-    uint8_t bit = ~(uint8_t)x & 7; // pixels fill in from MSB right
-    clr = (clr & 1) << bit;
-    uint8_t mask = ((uint8_t)1 << bit);
-    byteOffset = (x >> 3) + y * gfx.bytes_per_row;
-    memset1(gfx.base_addr + byteOffset, clr, mask);
+static uint8_t masks1bpp[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+void setPixel1bpp(uint16_t x, uint16_t y) {
+    gfx.base_y_offset = y * gfx.bytes_per_row;
+    gfx.rasterX = x;
+    gfx.rasterY = y;
+    gfx.pixel_mask = masks1bpp[(uint8_t) x & 7];
+    rasterSet();
 }
 
-void setPixel2bpp(uint16_t x, uint16_t y, uint8_t clr) {
-    uint16_t byteOffset;
-    uint8_t bit = ~(uint8_t)x & 3; // pixels fill in from MSB right
-    uint8_t shift = bit << 1;
-    clr = (clr & 0x3) << shift;
-    uint8_t mask = (uint8_t) 0x3 << shift;
-    byteOffset = (x >> 2) + y * gfx.bytes_per_row;
-    memset1(gfx.base_addr + byteOffset, clr, mask);
+static uint8_t masks2bpp[] = { 0xc0, 0x30, 0x0c, 0x03 };
+void setPixel2bpp(uint16_t x, uint16_t y) {
+    gfx.base_y_offset = y * gfx.bytes_per_row;
+    gfx.rasterX = x;
+    gfx.rasterY = y;
+    gfx.pixel_mask = masks2bpp[(uint8_t) x & 3];
+    rasterSet();
 }
 
-void setPixel4bpp(uint16_t x, uint16_t y, uint8_t clr) {
-    uint8_t mask = x & 1 ? 0x0f : 0xf0;
-    clr = x & 1 ? (clr & 0x0f) : ((clr & 0x0f) << 4);
-    uint16_t byteOffset = (x >> 1) + y * gfx.bytes_per_row;
-    memset1(gfx.base_addr + byteOffset, clr, mask);
+static uint8_t masks4bpp[] = { 0xf0, 0x0f };
+void setPixel4bpp(uint16_t x, uint16_t y) {
+    gfx.base_y_offset = y * gfx.bytes_per_row;
+    gfx.rasterX = x;
+    gfx.rasterY = y;
+    gfx.pixel_mask = masks4bpp[(uint8_t) x & 1];
+    rasterSet();
 }
 
 void setPixels1bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
@@ -159,30 +163,30 @@ void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
     memcpy24(gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row, clr, n);
 }
 
-void fillPixels1bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
+void fillPixels1bpp(uint16_t x, uint16_t y, uint16_t n) {
     // TODO: handle unaligned first and last pixels!
-    memset24(gfx.base_addr + (x >> 3) + y * gfx.bytes_per_row, packColor(clr), n >> 3);
+    memset24(gfx.base_addr + (x >> 3) + y * gfx.bytes_per_row, gfx.color, n >> 3);
 }
 
-void fillPixels2bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
+void fillPixels2bpp(uint16_t x, uint16_t y, uint16_t n) {
     // TODO: handle unaligned first and last pixels!
-    memset24(gfx.base_addr + (x >> 2) + y * gfx.bytes_per_row, packColor(clr), n >> 2);
+    memset24(gfx.base_addr + (x >> 2) + y * gfx.bytes_per_row, gfx.color, n >> 2);
 }
 
-void fillPixels4bpp(uint16_t x, uint16_t y, uint8_t clr, uint16_t n) {
+void fillPixels4bpp(uint16_t x, uint16_t y, uint16_t n) {
     if (!n) return;
 
     if (x & 1) {
-        setPixel(x, y, clr); // TODO: avoid this extra calculation by re-using addr below
+        setPixel(x, y); // TODO: avoid this extra calculation by re-using addr below
         x++;
         n--;
     }
     if (n & 1) {
-        setPixel(x+n-1, y, clr); // TODO: avoid this extra calculation by re-using addr below
+        setPixel(x+n-1, y); // TODO: avoid this extra calculation by re-using addr below
         n--;
     }
     uint32_t addr = gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row;
-    memset24(addr, packColor(clr), n >> 1);
+    memset24(addr, gfx.color, n >> 1);
 }
 
 uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {

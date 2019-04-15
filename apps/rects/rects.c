@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
     const int width = getWidth();
 
     /* Check for proper 1st pixel setting */
-    for (uint8_t i = 0; i < 32; i++) {
+    for (int8_t i = 0; i < 32; i++) {
         int x0 = i;
         int x1 = x0 + HSIZE;
         int y0 = i;
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     }
 
     /* Check for proper last pixel setting */
-    for (uint8_t i = 31; i >= 0; i--) {
+    for (int8_t i = 31; i >= 0; i--) {
         int x0 = i + HSIZE + 16;
         int x1 = x0 + HSIZE;
         int y0 = i + VSIZE + 16;

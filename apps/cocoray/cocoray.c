@@ -8,6 +8,7 @@
 #include "os.h"
 #include "cc3hw.h"
 #include "cc3gfx.h"
+#include "cc3raster.h"
 #include "isphere.h"
 #include "icamera.h"
 #include "imath.h"
@@ -114,7 +115,8 @@ int main(int argc, char** argv) {
             color.z = clamp(color.z, 0, c_one);
             //hset(i, j, ditherRGB(i, j, &color));
             //hset(i, j, nearest(&color));
-            setPixel(i, j, diffusion(&color, i == 0));
+            rasterColor(diffusion(&color, i == 0));
+            setPixel(i, j);
         }
     }
 

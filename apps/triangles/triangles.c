@@ -9,6 +9,7 @@
 #include "cc3hw.h"
 #include "cc3gfx.h"
 #include "cc3triangle.h"
+#include "cc3raster.h"
 
 #define WIDTH 320
 #define HEIGHT 200
@@ -69,7 +70,8 @@ void poly3(Vertex* p, uint8_t clr) {
         v[i][0] = (int32_t) p[i].x * WIDTH / 640; // scale data based on screen size
         v[i][1] = (int32_t) p[i].y * HEIGHT / 480;
     }
-    triangle(&v[0][0], &v[1][0], &v[2][0], clr); // TODO: this assumes perfect int16 packing in Vertex
+    rasterColor(clr);
+    triangle(&v[0][0], &v[1][0], &v[2][0]);
 }
 
 void testpoly() {
@@ -113,16 +115,20 @@ void testCases() {
     Vertex right[] = { { 0, 0}, { TRI_SIZE, TRI_SIZE/2 }, { 0, TRI_SIZE } };
     int8_t cases[][3] = { {0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0} };
     for (uint8_t i = 0; i < 6; i++) {
-        triangle(&flatb[cases[i][0]].x, &flatb[cases[i][1]].x, &flatb[cases[i][2]].x, i);
+        rasterColor(i);
+        triangle(&flatb[cases[i][0]].x, &flatb[cases[i][1]].x, &flatb[cases[i][2]].x);
     }
     for (uint8_t i = 0; i < 6; i++) {
-        triangle(&flatt[cases[i][0]].x, &flatt[cases[i][1]].x, &flatt[cases[i][2]].x, i);
+        rasterColor(i);
+        triangle(&flatt[cases[i][0]].x, &flatt[cases[i][1]].x, &flatt[cases[i][2]].x);
     }
     for (uint8_t i = 0; i < 6; i++) {
-        triangle(&left[cases[i][0]].x, &left[cases[i][1]].x, &left[cases[i][2]].x, i);
+        rasterColor(i);
+        triangle(&left[cases[i][0]].x, &left[cases[i][1]].x, &left[cases[i][2]].x);
     }
     for (uint8_t i = 0; i < 6; i++) {
-        triangle(&right[cases[i][0]].x, &right[cases[i][1]].x, &right[cases[i][2]].x, i);
+        rasterColor(i);
+        triangle(&right[cases[i][0]].x, &right[cases[i][1]].x, &right[cases[i][2]].x);
     }
 }
 
@@ -146,15 +152,32 @@ int main(int argc, char** argv) {
     testpoly();
     clear(0x8); // blue
 
-    int16_t v[3][2];
+    const int r = 100;
+    const float pi2 = 2.0f * M_PI;
+    const float pi13 = pi2 / 3;
+    const float dAlpha = pi2 / 360;
+    float alpha = 0;
+    for (int8_t i = 0; i < 120; i++) {
+        int vert[3][2];
+        for (int8_t v = 0; v < 3; v++) {
+            float a = pi13 * v;
+            vert[v][0] = (int) (r * sin(a + alpha) + r);
+            vert[v][1] = (int) (r * cos(a + alpha) + r);
+        }
+        rasterColor((uint8_t)i);
+        triangle(vert[0], vert[1], vert[2]);
+        alpha += dAlpha;
+    }
+
     int count = 100;
     while (--count) {
-        uint8_t clr = (uint8_t) (myrand() & 0x0f);
+        int16_t vert[3][2];
         for (int i = 0; i < 3; i++) {
-            v[i][0] = myrand() % width;
-            v[i][1] = myrand() % height;
+            vert[i][0] = myrand() % width;
+            vert[i][1] = myrand() % height;
         }
-        triangle(v[0], v[1], v[2], clr);
+        rasterColor((uint8_t) (myrand() & 0x0f));
+        triangle(vert[0], vert[1], vert[2]);
     }
 
     return 0;

@@ -60,7 +60,7 @@ static void walkEdge(Edge* edge) {
     }
 }
 
-void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
+void triangle(const int* v0, const int* v1, const int* v2) {
     // Sort by Y coordinates.
     const int* tmp;
     if (v0[Y] > v1[Y]) {
@@ -92,7 +92,7 @@ void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
     do {
         int16_t cnt = we2->x - we1->x;
         if (cnt > 0)
-            fillPixels(we1->x, we2->y, clr, cnt);
+            fillPixels(we1->x, we2->y, cnt);
         walkEdge(&edge1);
         walkEdge(&edge2);
     } while (edge1.count);
@@ -103,7 +103,7 @@ void triangle(const int* v0, const int* v1, const int* v2, uint8_t clr) {
         // as the source of truth for Y. TODO.
         createEdge(v1, v2, &edge1);
         do {
-            fillPixels(min(edge1.x, edge2.x), edge2.y, clr, abs(edge1.x - edge2.x));
+            fillPixels(min(edge1.x, edge2.x), edge2.y, abs(edge1.x - edge2.x));
             walkEdge(&edge1);
             walkEdge(&edge2);
         } while (edge2.count);

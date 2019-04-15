@@ -9,6 +9,7 @@
 #include "cc3hw.h"
 #include "cc3gfx.h"
 #include "cc3circle.h"
+#include "cc3raster.h"
 
 #define WIDTH 320
 #define HEIGHT 225
@@ -49,8 +50,8 @@ int main(int argc, char** argv) {
         int16_t xc = myrandom() % width;
         int16_t yc = myrandom() % height;
         int16_t r = myrandom() % (width>>2);
-        uint8_t clr = (uint8_t) (myrandom());
-        circle(xc, yc, r, clr);
+        rasterColor((uint8_t) (myrandom()));
+        circle(xc, yc, r);
     }
 
     clear(0x8); // blue
@@ -60,7 +61,8 @@ int main(int argc, char** argv) {
     while (count--) {
         int16_t xc = width/2;
         int16_t yc = height/2;
-        circle(xc, yc, clr, clr++);
+        rasterColor(clr);
+        circle(xc, yc, clr++);
     }
 
     return 0;

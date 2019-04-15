@@ -10,24 +10,26 @@
 #include "cc3raster.h"
 #include "cc3circle.h"
 
+extern GfxState gfx;
+
 // Draw circle using the midpoint algorithm.
-void circle(int16_t xc, int16_t yc, int16_t radius, uint8_t clr) {
+void circle(int16_t xc, int16_t yc, int16_t radius) {
     if (radius <= 0) {
-        setPixel(xc, yc, clr);
+        setPixel(xc, yc);
         return;
     }
 
     int16_t x = radius, y = 0;
     int16_t midpoint = 1 - radius;
     do {
-        setPixel(x + xc, y + yc, clr);
-        setPixel(-x + xc, y + yc, clr);
-        setPixel(x + xc, -y + yc, clr);
-        setPixel(-x + xc, -y + yc, clr);
-        setPixel(y + xc, x + yc, clr);
-        setPixel(-y + xc, x + yc, clr);
-        setPixel(y + xc, -x + yc, clr);
-        setPixel(-y + xc, -x + yc, clr);
+        setPixel(x + xc, y + yc);
+        setPixel(-x + xc, y + yc);
+        setPixel(x + xc, -y + yc);
+        setPixel(-x + xc, -y + yc);
+        setPixel(y + xc, x + yc);
+        setPixel(-y + xc, x + yc);
+        setPixel(y + xc, -x + yc);
+        setPixel(-y + xc, -x + yc);
 
         y++;
         if (midpoint <= 0) { // midpoint inside or on the perimeter

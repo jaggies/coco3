@@ -2,6 +2,7 @@
 #include "fixed.h"
 #include "cc3hw.h"
 #include "cc3gfx.h"
+#include "cc3raster.h"
 
 #define XRES 320
 #define YRES 200
@@ -36,7 +37,8 @@ void doMandleInt(float xmin, float xmax, float ymin, float ymax) {
                 zr2 = fmult(zr, zr);
                 zi2 = fmult(zi, zi);
             } while (count++ < MAXCOUNT && (zr2 + zi2) < c_four);
-			setPixel(i, j, (count-1) & 0x0f);
+            rasterColor((count-1) & 0x0f);
+			setPixel(i, j);
 			cr += cr_delta;
         }
         ci += ci_delta;
@@ -62,7 +64,8 @@ void doMandelFloat(float xmin, float xmax, float ymin, float ymax) {
                 zr = tr + cr;
                 zi = ti + ci;
             } while ((count++ < MAXCOUNT) && (zr*zr + zi*zi) < 4.0f);
-            setPixel(i, j, (count-1)%16);
+            rasterColor((count-1) & 0x0f);
+            setPixel(i, j);
         }
     }
 }

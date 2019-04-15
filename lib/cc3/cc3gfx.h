@@ -36,8 +36,8 @@ extern void setPalette(uint8_t index, uint8_t r, uint8_t g, uint8_t b);
 // Clear the screen to the given color. Valid values for color depend on the mode, up to 15.
 extern void clear(uint8_t color);
 
-// Sets one pixel at location (x,y) in current graphics mode
-extern void (*setPixel)(uint16_t x, uint16_t y, uint8_t clr);
+// Sets one pixel at location (x,y) in current graphics mode to the current color
+extern void (*setPixel)(uint16_t x, uint16_t y);
 
 // Sets multiple pixels starting at location (x,y) for n bytes in length.
 // Assumes pixels are packed into the native screen format, e.g. 2 pixels per byte
@@ -50,7 +50,7 @@ extern void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 // Fills multiple pixels starting at location (x,y) for n bytes in length.
 // Note: x must land on a byte boundary. Use setPixel() to handle unaligned pixels.
 // Returns number of bytes written.
-extern void (*fillPixels)(uint16_t x, uint16_t y, uint8_t clr, uint16_t n);
+extern void (*fillPixels)(uint16_t x, uint16_t y, uint16_t n);
 
 // Pack pixels from 1 pixel per byte to native pixel format chosen by setMode().
 // Returns number of bytes written to output
