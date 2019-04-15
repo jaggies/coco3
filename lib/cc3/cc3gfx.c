@@ -40,7 +40,7 @@ static void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 
 void (*setPixel)(uint16_t x, uint16_t y);
 void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
-void (*fillPixels)(uint16_t x, uint16_t y, uint16_t n);
+void (*fillPixels)(uint16_t x, uint16_t y, int16_t n);
 
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
 uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
@@ -163,18 +163,18 @@ void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
     memcpy24(gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row, clr, n);
 }
 
-void fillPixels1bpp(uint16_t x, uint16_t y, uint16_t n) {
+void fillPixels1bpp(uint16_t x, uint16_t y, int16_t n) {
     // TODO: handle unaligned first and last pixels!
     memset24(gfx.base_addr + (x >> 3) + y * gfx.bytes_per_row, gfx.color, n >> 3);
 }
 
-void fillPixels2bpp(uint16_t x, uint16_t y, uint16_t n) {
+void fillPixels2bpp(uint16_t x, uint16_t y, int16_t n) {
     // TODO: handle unaligned first and last pixels!
     memset24(gfx.base_addr + (x >> 2) + y * gfx.bytes_per_row, gfx.color, n >> 2);
 }
 
-void fillPixels4bpp(uint16_t x, uint16_t y, uint16_t n) {
-    if (!n) return;
+void fillPixels4bpp(uint16_t x, uint16_t y, int16_t n) {
+    if (n <= 0) return;
 
     if (x & 1) {
         setPixel(x, y); // TODO: avoid this extra calculation by re-using addr below

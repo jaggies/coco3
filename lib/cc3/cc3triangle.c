@@ -90,11 +90,9 @@ void triangle(const int* v0, const int* v1, const int* v2) {
     Edge* we2 = swap ? &edge1 : &edge2;
 
     do {
-        int16_t cnt = we2->x - we1->x;
-        if (cnt > 0)
-            fillPixels(we1->x, we2->y, cnt);
-        walkEdge(&edge1);
-        walkEdge(&edge2);
+        fillPixels(we1->x, we2->y, we2->x - we1->x);
+        walkEdge(we1);
+        walkEdge(we2);
     } while (edge1.count);
 
     // edge2 is longest because we sort vertices by Y, so walk additional segment if not finished
@@ -103,9 +101,9 @@ void triangle(const int* v0, const int* v1, const int* v2) {
         // as the source of truth for Y. TODO.
         createEdge(v1, v2, &edge1);
         do {
-            fillPixels(min(edge1.x, edge2.x), edge2.y, abs(edge1.x - edge2.x));
-            walkEdge(&edge1);
-            walkEdge(&edge2);
+            fillPixels(we1->x, we2->y, we2->x - we1->x);
+            walkEdge(we1);
+            walkEdge(we2);
         } while (edge2.count);
     }
 }

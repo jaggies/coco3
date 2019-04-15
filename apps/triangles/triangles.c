@@ -157,12 +157,12 @@ int main(int argc, char** argv) {
     const float pi13 = pi2 / 3;
     const float dAlpha = pi2 / 360;
     float alpha = 0;
-    for (int8_t i = 0; i < 120; i++) {
+    for (int8_t i = 0; i < 100; i++) {
         int vert[3][2];
         for (int8_t v = 0; v < 3; v++) {
             float a = pi13 * v;
-            vert[v][0] = (int) (r * sin(a + alpha) + r);
-            vert[v][1] = (int) (r * cos(a + alpha) + r);
+            vert[v][0] = (int) (i * sin(a + alpha) + r);
+            vert[v][1] = (int) (i * cos(a + alpha) + r);
         }
         rasterColor((uint8_t)i);
         triangle(vert[0], vert[1], vert[2]);

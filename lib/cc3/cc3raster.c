@@ -8,6 +8,7 @@
 #include "os.h"
 #include "cc3hw.h"
 #include "cc3gfx.h"
+#include "cc3raster.h"
 
 extern GfxState gfx;
 
@@ -15,12 +16,22 @@ void rasterPos(int16_t x, int16_t y) {
     gfx.base_y_offset = y * gfx.bytes_per_row;
     gfx.rasterX = x;
     gfx.rasterY = y;
-    gfx.pixel_mask = x & 1 ? 0x0f : 0xf0; // TODO: other depths
+    gfx.pixel_mask = (uint8_t) x & 1 ? 0x0f : 0xf0; // TODO: other depths
 }
 
 void rasterColor(uint8_t color) {
     // Fill all bits with current color up front to avoid shifting later
     gfx.color = (color << 4) | (color & 0x0f); // TODO: handle other bit depths
+}
+
+void rasterFill(uint16_t n) {
+    if (n) {
+        if (gfx.rasterX & 1) {
+            rasterSet();
+            rasterIncX();
+            n--;
+        }
+    }
 }
 
 void rasterSet() {

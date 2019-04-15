@@ -50,7 +50,7 @@ extern void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 // Fills multiple pixels starting at location (x,y) for n bytes in length.
 // Note: x must land on a byte boundary. Use setPixel() to handle unaligned pixels.
 // Returns number of bytes written.
-extern void (*fillPixels)(uint16_t x, uint16_t y, uint16_t n);
+extern void (*fillPixels)(uint16_t x, uint16_t y, int16_t n);
 
 // Pack pixels from 1 pixel per byte to native pixel format chosen by setMode().
 // Returns number of bytes written to output
