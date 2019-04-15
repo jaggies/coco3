@@ -103,7 +103,7 @@ void testpoly() {
 //    }
 }
 
-#define TRI_SIZE 100 // pixels
+#define TRI_SIZE 200 // pixels
 enum { X=0, Y};
 
 void testCases() {
@@ -142,15 +142,13 @@ int main(int argc, char** argv) {
     const int width = getWidth();
 
     testCases();
-    sleep(5);
     clear(0x8); // blue
-
     testpoly();
-    sleep(5);
     clear(0x8); // blue
 
     int16_t v[3][2];
-    while (1) {
+    int count = 100;
+    while (--count) {
         uint8_t clr = (uint8_t) (myrand() & 0x0f);
         for (int i = 0; i < 3; i++) {
             v[i][0] = myrand() % width;
