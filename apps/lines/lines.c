@@ -10,6 +10,7 @@
 #include "cc3gfx.h"
 #include "cc3line.h"
 #include "cc3rect.h"
+#include "cc3raster.h"
 
 #define WIDTH 320
 #define HEIGHT 200
@@ -41,21 +42,23 @@ int main(int argc, char** argv) {
     const int height = getHeight();
     const int width = getWidth();
 
-    rect(WIDTH/2-SIZE, HEIGHT/2-SIZE, WIDTH/2 + SIZE, HEIGHT/2 + SIZE, 0x0f, false);
+    rasterColor(0x0f);
+    rect(WIDTH/2-SIZE, HEIGHT/2-SIZE, WIDTH/2 + SIZE, HEIGHT/2 + SIZE, false);
 
     for (int i = 0; i < 4; i++) {
         uint8_t clrs[] = { 0x01, 0x06, 0x08, 0x0f };
         int x = WIDTH/2 + (i & 1 ? -SIZE : SIZE);
         int y = HEIGHT/2 + ((i>>1) & 1 ? -SIZE : SIZE);
-        line(WIDTH/2, HEIGHT/2, x, y, clrs[i]);
+        rasterColor(clrs[i]);
+        line(WIDTH/2, HEIGHT/2, x, y);
     }
 
     sleep(4);
 
     while (1)
     {
-        uint8_t clr = (uint8_t) (rand() & 0x0f);
-        line(rand() % width, rand() % height, rand() % width, rand() % height, clr);
+        rasterColor((uint8_t) (rand() & 0x0f));
+        line(rand() % width, rand() % height, rand() % width, rand() % height);
     }
 
     return 0;

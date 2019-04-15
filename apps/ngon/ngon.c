@@ -10,6 +10,7 @@
 #include "cc3gfx.h"
 #include "cc3line.h"
 #include "cc3rect.h"
+#include "cc3raster.h"
 
 #define WIDTH 320
 #define HEIGHT 225
@@ -49,9 +50,10 @@ int main(int argc, char** argv) {
     }
 
     for (uint8_t clr = 1; clr < 16; clr++) {
+        rasterColor(clr);
         for (int n = 0; n < N; n++) {
             for (int m = n+1; m < N; m++) {
-                line(x[n], y[n], x[m], y[m], clr);
+                line(x[n], y[n], x[m], y[m]);
             }
         }
     }
