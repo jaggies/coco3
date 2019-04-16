@@ -23,6 +23,8 @@ typedef struct _GfxState {
     uint8_t color;
 } GfxState;
 
+enum { X = 0, Y = 1, Z = 2 };
+
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
 extern uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b);
 

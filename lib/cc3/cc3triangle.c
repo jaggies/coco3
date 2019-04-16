@@ -12,8 +12,6 @@
 #include "cc3triangle.h"
 #include "cc3line.h"
 
-enum { X = 0, Y = 1 }; // TODO: move some place more common
-
 typedef struct _Edge {
     int16_t x; // Current X and Y
     int16_t y;

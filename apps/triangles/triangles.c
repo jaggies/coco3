@@ -15,7 +15,7 @@
 #define HEIGHT 200
 #define VBLANK (262 - HEIGHT)
 #define DEPTH 4
-#define SIZE 50
+#define TRI_SIZE 200 // pixels
 
 void simpleRGB() {
     for (uint8_t i = 0; i < 16; i++) {
@@ -87,26 +87,7 @@ void testpoly() {
             poly3(p[order[i]], color[c]);
         }
     }
-//    float alpha = 0.0, theta = M_PI / 180, ang;
-//    float phi = 120.0 * M_PI / 180.0;
-//    while (1) {
-//        float s = 0.0;
-//        s = SZ * alpha / (2.0 * M_PI);
-//        for (i = 0, ang = 0.0; i < 3; i++, ang += phi) {
-//            p[i][X] = 320.0 + s * cos(alpha + ang);
-//            p[i][Y] = 226.0 + s * sin(alpha + ang);
-//            alpha += theta;
-//        }
-//        gcl_shademode(1);
-//        poly3(p, colr);
-//        gcl_shademode(0);
-//        gcl_rgbcolor(0, 0, 0);
-//        poly3(p, colr);
-//    }
 }
-
-#define TRI_SIZE 200 // pixels
-enum { X=0, Y};
 
 void testCases() {
     Vertex flatt[] = { { TRI_SIZE/2, TRI_SIZE}, { 0, 0 }, { TRI_SIZE, 0 } };
