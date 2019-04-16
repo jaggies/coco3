@@ -47,22 +47,25 @@ int main(int argc, char** argv) {
 
     int count = 1000;
     while (count--) {
-        int16_t xc = myrandom() % width;
-        int16_t yc = myrandom() % height;
-        int16_t r = myrandom() % (width>>2);
+        int16_t xc, yc, r;
+        do {
+            xc = myrandom() % width;
+            yc = myrandom() % height;
+            r = myrandom() % (width>>2);
+        } while (xc-r < 0 || yc-r < 0 || xc+r > width || yc+r > height);
         rasterColor((uint8_t) (myrandom()));
-        circle(xc, yc, r);
+        circle(xc, yc, r, true);
     }
 
     clear(0x8); // blue
 
     uint8_t clr = 1;
-    count = 256;
+    count = 100;
     while (count--) {
         int16_t xc = width/2;
         int16_t yc = height/2;
         rasterColor(clr);
-        circle(xc, yc, clr++);
+        circle(xc, yc, clr++, false);
     }
 
     return 0;
