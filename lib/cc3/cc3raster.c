@@ -9,6 +9,7 @@
 #include "cc3hw.h"
 #include "cc3gfx.h"
 #include "cc3raster.h"
+#include "cc3util.h"
 
 extern GfxState gfx;
 
@@ -24,14 +25,33 @@ void rasterColor(uint8_t color) {
     gfx.color = (color << 4) | (color & 0x0f); // TODO: handle other bit depths
 }
 
-void rasterFill(uint16_t n) {
-    if (n) {
-        if (gfx.rasterX & 1) {
-            rasterSet();
-            rasterIncX();
-            n--;
+void rasterSpan(int16_t count) {
+    disableInterrupts();
+    const uint8_t mmuSave = *PAGE_SELECT;
+    while (count > 0) {
+        uint16_t rasterStart = gfx.base_y_offset + (gfx.rasterX >> 1);
+        uint16_t rasterEnd = rasterStart + (count >> 1);
+        *PAGE_SELECT = gfx.base_page + (uint8_t) (rasterStart >> 13);
+        uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (rasterStart & 0x1fff);
+
+        if ((uint8_t) gfx.rasterX & 1) {
+            *ptr++ = (*ptr & 0xf0) | (gfx.color & 0x0f);
+            gfx.rasterX++;
+            count--;
+        } else if (count > 1) {
+            uint16_t n = min(count >> 1, PAGE_SIZE - (rasterStart & 0x1fff));
+            fmemset(ptr, gfx.color, n);
+            gfx.rasterX += n << 1;
+            count -= n << 1;
+        } else if (count == 1) {
+            *ptr &= 0x0f;
+            *ptr |= gfx.color & 0xf0;
+            count--;
         }
     }
+
+    *PAGE_SELECT = mmuSave;
+    enableInterrupts();
 }
 
 void rasterSet() {

@@ -8,6 +8,7 @@
 #include "os.h"
 #include "cc3hw.h"
 #include "cc3gfx.h"
+#include "cc3raster.h"
 #include "cc3util.h"
 #include "cc3triangle.h"
 #include "cc3line.h"
@@ -88,7 +89,9 @@ void triangle(const int* v0, const int* v1, const int* v2) {
     Edge* we2 = swap ? &edge1 : &edge2;
 
     do {
-        fillPixels(we1->x, we2->y, we2->x - we1->x);
+//        fillPixels(we1->x, we2->y, we2->x - we1->x);
+        rasterPos(we1->x, we2->y);
+        rasterSpan(we2->x - we1->x);
         walkEdge(we1);
         walkEdge(we2);
     } while (edge1.count);
@@ -99,7 +102,9 @@ void triangle(const int* v0, const int* v1, const int* v2) {
         // as the source of truth for Y. TODO.
         createEdge(v1, v2, &edge1);
         do {
-            fillPixels(we1->x, we2->y, we2->x - we1->x);
+            //fillPixels(we1->x, we2->y, we2->x - we1->x);
+            rasterPos(we1->x, we2->y);
+            rasterSpan(we2->x - we1->x);
             walkEdge(we1);
             walkEdge(we2);
         } while (edge2.count);

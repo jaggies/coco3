@@ -177,16 +177,14 @@ void fillPixels4bpp(uint16_t x, uint16_t y, int16_t n) {
     if (n <= 0) return;
 
     if (x & 1) {
-        setPixel(x, y); // TODO: avoid this extra calculation by re-using addr below
-        x++;
+        setPixel(x++, y); // TODO: avoid this extra calculation by re-using addr below
         n--;
     }
     if (n & 1) {
         setPixel(x+n-1, y); // TODO: avoid this extra calculation by re-using addr below
         n--;
     }
-    uint32_t addr = gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row;
-    memset24(addr, gfx.color, n >> 1);
+    memset24(gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row, gfx.color, n >> 1);
 }
 
 uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {
