@@ -113,26 +113,21 @@ void testCases() {
     }
 }
 
-int main(int argc, char** argv) {
-    /* Speedups */
-    set6309Native();
-    initCoCoSupport();
-    setHighSpeed(1);
-
-    /* Graphics */
-    setMode(WIDTH, HEIGHT, DEPTH);
-    simpleRGB();
-    clear(0x8); // blue
-
-    /* Draw pixels */
+void randomTriangles(int count) {
     const int height = getHeight();
     const int width = getWidth();
+    while (--count) {
+        int16_t vert[3][2];
+        for (int i = 0; i < 3; i++) {
+            vert[i][0] = myrand() % width;
+            vert[i][1] = myrand() % height;
+        }
+        rasterColor((uint8_t) (myrand() & 0x0f));
+        triangle(vert[0], vert[1], vert[2]);
+    }
+}
 
-    testCases();
-    clear(0x8); // blue
-    testpoly();
-    clear(0x8); // blue
-
+void rotatingTriangles() {
     const int r = 100;
     const float pi2 = 2.0f * M_PI;
     const float pi13 = pi2 / 3;
@@ -149,16 +144,29 @@ int main(int argc, char** argv) {
         triangle(vert[0], vert[1], vert[2]);
         alpha += dAlpha;
     }
+}
 
-    int count = 100;
-    while (--count) {
-        int16_t vert[3][2];
-        for (int i = 0; i < 3; i++) {
-            vert[i][0] = myrand() % width;
-            vert[i][1] = myrand() % height;
-        }
-        rasterColor((uint8_t) (myrand() & 0x0f));
-        triangle(vert[0], vert[1], vert[2]);
+int main(int argc, char** argv) {
+    /* Speedups */
+    set6309Native();
+    initCoCoSupport();
+    setHighSpeed(1);
+
+    /* Graphics */
+    setMode(WIDTH, HEIGHT, DEPTH);
+    simpleRGB();
+
+    /* Draw pixels */
+    const uint8_t clearColor = 0x08; // blue
+    while (1) {
+        clear(clearColor);
+        testCases();
+        clear(clearColor);
+        testpoly();
+        clear(clearColor);
+        rotatingTriangles();
+        clear(clearColor);
+        randomTriangles(200);
     }
 
     return 0;
