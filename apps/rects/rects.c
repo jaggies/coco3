@@ -28,6 +28,10 @@ void simpleRGB() {
     }
 }
 
+int16_t myrandom() {
+    return rand() | (rand() >> 1);
+}
+
 int main(int argc, char** argv) {
     /* Speedups */
     set6309Native();
@@ -63,8 +67,16 @@ int main(int argc, char** argv) {
         rect(x0, y0, x1, y1, true);
     }
 
-    while(1)
-        ;
+    sleep(5);
+    int count = 1000;
+    while (count--) {
+        int x0 = myrandom() % WIDTH;
+        int x1 = myrandom() % WIDTH;
+        int y0 = myrandom() % HEIGHT;
+        int y1 = myrandom() % HEIGHT;
+        rasterColor((uint8_t)myrandom() & 0x0f);
+        rect(x0, y0, x1, y1, true);
+    }
 
     return 0;
 }
