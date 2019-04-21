@@ -12,7 +12,7 @@
 #include "cc3raster.h"
 
 #define WIDTH 320
-#define HEIGHT 200
+#define HEIGHT 225
 #define VBLANK (262 - HEIGHT)
 #define DEPTH 4
 #define TRI_SIZE 200 // pixels
