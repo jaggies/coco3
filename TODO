@@ -1,2 +1,4 @@
-Switch to using raster library in cc3triangle and cc3circle
+Optimize loop in rasterSpan(). Lots of extra stuff is calculated.
+
+X Switch to using raster library in cc3triangle and cc3circle 
 

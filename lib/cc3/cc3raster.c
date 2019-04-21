@@ -29,9 +29,9 @@ void rasterSpan(int16_t count) {
     disableInterrupts();
     const uint8_t mmuSave = *PAGE_SELECT;
     while (count > 0) {
-        uint16_t rasterStart = gfx.base_y_offset + (gfx.rasterX >> 1);
+        const uint16_t rasterStart = gfx.base_y_offset + (gfx.rasterX >> 1);
+        const uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (rasterStart & 0x1fff);
         *PAGE_SELECT = gfx.base_page + (uint8_t) (rasterStart >> 13);
-        uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (rasterStart & 0x1fff);
 
         if ((uint8_t) gfx.rasterX & 1) {
             *ptr = (*ptr & 0xf0) | (gfx.color & 0x0f);
