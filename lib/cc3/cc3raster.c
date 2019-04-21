@@ -28,6 +28,10 @@ void rasterColor(uint8_t color) {
 void rasterSpan(int16_t count) {
     disableInterrupts();
     const uint8_t mmuSave = *PAGE_SELECT;
+    if (count < 0) {
+        gfx.rasterX += count;
+        count = -count;
+    }
     while (count > 0) {
         const uint16_t rasterStart = gfx.base_y_offset + (gfx.rasterX >> 1);
         const uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (rasterStart & 0x1fff);

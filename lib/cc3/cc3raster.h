@@ -11,7 +11,8 @@
 // Move raster to given position
 extern void rasterPos(int16_t x, int16_t y);
 
-// Fills n pixels with the current color, starting with the current raster position
+// Fills n pixels with the current color, starting with the current raster position.
+// A negative value for n means draw the other way (towards negative X).
 void rasterSpan(int16_t n);
 
 // Specify the current color
