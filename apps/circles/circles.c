@@ -61,9 +61,9 @@ int main(int argc, char** argv) {
 
     uint8_t clr = 1;
     count = 100;
+    const int16_t xc = width >> 1;
+    const int16_t yc = height >> 1;
     while (count--) {
-        int16_t xc = width/2;
-        int16_t yc = height/2;
         rasterColor(clr);
         circle(xc, yc, clr++, false);
     }

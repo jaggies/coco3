@@ -20,12 +20,12 @@ void circle(int16_t xc, int16_t yc, int16_t radius, bool fill) {
     int16_t x = radius, y = 0;
     int16_t midpoint = 1 - radius;
     do {
-        int16_t x2 = -x + xc;
-        int16_t x4 = -y + xc;
+        int16_t x2 = xc - x;
+        int16_t x4 = xc - y;
         int16_t y1 = y + yc;
-        int16_t y2 = -y + yc;
+        int16_t y2 = yc - y;
         int16_t y3 = x + yc;
-        int16_t y4 = -x + yc;
+        int16_t y4 = yc - x;
         if (fill) {
             rasterPos(x2, y1); rasterSpan(x<<1);
             rasterPos(x2, y2); rasterSpan(x<<1);
