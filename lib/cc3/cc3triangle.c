@@ -89,7 +89,7 @@ void triangle(const int* v0, const int* v1, const int* v2) {
     Edge* we2 = swap ? &edge1 : &edge2;
 
     do {
-        rasterPos(we1->x, we2->y);
+        rasterPos(we1->x, we1->y);
         rasterSpan(we2->x - we1->x);
         walkEdge(we1);
         walkEdge(we2);
@@ -101,7 +101,7 @@ void triangle(const int* v0, const int* v1, const int* v2) {
         // as the source of truth for Y. TODO.
         createEdge(v1, v2, &edge1);
         do {
-            rasterPos(we1->x, we2->y);
+            rasterPos(we1->x, we1->y);
             rasterSpan(we2->x - we1->x);
             walkEdge(we1);
             walkEdge(we2);

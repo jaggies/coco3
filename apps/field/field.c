@@ -50,8 +50,6 @@ void enableVideoIRQs() {
     enableInterrupts();
 }
 
-#define gfrac 7 // number of fractional bits
-
 int main(int argc, char** argv) {
     /* Speedups */
     set6309Native();

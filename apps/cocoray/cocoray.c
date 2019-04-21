@@ -17,9 +17,9 @@
 #include "testscene.h"
 
 const int WIDTH = 320; // Render width / height
-const int HEIGHT = 200;
+const int HEIGHT = 225;
 const int DPYWIDTH = 320;
-const int DPYHEIGHT = 200;
+const int DPYHEIGHT = 225;
 const int DACBITS = 2;
 
 #define MAXDEPTH 3 // depth for reflected rays
@@ -95,6 +95,7 @@ int main(int argc, char** argv) {
     Scene *scene = testScene(fromFloat(aspect));
 
     for (int j = 0; j < HEIGHT; j++) {
+        rasterPos(0, j);
         fixed v = c_one - (fixed) ((fresult) c_one * j / HEIGHT);
         for (int i = 0; i < WIDTH; i++) {
             iRay ray;
@@ -113,10 +114,9 @@ int main(int argc, char** argv) {
             color.x = clamp(color.x, 0, c_one);
             color.y = clamp(color.y, 0, c_one);
             color.z = clamp(color.z, 0, c_one);
-            //hset(i, j, ditherRGB(i, j, &color));
-            //hset(i, j, nearest(&color));
             rasterColor(diffusion(&color, i == 0));
-            setPixel(i, j);
+            rasterSet();
+            rasterIncX();
         }
     }
 

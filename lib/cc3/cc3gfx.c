@@ -40,7 +40,6 @@ static void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 
 void (*setPixel)(uint16_t x, uint16_t y);
 void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
-void (*fillPixels)(uint16_t x, uint16_t y, int16_t n);
 
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
 uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
@@ -58,13 +57,10 @@ int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     uint8_t vrr = 0; // video resolution register setting when done
     switch (depth) {
         case 1: gfx.bpp = depth; vrr |= CRES_1BPP; setPixel = setPixel1bpp; setPixels = setPixels1bpp;
-        fillPixels = fillPixels1bpp;
         break;
         case 2: gfx.bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; setPixels = setPixels2bpp;
-        fillPixels = fillPixels2bpp;
         break;
         case 4: gfx.bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; setPixels = setPixels4bpp;
-        fillPixels = fillPixels4bpp;
         break;
         default: return 0;
     }
@@ -161,30 +157,6 @@ void setPixels2bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
 void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n) {
     assert((x & 1) == 0);
     memcpy24(gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row, clr, n);
-}
-
-void fillPixels1bpp(uint16_t x, uint16_t y, int16_t n) {
-    // TODO: handle unaligned first and last pixels!
-    memset24(gfx.base_addr + (x >> 3) + y * gfx.bytes_per_row, gfx.color, n >> 3);
-}
-
-void fillPixels2bpp(uint16_t x, uint16_t y, int16_t n) {
-    // TODO: handle unaligned first and last pixels!
-    memset24(gfx.base_addr + (x >> 2) + y * gfx.bytes_per_row, gfx.color, n >> 2);
-}
-
-void fillPixels4bpp(uint16_t x, uint16_t y, int16_t n) {
-    if (n <= 0) return;
-
-    if (x & 1) {
-        setPixel(x++, y); // TODO: avoid this extra calculation by re-using addr below
-        n--;
-    }
-    if (n & 1) {
-        setPixel(x+n-1, y); // TODO: avoid this extra calculation by re-using addr below
-        n--;
-    }
-    memset24(gfx.base_addr + (x >> 1) + y * gfx.bytes_per_row, gfx.color, n >> 1);
 }
 
 uint16_t packPixels(uint8_t* const in, uint8_t* out, uint16_t n) {

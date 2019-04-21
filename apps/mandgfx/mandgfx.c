@@ -22,6 +22,7 @@ void doMandleInt(float xmin, float xmax, float ymin, float ymax) {
 
     fixed ci = ci_min;
     for (int j = 0; j < YRES; j++) {
+        rasterPos(0, j);
 		fixed cr = cr_min;
         for (int i = 0; i < XRES; i++) {
             fixed zr = 0;
@@ -38,7 +39,8 @@ void doMandleInt(float xmin, float xmax, float ymin, float ymax) {
                 zi2 = fmult(zi, zi);
             } while (count++ < MAXCOUNT && (zr2 + zi2) < c_four);
             rasterColor((count-1) & 0x0f);
-			setPixel(i, j);
+            rasterSet();
+            rasterIncX();
 			cr += cr_delta;
         }
         ci += ci_delta;
@@ -65,7 +67,8 @@ void doMandelFloat(float xmin, float xmax, float ymin, float ymax) {
                 zi = ti + ci;
             } while ((count++ < MAXCOUNT) && (zr*zr + zi*zi) < 4.0f);
             rasterColor((count-1) & 0x0f);
-            setPixel(i, j);
+            rasterSet();
+            rasterIncX();
         }
     }
 }
