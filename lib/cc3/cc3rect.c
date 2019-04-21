@@ -10,8 +10,7 @@
 #include "cc3util.h"
 #include "cc3rect.h"
 #include "cc3line.h"
-
-extern GfxState gfx;
+#include "cc3raster.h"
 
 void rect(int16_t x0, int16_t y0, int16_t x1, int16_t y1, bool fill)
 {
@@ -21,7 +20,8 @@ void rect(int16_t x0, int16_t y0, int16_t x1, int16_t y1, bool fill)
         int16_t ymin = min(y0, y1);
         int16_t ymax = max(y0, y1);
         do {
-            fillPixels(xmin, ymin, xmax - xmin);
+            rasterPos(xmin, ymin);
+            rasterSpan(xmax - xmin);
             ymin++;
         } while (ymin < ymax);
     } else { // Draw outline

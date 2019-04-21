@@ -27,10 +27,10 @@ void circle(int16_t xc, int16_t yc, int16_t radius, bool fill) {
         int16_t y3 = x + yc;
         int16_t y4 = -x + yc;
         if (fill) {
-            fillPixels(x2, y1, x<<1);
-            fillPixels(x2, y2, x<<1);
-            fillPixels(x4, y3, y<<1);
-            fillPixels(x4, y4, y<<1);
+            rasterPos(x2, y1); rasterSpan(x<<1);
+            rasterPos(x2, y2); rasterSpan(x<<1);
+            rasterPos(x4, y3); rasterSpan(y<<1);
+            rasterPos(x4, y4); rasterSpan(y<<1);
         } else {
             int16_t x1 = x + xc;
             int16_t x3 = y + xc;
