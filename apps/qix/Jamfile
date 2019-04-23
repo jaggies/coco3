@@ -1,0 +1,14 @@
+SubDir TOP apps qix ;
+
+SubDirHdrs $(TOP) lib cc3 ;
+SubDirHdrs $(TOP) lib os ;
+
+CoCoDisk qix.dsk : QIX.BIN ;
+
+LINKLIBS on QIX.BIN  = -lcc3 -los -lray ; 
+Depends QIX.BIN : libos.a libcc3.a ;
+
+Main QIX.BIN :
+	qix.c
+	;
+

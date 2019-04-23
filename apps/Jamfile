@@ -10,6 +10,7 @@ if $(TARGET) = "coco3" {
 	SubInclude TOP apps triangles ;
 	SubInclude TOP apps mandgfx ;
 	#SubInclude TOP apps microray ;
+	SubInclude TOP apps qix ;
 }
 SubInclude TOP apps test ;
 SubInclude TOP apps mandel ;
