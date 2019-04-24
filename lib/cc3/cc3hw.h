@@ -34,8 +34,8 @@ extern const uint8_t *FIRQ_VECTOR; // MC6809E FIRQ vector in memory
 #define MMUE000 ((uint8_t*) 0xffa7)
 
 // For memcpy24/memset24
-#define PAGE_WINDOW 0xc000
-#define PAGE_SELECT MMUC000
+#define PAGE_WINDOW 0x8000
+#define PAGE_SELECT MMU8000
 #define PAGE_BITS 13
 #define PAGE_SIZE (1 << PAGE_BITS)
 #define PAGE_MASK ((1<<PAGE_BITS) - 1)
