@@ -33,7 +33,7 @@ void line(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
         const uint16_t offset = gfx.base_y_offset + (gfx.rasterX >> 1); // TODO: other bit depths
 
         *PAGE_SELECT = gfx.base_page + (uint8_t) (offset >> PAGE_BITS);
-        uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (offset & 0x1fff);
+        uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (offset & PAGE_MASK);
         *ptr = (*ptr & (~gfx.pixel_mask)) | (gfx.color & gfx.pixel_mask);
 
         int16_t e2 = err << 1;

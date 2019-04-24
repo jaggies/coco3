@@ -38,6 +38,7 @@ extern const uint8_t *FIRQ_VECTOR; // MC6809E FIRQ vector in memory
 #define PAGE_SELECT MMUC000
 #define PAGE_BITS 13
 #define PAGE_SIZE (1 << PAGE_BITS)
+#define PAGE_MASK ((1<<PAGE_BITS) - 1)
 
 extern void set6309Native(); // Enables 6309 Native mode for higher performance
 extern void memset1(uint32_t addr, uint8_t value, uint8_t mask);

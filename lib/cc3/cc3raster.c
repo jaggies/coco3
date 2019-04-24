@@ -13,6 +13,8 @@
 
 extern GfxState gfx;
 
+#define MULT160(a) ((a << 7) + (a << 5)) // cheaper than mult16()?
+
 void rasterPos(int16_t x, int16_t y) {
     gfx.base_y_offset = y * gfx.bytes_per_row;
     gfx.rasterX = x;
@@ -34,15 +36,15 @@ void rasterSpan(int16_t count) {
     }
     while (count > 0) {
         const uint16_t rasterStart = gfx.base_y_offset + (gfx.rasterX >> 1);
-        const uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (rasterStart & 0x1fff);
-        *PAGE_SELECT = gfx.base_page + (uint8_t) (rasterStart >> 13);
+        const uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (rasterStart & PAGE_MASK);
+        *PAGE_SELECT = gfx.base_page + (uint8_t) (rasterStart >> PAGE_BITS);
 
         if ((uint8_t) gfx.rasterX & 1) {
             *ptr = (*ptr & 0xf0) | (gfx.color & 0x0f);
             gfx.rasterX++;
             count--;
         } else if (count > 1) {
-            uint16_t n = min(count >> 1, PAGE_SIZE - (rasterStart & 0x1fff));
+            uint16_t n = min(count >> 1, PAGE_SIZE - (rasterStart & PAGE_MASK));
             fmemset(ptr, gfx.color, n);
             uint16_t nPixels = n << 1;
             gfx.rasterX += nPixels;
