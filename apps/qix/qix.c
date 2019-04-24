@@ -15,7 +15,7 @@
 #define WIDTH 320
 #define HEIGHT 225
 #define DEPTH 4
-#define HISTORY 16 // number of lines to keep
+#define HISTORY 32 // number of lines to keep
 #define BG 0x0
 
 void simpleRGB() {
@@ -32,7 +32,6 @@ int hx0[HISTORY];
 int hy0[HISTORY];
 int hx1[HISTORY];
 int hy1[HISTORY];
-int pal[HISTORY];
 
 int main(int argc, char** argv) {
     /* Speedups */
@@ -62,14 +61,13 @@ int main(int argc, char** argv) {
     *y1 = height/2 + 50;
     uint8_t count = 0;
 
+    const int nbytes = (HISTORY-1) * sizeof(int);
     while (1) {
-        for (uint8_t i = 0; i < HISTORY-1; i++) {
-            hx0[i] = hx0[i+1];
-            hy0[i] = hy0[i+1];
-            hx1[i] = hx1[i+1];
-            hy1[i] = hy1[i+1];
-            pal[i] = pal[i+1];
-        }
+        // TODO: use modulo access instead of array copies
+        memcpy(&hx0[0], &hx0[1], nbytes);
+        memcpy(&hx1[0], &hx1[1], nbytes);
+        memcpy(&hy0[0], &hy0[1], nbytes);
+        memcpy(&hy1[0], &hy1[1], nbytes);
 
         *x0 += vx0;
         *y0 += vy0;
@@ -92,13 +90,12 @@ int main(int argc, char** argv) {
             *y1 += vy1;
         }
 
-        // Erase the last line
+        // Erase the oldest line
         rasterColor(0x00);
         line(hx0[0], hy0[0], hx1[0], hy1[0]);
 
         // Draw the new line
-        pal[count] = ((count % 15) + 1); // don't allow black
-        rasterColor(pal[count]);
+        rasterColor((count % 15) + 1);
         line(*x0, *y0, *x1, *y1);
 
         count++;
