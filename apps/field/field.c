@@ -90,9 +90,9 @@ int main(int argc, char** argv) {
             *grn++ = dither6x2((uint8_t) i, (uint8_t) j, g);
             *blu++ = dither6x2((uint8_t) i, (uint8_t) j, b);
         }
-        for (int k = 0; k < 3; k++) {
-            setGraphicsDrawBase(frameBase[k]);
-            setPixels(0, j, pixels[k], packPixels(pixels[k], pixels[k], XRES));
+        for (int channel = 0; channel < 3; channel++) {
+            setGraphicsDrawBase(frameBase[channel]);
+            setPixels(0, j, pixels[channel], packPixels(pixels[channel], pixels[channel], XRES));
         }
     }
 
