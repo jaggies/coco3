@@ -27,11 +27,14 @@ void simpleRGB() {
     }
 }
 
+typedef struct _Point {
+    int x;
+    int y;
+} Point;
+
 // zeroed by default
-int hx0[HISTORY];
-int hy0[HISTORY];
-int hx1[HISTORY];
-int hy1[HISTORY];
+Point p0[HISTORY];
+Point p1[HISTORY];
 
 int main(int argc, char** argv) {
     /* Speedups */
@@ -52,53 +55,52 @@ int main(int argc, char** argv) {
     int vy0 = 2;
     int vx1 = 4;
     int vy1 = 3;
-    int* x0 = &hx0[HISTORY-1];
-    int* y0 = &hy0[HISTORY-1];
-    int* x1 = &hx1[HISTORY-1];
-    int* y1 = &hy1[HISTORY-1];
-    *x0 = *x1 = width / 2;
-    *y0 = height/2 - 50;
-    *y1 = height/2 + 50;
+
+    uint8_t head = HISTORY-1;
+    uint8_t tail = 0;
+
+    p0[head].x = width / 2;
+    p1[head].x = width / 2;
+    p0[head].y = height / 2 - 50;
+    p1[head].y = height / 2 + 50;
     uint8_t count = 0;
 
     const int nbytes = (HISTORY-1) * sizeof(int);
     while (1) {
-        // TODO: use modulo access instead of array copies
-        memcpy(&hx0[0], &hx0[1], nbytes);
-        memcpy(&hx1[0], &hx1[1], nbytes);
-        memcpy(&hy0[0], &hy0[1], nbytes);
-        memcpy(&hy1[0], &hy1[1], nbytes);
-
-        *x0 += vx0;
-        *y0 += vy0;
-        *x1 += vx1;
-        *y1 += vy1;
-        if (*x0 < 0 || *x0 > width) {
-            vx0 = -vx0;
-            *x0 += vx0;
-        }
-        if (*y0 < 0 || *y0 > height) {
-            vy0 = -vy0;
-            *y0 += vy0;
-        }
-        if (*x1 < 0 || *x1 > width) {
-            vx1 = -vx1;
-            *x1 += vx1;
-        }
-        if (*y1 < 0 || *y1 > height) {
-            vy1 = -vy1;
-            *y1 += vy1;
-        }
-
         // Erase the oldest line
         rasterColor(0x00);
-        line(hx0[0], hy0[0], hx1[0], hy1[0]);
+        line(p0[tail].x, p0[tail].y, p1[tail].x, p1[tail].y);
 
         // Draw the new line
-        rasterColor((count % 15) + 1);
-        line(*x0, *y0, *x1, *y1);
+        rasterColor((count++ % 15) + 1);
+        line(p0[head].x, p0[head].y, p1[head].x, p1[head].y);
 
-        count++;
+        int oldhead = head;
+
+        head = (head + 1) % HISTORY;
+        tail = (tail + 1) % HISTORY;
+
+        p0[head].x = p0[oldhead].x + vx0;
+        p0[head].y = p0[oldhead].y + vy0;
+        p1[head].x = p1[oldhead].x + vx1;
+        p1[head].y = p1[oldhead].y + vy1;
+
+        if (p0[head].x < 0 || p0[head].x > width) {
+            vx0 = -vx0;
+            p0[head].x += vx0 << 1;
+        }
+        if (p0[head].y < 0 || p0[head].y > height) {
+            vy0 = -vy0;
+            p0[head].y += vy0 << 1;
+        }
+        if (p1[head].x < 0 || p1[head].x > width) {
+            vx1 = -vx1;
+            p1[head].x += vx1 << 1;
+        }
+        if (p1[head].y < 0 || p1[head].y > height) {
+            vy1 = -vy1;
+            p1[head].y += vy1 << 1;
+        }
     }
 
     return 0;
