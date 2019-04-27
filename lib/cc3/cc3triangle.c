@@ -42,7 +42,7 @@ static void createEdge(const int16_t* v0, const int16_t* v1, Edge* edge) {
 }
 
 // Walks an edge using Bresenham's algorithm. Returns remaining count when Y changes.
-static void walkEdge(Edge* edge) {
+static bool walkEdge(Edge* edge) {
     bool ychanged = false;
     while (edge->count && !ychanged) {
         edge->count--;
@@ -57,6 +57,7 @@ static void walkEdge(Edge* edge) {
             edge->x += edge->stepX;
         }
     }
+    return ychanged;
 }
 
 void triangle(const int* v0, const int* v1, const int* v2) {
@@ -73,38 +74,30 @@ void triangle(const int* v0, const int* v1, const int* v2) {
     }
 
     Edge edge1, edge2; // The current two edges we're walking
-    bool swap; // True if edge2 is on the left
     if (v0[Y] == v1[Y]) { // flat on the top (v2[Y] >= either, or degenerate)
         createEdge(v0, v2, &edge1);
         createEdge(v1, v2, &edge2);
-        swap = v0[X] > v1[X];
     } else {
         createEdge(v0, v1, &edge1);
         createEdge(v0, v2, &edge2);
-        swap = v1[X] > v2[X];
     }
 
-    // Always render left to right
-    Edge* we1 = swap ? &edge2 : &edge1;
-    Edge* we2 = swap ? &edge1 : &edge2;
-
     do {
-        rasterPos(we1->x, we1->y);
-        rasterSpan(we2->x - we1->x);
-        walkEdge(we1);
-        walkEdge(we2);
+        rasterPos(edge1.x, edge1.y);
+        rasterSpan(edge2.x - edge1.x);
+        if (walkEdge(&edge1)) {
+            walkEdge(&edge2); // only walk edge2 if edge1 resulted in a line
+        }
     } while (edge1.count);
 
     // edge2 is longest because we sort vertices by Y, so walk additional segment if not finished
     if (edge2.count) {
-        // Hmm. Sometimes edge2.y doesn't start at the same place. For now use edge2
-        // as the source of truth for Y. TODO.
         createEdge(v1, v2, &edge1);
         do {
-            rasterPos(we1->x, we1->y);
-            rasterSpan(we2->x - we1->x);
-            walkEdge(we1);
-            walkEdge(we2);
+            rasterPos(edge1.x, edge1.y);
+            rasterSpan(edge2.x - edge1.x);
+            walkEdge(&edge1);
+            walkEdge(&edge2);
         } while (edge2.count);
     }
 }
