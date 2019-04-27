@@ -34,27 +34,34 @@ float* RotationMatrix(float angle, uint8_t axis, float matrix[16]) {
     const float theta = Radians(angle);
     const float SIN = sin(theta);
     const float COS = cos(theta);
+    memcpy(matrix, identity, sizeof(identity));
     if (axis == X) {
-        float m[16] = {
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f,  COS,  SIN, 0.0f,
-            0.0f, -SIN,  COS, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f };
-        memcpy(matrix, m, sizeof(m));
+        //1.0f, 0.0f, 0.0f, 0.0f,
+        //0.0f,  COS,  SIN, 0.0f,
+        //0.0f, -SIN,  COS, 0.0f,
+        //0.0f, 0.0f, 0.0f, 1.0f
+        matrix[A22] = COS;
+        matrix[A23] = -SIN;
+        matrix[A32] = SIN;
+        matrix[A33] = COS;
     } else if (axis == Y) {
-        float m[16] = {
-            COS,  0.0f, -SIN, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            SIN,  0.0f,  COS, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f };
-        memcpy(matrix, m, sizeof(m));
+        //COS,  0.0f, -SIN, 0.0f,
+        //0.0f, 1.0f, 0.0f, 0.0f,
+        //SIN,  0.0f,  COS, 0.0f,
+        //0.0f, 0.0f, 0.0f, 1.0f
+        matrix[A11] = COS;
+        matrix[A13] = SIN;
+        matrix[A31] = -SIN;
+        matrix[A33] = COS;
     } else if (axis == Z) {
-        float m[16] = {
-             COS,  SIN, 0.0f, 0.0f,
-            -SIN,  COS, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f };
-        memcpy(matrix, m, sizeof(m));
+        // COS,  SIN, 0.0f, 0.0f,
+        //-SIN,  COS, 0.0f, 0.0f,
+        //0.0f, 0.0f, 1.0f, 0.0f,
+        //0.0f, 0.0f, 0.0f, 1.0f
+        matrix[A11] = COS;
+        matrix[A12] = -SIN;
+        matrix[A21] = SIN;
+        matrix[A22] = COS;
     }
     return matrix;
 }
