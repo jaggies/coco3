@@ -49,7 +49,7 @@ void rasterSpan(int16_t count) {
             uint16_t nPixels = n << 1;
             gfx.rasterX += nPixels;
             count -= nPixels;
-        } else if (count == 1) {
+        } else {
             *ptr &= 0x0f;
             *ptr |= gfx.color & 0xf0;
             gfx.rasterX++;
