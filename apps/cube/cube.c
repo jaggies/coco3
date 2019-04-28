@@ -8,6 +8,7 @@
 #include "os.h"
 #include "cc3hw.h"
 #include "cc3gfx.h"
+#include "cc3line.h"
 #include "cc3triangle.h"
 #include "cc3raster.h"
 #include "matrix.h"
@@ -16,6 +17,7 @@
 #define HEIGHT 225
 #define DEPTH 4
 #define CUBESIZE 100
+//#define LINES
 
 void simpleRGB() {
     for (uint8_t i = 0; i < 16; i++) {
@@ -62,13 +64,18 @@ static const float vertex[8][3] = {
     {cubeMax[X], cubeMax[Y], cubeMax[Z]}, {cubeMin[X], cubeMax[Y], cubeMax[Z]} };
 
 // bottom, top, front, back, left, right - in CW order
-static const int faces[6][4]= {
+static const uint8_t faces[6][4] = {
         {3, 2, 1, 0}, {4, 5, 6, 7}, {2, 3, 7, 6},
         {0, 4, 5, 1}, {0, 4, 7, 3}, {1, 5, 6, 2} };
 
-static const float normals[6][3] = {
-        {0.0f, 1.0f, 0.0f},  {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0f},
-        {0.0f, 0.0f, -1.0f}, {1.0f,  0.0f, 0.0f}, {1.0f, 0.0f,  0.0f} };
+static const uint8_t vertex2face[8][3] = {
+        {0, 3, 4}, {0, 3, 5}, {0, 2, 5}, {0, 2, 4},
+        {1, 3, 4}, {1, 3, 5}, {1, 2, 5}, {1, 2, 4}
+};
+
+//static const float normals[6][3] = {
+//        {0.0f, 1.0f, 0.0f},  {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0f},
+//        {0.0f, 0.0f, -1.0f}, {1.0f,  0.0f, 0.0f}, {1.0f, 0.0f,  0.0f} };
 
 void drawFace(float v0[3], float v1[3], float v2[3], float v3[3]) {
     int p0[2], p1[2], p2[2], p3[2];
@@ -78,39 +85,44 @@ void drawFace(float v0[3], float v1[3], float v2[3], float v3[3]) {
         p2[i] = (int) v2[i];
         p3[i] = (int) v3[i];
     }
+#ifdef LINES
+    line(p0[X], p0[Y], p1[X], p1[Y]);
+    line(p1[X], p1[Y], p2[X], p2[Y]);
+    line(p2[X], p2[Y], p3[X], p3[Y]);
+    line(p3[X], p3[Y], p0[X], p0[Y]);
+#else
     triangle(p0, p1, p2);
     triangle(p0, p2, p3);
+#endif
 }
 
 float dot(const float a[3], const float b[3]) {
     return a[X] * b[X] + a[Y] * b[Y] + a[Z] * b[Z];
 }
 
-const float viewDirection[3] = { 0, 0, 1 };
+//static const float viewDirection[3] = { 0, 0, 1 };
 
 void drawCube(float m[16])
 {
     // Transform vertices
-    float v[8][3];
+    float vtrans[8][3];
     for (uint8_t i = 0; i < 8; i++) {
-        MatrixTransformVector(m, vertex[i], v[i]);
+        MatrixTransformVector(m, vertex[i], vtrans[i]);
     }
 
     // Find the point closest to the camera and draw the faces attached to it
     uint8_t bestVertex = 0;
     for (uint8_t i = 1; i < 8; i++) {
-        if (v[i][Z] < v[bestVertex][Z]) {
+        if (vtrans[i][Z] < vtrans[bestVertex][Z]) {
             bestVertex = i;
         }
     }
-    for (uint8_t i = 0; i < 6; i++) {
-        // Draw the 3 faces containing the best point
-        for (uint8_t k = 0; k < 4; k++) {
-            rasterColor(i + 1);
-            if (faces[i][k] == bestVertex) {
-                drawFace(v[faces[i][0]], v[faces[i][1]], v[faces[i][2]], v[faces[i][3]]);
-            }
-        }
+    const uint8_t * flist = vertex2face[bestVertex];
+    for (uint8_t f = 0; f < 3; f++) {
+        uint8_t face = *flist++;
+        rasterColor(face + 1);
+        uint8_t* f = faces[face];
+        drawFace(vtrans[f[0]], vtrans[f[1]], vtrans[f[2]], vtrans[f[3]]);
     }
 }
 
@@ -165,8 +177,8 @@ int main(int argc, char** argv) {
             ;
         setGraphicsViewBase(gfxBase[frame & 1]);
         alpha = (alpha + 1) % 360;
-        beta = (beta + 2) % 360;
-        gamma = (gamma + 3) % 360;
+        beta = (beta + 1) % 360;
+        gamma = (gamma + 1) % 360;
         frame++;
     }
 
