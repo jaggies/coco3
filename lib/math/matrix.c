@@ -36,32 +36,20 @@ float* RotationMatrix(float angle, uint8_t axis, float matrix[16]) {
     const float COS = cos(theta);
     memcpy(matrix, identity, sizeof(identity));
     if (axis == X) {
-        //1.0f, 0.0f, 0.0f, 0.0f,
-        //0.0f,  COS,  SIN, 0.0f,
-        //0.0f, -SIN,  COS, 0.0f,
-        //0.0f, 0.0f, 0.0f, 1.0f
-        matrix[A22] = COS;
-        matrix[A23] = -SIN;
-        matrix[A32] = SIN;
-        matrix[A33] = COS;
+        matrix[A22] = COS;  //1.0f 0.0f 0.0f 0.0f
+        matrix[A23] = -SIN; //0.0f COS  SIN  0.0f
+        matrix[A32] = SIN;  //0.0f -SIN COS  0.0f
+        matrix[A33] = COS;  //0.0f 0.0f 0.0f 1.0f
     } else if (axis == Y) {
-        //COS,  0.0f, -SIN, 0.0f,
-        //0.0f, 1.0f, 0.0f, 0.0f,
-        //SIN,  0.0f,  COS, 0.0f,
-        //0.0f, 0.0f, 0.0f, 1.0f
-        matrix[A11] = COS;
-        matrix[A13] = SIN;
-        matrix[A31] = -SIN;
-        matrix[A33] = COS;
+        matrix[A11] = COS;  //COS  0.0f -SIN 0.0f
+        matrix[A13] = SIN;  //0.0f 1.0f 0.0f 0.0f
+        matrix[A31] = -SIN; //SIN  0.0f COS  0.0f
+        matrix[A33] = COS;  //0.0f 0.0f 0.0f 1.0f
     } else if (axis == Z) {
-        // COS,  SIN, 0.0f, 0.0f,
-        //-SIN,  COS, 0.0f, 0.0f,
-        //0.0f, 0.0f, 1.0f, 0.0f,
-        //0.0f, 0.0f, 0.0f, 1.0f
-        matrix[A11] = COS;
-        matrix[A12] = -SIN;
-        matrix[A21] = SIN;
-        matrix[A22] = COS;
+        matrix[A11] = COS;  // COS SIN  0.0f 0.0f
+        matrix[A12] = -SIN; //-SIN COS  0.0f 0.0f
+        matrix[A21] = SIN;  //0.0f 0.0f 1.0f 0.0f
+        matrix[A22] = COS;  //0.0f 0.0f 0.0f 1.0f
     }
     return matrix;
 }
@@ -93,12 +81,11 @@ float* TranslationMatrix(float tx, float ty, float tz, float matrix[16])
 
 float* ScaleMatrix(float sx, float sy, float sz, float matrix[16])
 {
-    float m[16] = {
-          sx, 0.0f, 0.0f, 0.0f,
-        0.0f,   sy, 0.0f, 0.0f,
-        0.0f, 0.0f,   sz, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f };
-    memcpy(matrix, m, sizeof(m));
+    memcpy(matrix, identity, sizeof(identity));
+    matrix[A11] = sx; //sx   0.0f 0.0f 0.0f
+    matrix[A22] = sy; //0.0f sy   0.0f 0.0f
+    matrix[A33] = sz; //0.0f 0.0f sz   0.0f
+                      //0.0f 0.0f 0.0f 1.0f
     return matrix;
 }
 

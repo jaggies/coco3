@@ -5,7 +5,7 @@
  *      Author: jmiller
  */
 
- #include <math.h>
+#include <math.h>
 
 // Chebychev approximation good for ~3 digits
 float _cos(float x) {
