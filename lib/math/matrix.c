@@ -54,7 +54,7 @@ float* RotationMatrix(float angle, uint8_t axis, float matrix[16]) {
     return matrix;
 }
 
-float* RotationMatrixVector(float angle, const float axis[3], float matrix[16])
+float* RotationMatrixAxis(float angle, const float axis[3], float matrix[16])
 {
     const float theta = Radians(angle);
     const float s = sin(theta);

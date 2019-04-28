@@ -26,7 +26,7 @@ float* TranslationMatrix(float tx, float ty, float tz, float matrix[16]);
 float* ScaleMatrix(float sx, float sy, float sz, float matrix[16]);
 
 // Creates a rotation matrix for the given axis. Returns pointer to matrix.
-float* RotationMatrixVector(float angle, const float axis[3], float matrix[16]);
+float* RotationMatrixAxis(float angle, const float axis[3], float matrix[16]);
 
 // Transposes the matrix. Returns pointer to matrix.
 float* TransposeMatrix(const float in[16], float out[16]);
