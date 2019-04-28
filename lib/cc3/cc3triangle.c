@@ -85,10 +85,7 @@ void triangle(const int* v0, const int* v1, const int* v2) {
     do {
         rasterPos(edge1.x, edge1.y);
         rasterSpan(edge2.x - edge1.x);
-        if (walkEdge(&edge1)) {
-            walkEdge(&edge2); // only walk edge2 if edge1 resulted in a line
-        }
-    } while (edge1.count);
+    } while (walkEdge(&edge1) && walkEdge(&edge2));
 
     // edge2 is longest because we sort vertices by Y, so walk additional segment if not finished
     if (edge2.count) {
@@ -96,9 +93,7 @@ void triangle(const int* v0, const int* v1, const int* v2) {
         do {
             rasterPos(edge1.x, edge1.y);
             rasterSpan(edge2.x - edge1.x);
-            walkEdge(&edge1);
-            walkEdge(&edge2);
-        } while (edge2.count);
+        } while (walkEdge(&edge1) && walkEdge(&edge2));
     }
 }
 
