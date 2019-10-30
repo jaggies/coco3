@@ -102,7 +102,11 @@ float dot(const float a[3], const float b[3]) {
 
 //static const float viewDirection[3] = { 0, 0, 1 };
 
-void drawCube(float m[16])
+static char wire[12][2] = { {0,1}, {1,2}, {2, 3}, {3, 0},
+                            {0,4}, {1,5}, {2, 6}, {3, 7},
+                            {4,5}, {5,6}, {6, 7}, {7, 4}};
+
+void drawCube(float m[16], int solid)
 {
     // Transform vertices
     float vtrans[8][3];
@@ -110,19 +114,28 @@ void drawCube(float m[16])
         MatrixTransformVector(m, vertex[i], vtrans[i]);
     }
 
-    // Find the point closest to the camera and draw the faces attached to it
-    uint8_t bestVertex = 0;
-    for (uint8_t i = 1; i < 8; i++) {
-        if (vtrans[i][Z] < vtrans[bestVertex][Z]) {
-            bestVertex = i;
+    if (solid) {
+        // Find the point closest to the camera and draw the faces attached to it
+        uint8_t bestVertex = 0;
+        for (uint8_t i = 1; i < 8; i++) {
+            if (vtrans[i][Z] < vtrans[bestVertex][Z]) {
+                bestVertex = i;
+            }
         }
-    }
-    const uint8_t * flist = vertex2face[bestVertex];
-    for (uint8_t f = 0; f < 3; f++) {
-        uint8_t face = *flist++;
-        rasterColor(face + 1);
-        uint8_t* f = faces[face];
-        drawFace(vtrans[f[0]], vtrans[f[1]], vtrans[f[2]], vtrans[f[3]]);
+        const uint8_t * flist = vertex2face[bestVertex];
+        for (uint8_t f = 0; f < 3; f++) {
+            uint8_t face = *flist++;
+            rasterColor(face + 1);
+            uint8_t* f = faces[face];
+            drawFace(vtrans[f[0]], vtrans[f[1]], vtrans[f[2]], vtrans[f[3]]);
+        }
+    } else {
+        for (uint8_t i = 0; i < 12; i++) {
+            rasterColor(0x0f);
+            float* p1 = &vtrans[wire[i][0]];
+            float* p2 = &vtrans[wire[i][1]];
+            line((int)p1[X], (int)p1[Y], (int)p2[X], (int)p2[Y]);
+        }
     }
 }
 
@@ -171,7 +184,7 @@ int main(int argc, char** argv) {
                 m1);
         setGraphicsDrawBase(gfxBase[frame & 1]);
         clear(clearColor);
-        drawCube(m1);
+        drawCube(m1, 0);
         int t = getTimer();
         while (getTimer() == t) // wait for vsync
             ;
