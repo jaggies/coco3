@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <coco.h>
+//#include <coco.h>
 #include "vec3.h"
 #include "phongshader.h"
 #include "checkerboardshader.h"
