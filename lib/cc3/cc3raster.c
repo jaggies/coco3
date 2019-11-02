@@ -19,7 +19,7 @@ void rasterPos(int16_t x, int16_t y) {
     gfx.base_y_offset = y * gfx.bytes_per_row;
     gfx.rasterX = x;
     gfx.rasterY = y;
-    gfx.pixel_mask = (uint8_t) x & 1 ? 0x0f : 0xf0; // TODO: other depths
+    gfx.pixel_mask = gfx.masks[(uint8_t)x & 7];
 }
 
 void rasterColor(uint8_t color) {
@@ -40,18 +40,17 @@ void rasterSpan(int16_t count) {
         *PAGE_SELECT = gfx.base_page + (uint8_t) (rasterStart >> PAGE_BITS);
 
         if ((uint8_t) gfx.rasterX & 1) {
-            *ptr = (*ptr & 0xf0) | (gfx.color & 0x0f);
+            *ptr = (*ptr & 0xf0) | (gfx.color & 0x0f); // TODO: depth
             gfx.rasterX++;
             count--;
         } else if (count > 1) {
-            uint16_t n = min(count >> 1, PAGE_SIZE - (rasterStart & PAGE_MASK));
+            uint16_t n = min(count >> 1, PAGE_SIZE - (rasterStart & PAGE_MASK)); // TODO: depth
             fmemset(ptr, gfx.color, n);
             uint16_t nPixels = n << 1;
             gfx.rasterX += nPixels;
             count -= nPixels;
         } else {
-            *ptr &= 0x0f;
-            *ptr |= gfx.color & 0xf0;
+            *ptr = (*ptr & 0x0f) | (gfx.color & 0xf0); // TODO: depth
             gfx.rasterX++;
             count--;
         }
@@ -68,6 +67,7 @@ void rasterSet() {
 
     *PAGE_SELECT = gfx.base_page + (uint8_t) (offset >> PAGE_BITS) ;
     uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (offset & 0x1fff);
+    gfx.pixel_mask = gfx.masks[(uint8_t) gfx.rasterX & 7];
     *ptr = (*ptr & (~gfx.pixel_mask)) | (gfx.color & gfx.pixel_mask);
     *PAGE_SELECT = oldPage;
     enableInterrupts();
@@ -75,12 +75,10 @@ void rasterSet() {
 
 void rasterIncX() {
     gfx.rasterX++;
-    gfx.pixel_mask = ~gfx.pixel_mask; // TODO: Handle other depths
 }
 
 void rasterDecX() {
     gfx.rasterX--;
-    gfx.pixel_mask = ~gfx.pixel_mask; // TODO: Handle other depths
 }
 
 void rasterIncY() {

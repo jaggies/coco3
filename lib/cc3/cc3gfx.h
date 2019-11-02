@@ -21,6 +21,7 @@ typedef struct _GfxState {
     int16_t rasterX;
     int16_t rasterY;
     uint8_t color;
+    const uint8_t* masks; // array of masks for low bits of X pixel address
 } GfxState;
 
 enum { X = 0, Y = 1, Z = 2 };
@@ -39,7 +40,7 @@ extern void setPalette(uint8_t index, uint8_t r, uint8_t g, uint8_t b);
 extern void clear(uint8_t color);
 
 // Sets one pixel at location (x,y) in current graphics mode to the current color
-extern void (*setPixel)(uint16_t x, uint16_t y);
+extern void setPixel(uint16_t x, uint16_t y);
 
 // Sets multiple pixels starting at location (x,y) for n bytes in length.
 // Assumes pixels are packed into the native screen format, e.g. 2 pixels per byte

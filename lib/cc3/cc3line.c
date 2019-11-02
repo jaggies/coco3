@@ -34,6 +34,7 @@ void line(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
 
         *PAGE_SELECT = gfx.base_page + (uint8_t) (offset >> PAGE_BITS);
         uint8_t* ptr = (uint8_t*) PAGE_WINDOW + (offset & PAGE_MASK);
+        gfx.pixel_mask = gfx.masks[(uint8_t) gfx.rasterX & 7];
         *ptr = (*ptr & (~gfx.pixel_mask)) | (gfx.color & gfx.pixel_mask);
 
         int16_t e2 = err << 1;
@@ -44,7 +45,6 @@ void line(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
         if (e2 > dy) {
             err += dy;
             gfx.rasterX += stepX;
-            gfx.pixel_mask = ~gfx.pixel_mask; // inline rasterInc/DecX
         }
     } while (count--);
     *PAGE_SELECT = oldPage;

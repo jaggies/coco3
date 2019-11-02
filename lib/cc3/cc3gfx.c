@@ -31,14 +31,15 @@
 
 GfxState gfx;
 
-static void setPixel1bpp(uint16_t x, uint16_t y);
-static void setPixel2bpp(uint16_t x, uint16_t y);
-static void setPixel4bpp(uint16_t x, uint16_t y);
+// Filled out to 8 entries so these can share one mask
+static uint8_t masks1bpp[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+static uint8_t masks2bpp[] = { 0xc0, 0x30, 0x0c, 0x03, 0xc0, 0x30, 0x0c, 0x03 };
+static uint8_t masks4bpp[] = { 0xf0, 0x0f, 0xf0, 0x0f, 0xf0, 0x0f, 0xf0, 0x0f };
+
 static void setPixels1bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 static void setPixels2bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 static void setPixels4bpp(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 
-void (*setPixel)(uint16_t x, uint16_t y);
 void (*setPixels)(uint16_t x, uint16_t y, uint8_t* clr, uint16_t n);
 
 // Constructs a palette entry of RGBRGB in the hardware format for Coco3.
@@ -56,12 +57,9 @@ uint8_t toPalette(uint8_t r, uint8_t g, uint8_t b) {
 int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
     uint8_t vrr = 0; // video resolution register setting when done
     switch (depth) {
-        case 1: gfx.bpp = depth; vrr |= CRES_1BPP; setPixel = setPixel1bpp; setPixels = setPixels1bpp;
-        break;
-        case 2: gfx.bpp = depth; vrr |= CRES_2BPP; setPixel = setPixel2bpp; setPixels = setPixels2bpp;
-        break;
-        case 4: gfx.bpp = depth; vrr |= CRES_4BPP; setPixel = setPixel4bpp; setPixels = setPixels4bpp;
-        break;
+        case 1: vrr |= CRES_1BPP; gfx.masks = &masks1bpp[0]; setPixels = setPixels1bpp; break;
+        case 2: vrr |= CRES_2BPP; gfx.masks = &masks2bpp[0]; setPixels = setPixels2bpp; break;
+        case 4: vrr |= CRES_4BPP; gfx.masks = &masks4bpp[0]; setPixels = setPixels4bpp; break;
         default: return 0;
     }
     switch (xres) {
@@ -77,6 +75,7 @@ int setMode(uint16_t xres, uint16_t yres, uint8_t depth) {
         case 225: gfx.height_pixels = 225; vrr |= LPF_225; break;
         default: return 0;
     }
+    gfx.bpp = depth;
     gfx.bytes_per_row = (uint8_t) (xres * gfx.bpp >> 3);
     gfx.buffer_size_bytes = gfx.bytes_per_row * yres;
     *VIDEO_RES = vrr;
@@ -117,30 +116,11 @@ void clear(uint8_t color) {
     memset24(gfx.base_addr, packColor(color), gfx.buffer_size_bytes);
 }
 
-static uint8_t masks1bpp[] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
-void setPixel1bpp(uint16_t x, uint16_t y) {
+void setPixel(uint16_t x, uint16_t y) {
     gfx.base_y_offset = y * gfx.bytes_per_row;
     gfx.rasterX = x;
     gfx.rasterY = y;
-    gfx.pixel_mask = masks1bpp[(uint8_t) x & 7];
-    rasterSet();
-}
-
-static uint8_t masks2bpp[] = { 0xc0, 0x30, 0x0c, 0x03 };
-void setPixel2bpp(uint16_t x, uint16_t y) {
-    gfx.base_y_offset = y * gfx.bytes_per_row;
-    gfx.rasterX = x;
-    gfx.rasterY = y;
-    gfx.pixel_mask = masks2bpp[(uint8_t) x & 3];
-    rasterSet();
-}
-
-static uint8_t masks4bpp[] = { 0xf0, 0x0f };
-void setPixel4bpp(uint16_t x, uint16_t y) {
-    gfx.base_y_offset = y * gfx.bytes_per_row;
-    gfx.rasterX = x;
-    gfx.rasterY = y;
-    gfx.pixel_mask = masks4bpp[(uint8_t) x & 1];
+    gfx.pixel_mask = gfx.masks[(uint8_t) x & 7];
     rasterSet();
 }
 
