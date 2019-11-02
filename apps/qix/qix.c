@@ -101,6 +101,10 @@ int main(int argc, char** argv) {
             vy1 = -vy1;
             p1[head].y += vy1 << 1;
         }
+        // Wait for vertical refresh to make it smoother.
+        int t = getTimer();
+        while (getTimer() == t) // wait for vsync
+            ;
     }
 
     return 0;
