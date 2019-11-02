@@ -14,10 +14,10 @@
 #include "matrix.h"
 
 #define WIDTH 320
-#define HEIGHT 225
+#define HEIGHT 200
 #define DEPTH 4
-#define CUBESIZE 100
-//#define LINES
+#define CUBESIZE 128
+#define LINES
 
 void simpleRGB() {
     for (uint8_t i = 0; i < 16; i++) {
@@ -57,7 +57,7 @@ void testMatrix() {
 static const float cubeMin[3] = { -0.5f, -0.5f, -0.5f };
 static const float cubeMax[3] = {  0.5f, 0.5f, 0.5f };
 
-static const float vertex[8][3] = {
+static float vertex[8][3] = {
     {cubeMin[X], cubeMin[Y], cubeMin[Z]}, {cubeMax[X], cubeMin[Y], cubeMin[Z]},
     {cubeMax[X], cubeMin[Y], cubeMax[Z]}, {cubeMin[X], cubeMin[Y], cubeMax[Z]},
     {cubeMin[X], cubeMax[Y], cubeMin[Z]}, {cubeMax[X], cubeMax[Y], cubeMin[Z]},
@@ -72,6 +72,11 @@ static const uint8_t vertex2face[8][3] = {
         {0, 3, 4}, {0, 3, 5}, {0, 2, 5}, {0, 2, 4},
         {1, 3, 4}, {1, 3, 5}, {1, 2, 5}, {1, 2, 4}
 };
+
+static const uint8_t wire[12][2] = {
+        {0,1}, {1,2}, {2, 3}, {3, 0},
+        {0,4}, {1,5}, {2, 6}, {3, 7},
+        {4,5}, {5,6}, {6, 7}, {7, 4}};
 
 //static const float normals[6][3] = {
 //        {0.0f, 1.0f, 0.0f},  {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0f},
@@ -100,18 +105,11 @@ float dot(const float a[3], const float b[3]) {
     return a[X] * b[X] + a[Y] * b[Y] + a[Z] * b[Z];
 }
 
-//static const float viewDirection[3] = { 0, 0, 1 };
-
-static char wire[12][2] = { {0,1}, {1,2}, {2, 3}, {3, 0},
-                            {0,4}, {1,5}, {2, 6}, {3, 7},
-                            {4,5}, {5,6}, {6, 7}, {7, 4}};
-
-void drawCube(float m[16], int solid)
+void drawCube(float projection[16], int solid)
 {
-    // Transform vertices
     float vtrans[8][3];
     for (uint8_t i = 0; i < 8; i++) {
-        MatrixTransformVector(m, vertex[i], vtrans[i]);
+        MatrixTransformVector(projection, vertex[i], vtrans[i]);
     }
 
     if (solid) {
@@ -155,43 +153,40 @@ int main(int argc, char** argv) {
     const uint8_t clearColor = 0x08; // blue
     clear(clearColor);
 
-    int alpha = 0;
-    int beta = 0;
-    int gamma = 0;
+    int alpha = 6;
+    int beta = 8;
+    int gamma = 10;
     int frame = 0;
 
     const int32_t gfxBase[2] = { 0x00000, 0x10000 };
 
-    float ortho[16], m1[16], m2[16], r1[16], r2[16], r3[16];
+    float model[16], projection[16], r1[16], r2[16], r3[16], tmp1[16];
 
     MultiplyMatrix(
-            ScaleMatrix(CUBESIZE, CUBESIZE, 1, ortho),
-            TranslationMatrix(WIDTH / 2, HEIGHT / 2, 0, m1),
-            ortho);
+            ScaleMatrix(CUBESIZE, CUBESIZE, 1, projection),
+            TranslationMatrix(WIDTH / 2, HEIGHT / 2, 0, tmp1),
+            projection);
+
+    MultiplyMatrix(
+            RotationMatrix((float) alpha, X, r1),
+            RotationMatrix((float) beta, Y, r2),
+            tmp1);
+    MultiplyMatrix(
+            RotationMatrix((float) gamma, Z, r3),
+            tmp1,
+            model);
 
     while (1) {
-        MultiplyMatrix(
-                RotationMatrix((float) alpha, X, r1),
-                RotationMatrix((float) beta, Y, r2),
-                m1);
-        MultiplyMatrix(
-                RotationMatrix((float) gamma, Z, r3),
-                ortho,
-                m2);
-        MultiplyMatrix(
-                m1,
-                m2,
-                m1);
         setGraphicsDrawBase(gfxBase[frame & 1]);
         clear(clearColor);
-        drawCube(m1, 0);
+        drawCube(projection, 1);
+        for (uint8_t i = 0; i < 8; i++) {
+            MatrixTransformVector(model, vertex[i], vertex[i]);
+        }
         int t = getTimer();
         while (getTimer() == t) // wait for vsync
             ;
         setGraphicsViewBase(gfxBase[frame & 1]);
-        alpha = (alpha + 1) % 360;
-        beta = (beta + 1) % 360;
-        gamma = (gamma + 1) % 360;
         frame++;
     }
 
