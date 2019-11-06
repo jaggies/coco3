@@ -11,9 +11,9 @@ if $(TARGET) = coco3 {
 	INTRAY = intray ;
 }
 
-Depends $(INTRAY) : libray.a ;
+Depends $(INTRAY) : libray.a libfixed.a ;
 
-LINKLIBS on $(INTRAY) = -lray -los -lcc3 ;
+LINKLIBS on $(INTRAY) = -lray -los -lcc3 -lfixed ;
 
 Main $(INTRAY) :
 	intray.c

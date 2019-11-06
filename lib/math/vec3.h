@@ -5,8 +5,8 @@
  *      Author: jmiller
  */
 
-#ifndef VEC3_H_
-#define VEC3_H_
+#ifndef LIB_MATH_VEC3_H_
+#define LIB_MATH_VEC3_H_
 
 typedef struct Vec3 {
     float x, y, z;
@@ -25,4 +25,4 @@ extern void copy3(Vec3* a, Vec3* result);
 extern void negate3(Vec3* a);
 extern void multadd3(Vec3* a, Vec3* b, Vec3* c, Vec3* result);
 
-#endif /* VEC3_H_ */
+#endif /* LIB_MATH_VEC3_H_ */

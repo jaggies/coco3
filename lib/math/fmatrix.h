@@ -5,8 +5,8 @@
  *      Author: jmiller
  */
 
-#ifndef LIB_MATH_IMATRIX_H_
-#define LIB_MATH_IMATRIX_H_
+#ifndef LIB_MATH_FMATRIX_H_
+#define LIB_MATH_FMATRIX_H_
 
 #include "fixed.h"
 
@@ -45,4 +45,4 @@ fixed* fMatrixLoadIdentity(fixed matrix[16]);
 // Prints the given matrix.
 fixed* fMatrixPrint(fixed matrix[16]);
 
-#endif /* LIB_MATH_IMATRIX_H_ */
+#endif /* LIB_MATH_FMATRIX_H_ */

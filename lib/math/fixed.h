@@ -5,8 +5,8 @@
  *      Author: jmiller
  */
 
-#ifndef APPS_MINRAY_FIXED_H_
-#define APPS_MINRAY_FIXED_H_
+#ifndef LIB_MATH_FIXED_H_
+#define LIB_MATH_FIXED_H_
 
 #ifdef COCO
 typedef int Halfword;
@@ -43,4 +43,4 @@ extern const fixed c_max; // maximum value
 
 extern long mask;
 
-#endif /* APPS_MINRAY_FIXED_H_ */
+#endif /* LIB_MATH_FIXED_H_ */

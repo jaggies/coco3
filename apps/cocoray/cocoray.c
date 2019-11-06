@@ -11,7 +11,7 @@
 #include "cc3raster.h"
 #include "isphere.h"
 #include "icamera.h"
-#include "imath.h"
+#include "fmath.h"
 #include "dither.h"
 #include "raytrace.h"
 #include "testscene.h"

@@ -8,7 +8,7 @@
 #include "os.h"
 #include "scene.h"
 #include "ihit.h"
-#include "imath.h"
+#include "fmath.h"
 #include "raytrace.h"
 #include "testscene.h"
 

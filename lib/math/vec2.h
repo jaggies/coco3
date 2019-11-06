@@ -5,8 +5,8 @@
  *      Author: jmiller
  */
 
-#ifndef VEC2_H_
-#define VEC2_H_
+#ifndef LIB_MATH_VEC2_H_
+#define LIB_MATH_VEC2_H_
 
 typedef struct Vec2 {
     float x, y;
@@ -24,4 +24,4 @@ extern void copy2(Vec2* a, Vec2* result);
 extern void negate2(Vec2* a);
 extern void multadd2(Vec2* a, Vec2* b, Vec2* c, Vec2* result);
 
-#endif /* VEC2_H_ */
+#endif /* LIB_MATH_VEC2_H_ */

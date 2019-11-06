@@ -6,7 +6,7 @@
  */
 
 #include "os.h"
-#include "imath.h"
+#include "fmath.h"
 #include "ivec2i.h"
 
 void ivec2(fixed x, fixed y, Vec2i* result) {

@@ -1,11 +1,11 @@
 /*
- * imath.c
+ * fmath.c
  *
  *  Created on: Dec 9, 2018
  *      Author: jmiller
  */
 #include "os.h"
-#include "imath.h"
+#include "fmath.h"
 
 // Quick integer square rooter
 fresult isqrt(fresult value) {

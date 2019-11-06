@@ -6,7 +6,7 @@
  */
 
 #include "os.h"
-#include "imath.h"
+#include "fmath.h"
 #include "isphere.h"
 
 static fixed tmin = 1; // some small number

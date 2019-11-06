@@ -7,8 +7,8 @@ SubDirHdrs $(TOP) lib ray ;
 
 CoCoDisk mandgfx.dsk : MANDGFX.BIN ;
 
-Depends MANDGFX.BIN : libcc3.a libos.a ;
-LINKLIBS on MANDGFX.BIN = -lcc3 -los ;
+Depends MANDGFX.BIN : libcc3.a libos.a libfixed.a ;
+LINKLIBS on MANDGFX.BIN = -lcc3 -los -lfixed ;
 
 Main MANDGFX.BIN :
 	mandgfx.c

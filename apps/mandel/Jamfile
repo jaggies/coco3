@@ -11,9 +11,9 @@ if $(TARGET) = "coco3" {
     MANDEL = mandel ;
 }
 
-Depends $(MANDEL) : libos.a libcc3.a ;
+Depends $(MANDEL) : libos.a libcc3.a libfixed.a ;
 
-LINKLIBS on $(MANDEL) = -los -lcc3 ;
+LINKLIBS on $(MANDEL) = -los -lfixed -lcc3 ;
 
 Main $(MANDEL) :
 	mandel.c
