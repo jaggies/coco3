@@ -1,6 +1,7 @@
 TARGET = coco3 ;
 
 OPTIM = -g -O1 ;
+CPU = HD6309 ;
 #DEFINES += DEBUG ;
 
 if $(TARGET) = "coco3" {
@@ -21,6 +22,9 @@ if $(TARGET) = "coco3" {
 	#CCFLAGS += --os9 ; # Coco OS9 executable
 	# Oops, emulators have faulty implementation of HD6309 MULD instruction
 	DEFINES += MULD_WAR ; 
+	if $(CPU) = "HD6309" {
+		DEFINES += HD6309 ;
+	}
 } else {
 	TARGET = $(OS) ;
 }

@@ -1,0 +1,8 @@
+SubDir TOP lib cc3 hd6309 ;
+SubDirHdrs $(TOP) lib math ;
+SubDirHdrs $(TOP) lib os ;
+SubDirHdrs $(TOP) lib ray ;
+
+if $(TARGET) = "coco3" && $(CPU) = "HD6309" {
+	Library libcc3.a : fmemset.asm fastmult.asm ;
+}

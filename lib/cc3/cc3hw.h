@@ -47,8 +47,13 @@ extern void memcpy24(uint32_t dst, uint8_t* src, uint16_t length);
 extern void setFirq(interrupt void (*fptr)());
 extern void setIrq(interrupt void (*fptr)());
 extern void setNMI(interrupt void (*fptr)());
-
-extern uint8_t* fmemset(uint8_t*, uint8_t, size_t);
 extern int32_t fastmult(int16_t a, int16_t b);
+
+#ifdef HD6309
+extern uint8_t* fmemset(uint8_t*, uint8_t, size_t);
+#else
+#define fmemset memset
+#endif
+
 
 #endif /* LIB_COCO3_CC3HW_H_ */

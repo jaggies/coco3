@@ -15,9 +15,11 @@ uint8_t *NMI_VECTOR = * (uint8_t **) 0xFFFC;
 
 // Enables 6309 Native mode for higher performance
 void set6309Native() {
+#ifdef HD6309
     asm {
         ldmd  #$01
     }
+#endif
 }
 
 void setFirq(interrupt void (*fptr)()) {
@@ -80,3 +82,9 @@ void memcpy24(uint32_t dst, uint8_t* src, uint16_t length) {
     *PAGE_SELECT = oldMMU;
     enableInterrupts();
 }
+
+#ifndef HD6309
+int32_t fastmult(int16_t a, int16_t b) {
+	return (int32_t) a * (int32_t) b;
+}
+#endif
