@@ -8,4 +8,6 @@ Library libos.a :
 	imatrix.c
 	matrix.c
 	sincos.c
+	vec2.c
+	vec3.c
 	;

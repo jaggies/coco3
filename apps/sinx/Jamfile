@@ -1,0 +1,15 @@
+SubDir TOP apps sinx ;
+
+SubDirHdrs $(TOP) lib cc3 ;
+SubDirHdrs $(TOP) lib math ;
+SubDirHdrs $(TOP) lib os ;
+
+CoCoDisk sinx.dsk : SINX.BIN ;
+
+LINKLIBS on SINX.BIN  = -lcc3 -los ; 
+Depends SINX.BIN : libos.a libcc3.a ;
+
+Main SINX.BIN :
+	sinx.c
+	;
+
