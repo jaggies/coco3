@@ -5,7 +5,7 @@ SubDirHdrs $(TOP) lib os ;
 Library libos.a : 
 	fixed.c
 	imath.c
-	imatrix.c
+	fmatrix.c
 	matrix.c
 	sincos.c
 	vec2.c

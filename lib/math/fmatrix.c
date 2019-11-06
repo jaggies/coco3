@@ -1,12 +1,12 @@
 /*
- * imatrix.c
+ * fmatrix.c
  *
  *  Created on: Apr 28, 2019
  *      Author: jmiller
  */
 
 #include "os.h"
-#include "imatrix.h"
+#include "fmatrix.h"
 #include "cc3gfx.h" // enum for X, Y, Z TODO
 
 // Note that due to a compiler bug with cmoc, we can't use the Matrix typedef in declarations,
@@ -19,7 +19,7 @@ static const fixed identity[16] = {
     0, 0, 0, c_one
 };
 
-enum iMatrixIndex {
+enum fMatrixIndex {
     A11=0, A12=1, A13=2, A14=3,
     A21=4, A22=5, A23=6, A24=7,
     A31=8, A32=9, A33=10, A34=11,
@@ -28,7 +28,7 @@ enum iMatrixIndex {
 extern float Radians(float angle);
 
 // Rotation matrix generation routines all use degrees
-fixed* iRotationMatrix(float angle, uint8_t axis, fixed matrix[16]) {
+fixed* fRotationMatrix(float angle, uint8_t axis, fixed matrix[16]) {
     const float theta = Radians(angle);
     const fixed SIN = fromFloat(sin(theta));
     const fixed COS = fromFloat(cos(theta));
@@ -52,7 +52,7 @@ fixed* iRotationMatrix(float angle, uint8_t axis, fixed matrix[16]) {
     return matrix;
 }
 
-fixed* iRotationMatrixAxis(float angle, const fixed axis[3], fixed matrix[16])
+fixed* fRotationMatrixAxis(float angle, const fixed axis[3], fixed matrix[16])
 {
     //const Vec3f a = normalize(axis);  // TODO
     const float theta = Radians(angle);
@@ -78,7 +78,7 @@ fixed* iRotationMatrixAxis(float angle, const fixed axis[3], fixed matrix[16])
     return matrix;
 }
 
-fixed* iTranslationMatrix(fixed tx, fixed ty, fixed tz, fixed matrix[16])
+fixed* fTranslationMatrix(fixed tx, fixed ty, fixed tz, fixed matrix[16])
 {
     memcpy(matrix, identity, sizeof(identity));
     matrix[A41] = tx;
@@ -87,7 +87,7 @@ fixed* iTranslationMatrix(fixed tx, fixed ty, fixed tz, fixed matrix[16])
     return matrix;
 }
 
-fixed* iScaleMatrix(fixed sx, fixed sy, fixed sz, fixed matrix[16])
+fixed* fScaleMatrix(fixed sx, fixed sy, fixed sz, fixed matrix[16])
 {
     memcpy(matrix, identity, sizeof(identity));
     matrix[A11] = sx; //sx   0.0f 0.0f 0.0f
@@ -97,7 +97,7 @@ fixed* iScaleMatrix(fixed sx, fixed sy, fixed sz, fixed matrix[16])
     return matrix;
 }
 
-fixed* iTransposeMatrix(const fixed in[16], fixed out[16])
+fixed* fTransposeMatrix(const fixed in[16], fixed out[16])
 {
     fixed m[16] = {
         in[A11], in[A21], in[A31], in[A41],
@@ -108,7 +108,7 @@ fixed* iTransposeMatrix(const fixed in[16], fixed out[16])
     return out;
 }
 
-fixed* iMultiplyMatrix(const fixed a[16], const fixed b[16], fixed out[16])
+fixed* fMultiplyMatrix(const fixed a[16], const fixed b[16], fixed out[16])
 {
     fixed m[16] = {
         fmult(a[A11],b[A11])+fmult(a[A12],b[A21])+fmult(a[A13],b[A31])+fmult(a[A14],b[A41]),
@@ -134,14 +134,14 @@ fixed* iMultiplyMatrix(const fixed a[16], const fixed b[16], fixed out[16])
     return out;
 }
 
-fixed* iMultiplyScalar(const fixed a[16], const fixed b, fixed out[16]) {
+fixed* fMultiplyScalar(const fixed a[16], const fixed b, fixed out[16]) {
     for (uint8_t i = 0; i < 16; i++) {
         *out++ = fmult(b, *a++);
     }
     return out;
 }
 
-fixed* iMatrixTransformVector(const fixed m[16], const fixed vin[3], fixed vout[3]) {
+fixed* fMatrixTransformVector(const fixed m[16], const fixed vin[3], fixed vout[3]) {
     fixed x = vin[X], y = vin[Y], z = vin[Z];
     vout[X] = fmult(x,m[A11]) + fmult(y,m[A21]) + fmult(z,m[A31]) + m[A41];
     vout[Y] = fmult(x,m[A12]) + fmult(y,m[A22]) + fmult(z,m[A32]) + m[A42];
@@ -149,7 +149,7 @@ fixed* iMatrixTransformVector(const fixed m[16], const fixed vin[3], fixed vout[
     return vout;
 }
 
-fixed* iMatrixTransformDirection(const fixed m[16], const fixed vin[3], fixed vout[3]) {
+fixed* fMatrixTransformDirection(const fixed m[16], const fixed vin[3], fixed vout[3]) {
     fixed x = vin[X], y = vin[Y], z = vin[Z];
     vout[X] = fmult(x,m[A11]) + fmult(y,m[A21]) + fmult(z,m[A31]);
     vout[Y] = fmult(x,m[A12]) + fmult(y,m[A22]) + fmult(z,m[A32]);
@@ -157,12 +157,12 @@ fixed* iMatrixTransformDirection(const fixed m[16], const fixed vin[3], fixed vo
     return vout;
 }
 
-fixed* iMatrixLoadIdentity(fixed matrix[16]) {
+fixed* fMatrixLoadIdentity(fixed matrix[16]) {
     memcpy(matrix, identity, sizeof(identity));
     return matrix;
 }
 
-fixed* iMatrixPrint(fixed matrix[16]) {
+fixed* fMatrixPrint(fixed matrix[16]) {
     printf("%f %f %f %f\n", toFloat(matrix[0]), toFloat(matrix[1]), toFloat(matrix[2]), toFloat(matrix[3]));
     printf("%f %f %f %f\n", toFloat(matrix[4]), toFloat(matrix[5]), toFloat(matrix[6]), toFloat(matrix[7]));
     printf("%f %f %f %f\n", toFloat(matrix[8]), toFloat(matrix[9]), toFloat(matrix[10]), toFloat(matrix[11]));
