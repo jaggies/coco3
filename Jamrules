@@ -1,6 +1,6 @@
 TARGET = coco3 ;
 
-OPTIM = -g -O1 ;
+OPTIM = -O2 ;
 CPU = HD6309 ;
 #DEFINES += DEBUG ;
 
@@ -14,10 +14,10 @@ if $(TARGET) = "coco3" {
 	CC = cmoc ;
 	#LINK = lwlink ;
 
-	OPTIM = -O2 ;
 	#CCFLAGS = --verbose ;
 	CCFLAGS += -DCOCO -Dconst= ;
 	CCFLAGS += --coco ; # Coco .bin file
+	CCFLAGS += --limit=7800 ; # protect stack
 	#CCFLAGS += -S ;
 	#CCFLAGS += --os9 ; # Coco OS9 executable
 	# Oops, emulators have faulty implementation of HD6309 MULD instruction

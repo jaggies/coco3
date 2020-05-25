@@ -23,9 +23,9 @@
 #define NX 8
 #define NY NX
 
-static Vec3 points[NX][NY];
-static Vec3 normals[NX][NY];
-static Vec3 trans[NX][NY]; // transformed (tmp) vector in drawing
+static Vec3 *points;
+static Vec3 *normals;
+static Vec3 *trans; // transformed (tmp) vector in drawing
 
 void simpleRGB() {
     for (uint8_t i = 0; i < 16; i++) {
@@ -53,8 +53,8 @@ void computeSinX() {
             float ud = u + du * 0.1f;
             float vd = v + dv * 0.1f;
             Vec3 pdu, pdv, *point, *normal;
-            point = &points[j][i];
-            normal = &normals[j][i];
+            point = &points[j*NX+i];
+            normal = &normals[j*NX+i];
             vec3(u, sinx_x(u, v), v, point);
             vec3(ud, sinx_x(ud, v), v, &pdu);
             sub3(&pdu, point, &pdu);
@@ -71,21 +71,21 @@ void drawSinX(float projection[16], int solid) {
     for (int j = 0; j < NY; j++) {
         for (int i = 0; i < NX; i++) {
             MatrixTransformVector(projection,
-                    (const float*) &points[j][i].x, (float*) &trans[j][i].x);
+                    (const float*) &points[j*NX+i].x, (float*) &trans[j*NX+i].x);
         }
     }
     for (int j = 0; j < NY - 1; j++) {
         for (int i = 0; i < NX - 1; i++) {
             int p0[2], p1[2], p2[2], p3[2];
-            p0[0] = (int) trans[j][i].x;
-            p1[0] = (int) trans[j][i + 1].x;
-            p2[0] = (int) trans[j + 1][i].x;
-            p3[0] = (int) trans[j + 1][i + 1].x;
+            p0[0] = (int) trans[j*NX + i].x;
+            p1[0] = (int) trans[j*NX + i + 1].x;
+            p2[0] = (int) trans[(j + 1)*NX + i].x;
+            p3[0] = (int) trans[(j + 1)*NX + i + 1].x;
 
-            p0[1] = (int) trans[j][i].y;
-            p1[1] = (int) trans[j][i + 1].y;
-            p2[1] = (int) trans[j + 1][i].y;
-            p3[1] = (int) trans[j + 1][i + 1].y;
+            p0[1] = (int) trans[j*NX + i].y;
+            p1[1] = (int) trans[j*NX + i + 1].y;
+            p2[1] = (int) trans[(j + 1)*NX + i].y;
+            p3[1] = (int) trans[(j + 1)*NX + i + 1].y;
 
             rasterColor(i^j);
             triangle(p1, p0, p2);
@@ -101,6 +101,18 @@ int main(int argc, char** argv) {
     setHighSpeed(1);
 
     /* Compute first! */
+    printf("Allocating memory for %dx%d grid\n", NX, NY);
+    points = (struct Vec3 *) sbrk(NX*NY*sizeof(Vec3));
+    normals = (struct Vec3 *) sbrk(NX*NY*sizeof(Vec3));
+    trans = (struct Vec3 *) sbrk(NX*NY*sizeof(Vec3));
+
+    if (points == (void*) -1
+            || normals == (void*) -1
+            || trans == (void*) -1) {
+        printf("Failed to allocate grid\n");
+        return 0;
+    }
+
     printf("Computing sinx()/x\n");
     computeSinX();
 
@@ -148,10 +160,10 @@ int main(int argc, char** argv) {
         setGraphicsDrawBase(gfxBase[frame & 1]);
         clear(8);
         drawSinX(projection, 1);
-        for (uint8_t j = 0; j < NY; j++) {
-            for (uint8_t i = 0; i < NX; i++) {
+        for (int j = 0; j < NY; j++) {
+            for (int i = 0; i < NX; i++) {
                 MatrixTransformVector(model,
-                        (const float*) &points[j][i].x, (float*) &points[j][i].x);
+                        (const float*) &points[j*NX+i].x, (float*) &points[j*NX+i].x);
             }
         }
         int t = getTimer();

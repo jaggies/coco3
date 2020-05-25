@@ -17,7 +17,7 @@
 #define HEIGHT 200
 #define DEPTH 4
 #define CUBESIZE 128
-//#define LINES
+#define LINES
 
 void simpleRGB() {
     for (uint8_t i = 0; i < 16; i++) {
