@@ -1,0 +1,371 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Connector_Generic:Conn_02x05_Odd_Even J1
+U 1 1 615518F9
+P 3600 3100
+F 0 "J1" H 3650 2767 50  0000 C CNN
+F 1 "Conn_02x05_Odd_Even" H 3650 2766 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical" H 3600 3100 50  0001 C CNN
+F 3 "~" H 3600 3100 50  0001 C CNN
+	1    3600 3100
+	1    0    0    1   
+$EndComp
+Wire Wire Line
+	3400 3300 3400 3450
+Wire Wire Line
+	3400 3450 3650 3450
+Wire Wire Line
+	3900 3450 3900 3300
+$Comp
+L power:GND #PWR01
+U 1 1 61556979
+P 3650 3550
+F 0 "#PWR01" H 3650 3300 50  0001 C CNN
+F 1 "GND" H 3750 3550 50  0000 C CNN
+F 2 "" H 3650 3550 50  0001 C CNN
+F 3 "" H 3650 3550 50  0001 C CNN
+	1    3650 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3650 3550 3650 3450
+Connection ~ 3650 3450
+Wire Wire Line
+	3650 3450 3900 3450
+Wire Wire Line
+	3400 3200 3050 3200
+Wire Wire Line
+	3050 3200 3050 3850
+Wire Wire Line
+	3900 3200 4050 3200
+Wire Wire Line
+	4050 3200 4050 3650
+Wire Wire Line
+	3400 3100 3200 3100
+Wire Wire Line
+	3200 3100 3200 3750
+Wire Wire Line
+	3200 3750 4900 3750
+Wire Wire Line
+	3400 2900 3050 2900
+Wire Wire Line
+	3050 2900 3050 2650
+Wire Wire Line
+	4900 3750 4900 3450
+NoConn ~ 3900 3100
+Text GLabel 3350 3000 0    50   Input ~ 0
+SOUND
+Wire Wire Line
+	3350 3000 3400 3000
+$Comp
+L power:GND #PWR03
+U 1 1 615A9A95
+P 6000 4550
+F 0 "#PWR03" H 6000 4300 50  0001 C CNN
+F 1 "GND" H 6005 4377 50  0000 C CNN
+F 2 "" H 6000 4550 50  0001 C CNN
+F 3 "" H 6000 4550 50  0001 C CNN
+	1    6000 4550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6000 4550 6000 4250
+Connection ~ 6000 4250
+$Comp
+L power:PWR_FLAG #FLG0101
+U 1 1 615DCFAC
+P 3400 3450
+F 0 "#FLG0101" H 3400 3525 50  0001 C CNN
+F 1 "PWR_FLAG" H 3400 3623 50  0001 C CNN
+F 2 "" H 3400 3450 50  0001 C CNN
+F 3 "~" H 3400 3450 50  0001 C CNN
+	1    3400 3450
+	-1   0    0    1   
+$EndComp
+Connection ~ 3400 3450
+$Comp
+L Connector_Generic:Conn_01x03 J4
+U 1 1 615F244A
+P 4250 3250
+F 0 "J4" H 4200 3000 50  0000 L CNN
+F 1 "Conn_01x03" V 4400 2850 50  0001 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 4250 3250 50  0001 C CNN
+F 3 "~" H 4250 3250 50  0001 C CNN
+	1    4250 3250
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	6000 4250 6500 4250
+Wire Wire Line
+	4900 3450 5400 3450
+Wire Wire Line
+	4050 3650 5400 3650
+Wire Wire Line
+	3050 3850 5400 3850
+Text Label 5000 2900 0    50   ~ 0
+RGB_SEL
+$Comp
+L Device:R_Small R1
+U 1 1 615B3D58
+P 5500 2900
+F 0 "R1" V 5400 2900 50  0000 C CNN
+F 1 "0" V 5500 2900 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" H 5500 2900 50  0001 C CNN
+F 3 "~" H 5500 2900 50  0001 C CNN
+	1    5500 2900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3900 2900 5400 2900
+Connection ~ 6000 3950
+Wire Wire Line
+	6000 3950 6000 4250
+Wire Wire Line
+	5850 2750 6950 2750
+Wire Wire Line
+	5850 3250 5850 2750
+Wire Wire Line
+	6000 3150 6000 3350
+Connection ~ 6000 3150
+Wire Wire Line
+	6000 3050 6000 3150
+Wire Wire Line
+	6200 3150 6000 3150
+NoConn ~ 6200 3250
+NoConn ~ 6800 3050
+NoConn ~ 6800 3650
+NoConn ~ 6800 3850
+Connection ~ 6000 3350
+Wire Wire Line
+	6000 3050 6200 3050
+Connection ~ 6000 3550
+Wire Wire Line
+	6000 3350 6200 3350
+Wire Wire Line
+	6000 3550 6000 3350
+Wire Wire Line
+	6000 3750 6000 3950
+Connection ~ 6000 3750
+Wire Wire Line
+	6000 3550 6000 3750
+Wire Wire Line
+	6000 3550 6200 3550
+Wire Wire Line
+	6000 3750 6200 3750
+Wire Wire Line
+	6200 3950 6000 3950
+Wire Wire Line
+	5600 3250 5850 3250
+Wire Wire Line
+	7050 3250 6800 3250
+Wire Wire Line
+	7050 2650 7050 3250
+Wire Wire Line
+	5600 2650 7050 2650
+Wire Wire Line
+	6950 3450 6800 3450
+Wire Wire Line
+	6950 2750 6950 3450
+Text Label 5000 2650 0    50   ~ 0
+VSYNC
+Text Label 5000 3250 0    50   ~ 0
+HSYNC
+Wire Wire Line
+	5600 3450 6200 3450
+Wire Wire Line
+	5600 3650 6200 3650
+Wire Wire Line
+	5600 3850 6200 3850
+Text Label 5000 3450 0    50   ~ 0
+BLUE
+Text Label 5000 3650 0    50   ~ 0
+GREEN
+Text Label 5000 3850 0    50   ~ 0
+RED
+Wire Wire Line
+	3050 2650 5400 2650
+$Comp
+L Device:R_Small R3
+U 1 1 61563E92
+P 5500 3250
+F 0 "R3" V 5450 3100 50  0000 C CNN
+F 1 "75" V 5450 3400 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" H 5500 3250 50  0001 C CNN
+F 3 "~" H 5500 3250 50  0001 C CNN
+	1    5500 3250
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R2
+U 1 1 61563B03
+P 5500 2650
+F 0 "R2" V 5450 2500 50  0000 C CNN
+F 1 "75" V 5450 2800 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" H 5500 2650 50  0001 C CNN
+F 3 "~" H 5500 2650 50  0001 C CNN
+	1    5500 2650
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R4
+U 1 1 61554F29
+P 5500 3450
+F 0 "R4" V 5450 3300 50  0000 C CNN
+F 1 "75" V 5450 3600 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" H 5500 3450 50  0001 C CNN
+F 3 "~" H 5500 3450 50  0001 C CNN
+	1    5500 3450
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R5
+U 1 1 61554DB5
+P 5500 3650
+F 0 "R5" V 5450 3500 50  0000 C CNN
+F 1 "75" V 5450 3800 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" H 5500 3650 50  0001 C CNN
+F 3 "~" H 5500 3650 50  0001 C CNN
+	1    5500 3650
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R6
+U 1 1 61554598
+P 5500 3850
+F 0 "R6" V 5450 3700 50  0000 C CNN
+F 1 "75" V 5450 4000 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" H 5500 3850 50  0001 C CNN
+F 3 "~" H 5500 3850 50  0001 C CNN
+	1    5500 3850
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:DB15_Male_HighDensity_MountingHoles J2
+U 1 1 61552310
+P 6500 3550
+F 0 "J2" H 6250 4250 50  0000 C CNN
+F 1 "VGA" H 6500 4326 50  0001 C CNN
+F 2 "Connector_Dsub:DSUB-15-HD_Female_Horizontal_P2.29x1.98mm_EdgePinOffset3.03mm_Housed_MountingHolesOffset4.94mm" H 5550 3950 50  0001 C CNN
+F 3 " ~" H 5550 3950 50  0001 C CNN
+	1    6500 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0101
+U 1 1 61633D39
+P 3100 4550
+F 0 "#PWR0101" H 3100 4300 50  0001 C CNN
+F 1 "GND" H 3105 4377 50  0000 C CNN
+F 2 "" H 3100 4550 50  0001 C CNN
+F 3 "" H 3100 4550 50  0001 C CNN
+	1    3100 4550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3100 4550 3100 4450
+Wire Wire Line
+	4450 3000 4450 3150
+Wire Wire Line
+	3900 3000 4450 3000
+Wire Wire Line
+	5600 2900 5700 2900
+$Comp
+L power:GND #PWR02
+U 1 1 61583089
+P 5700 2900
+F 0 "#PWR02" H 5700 2650 50  0001 C CNN
+F 1 "GND" H 5700 2950 50  0000 C CNN
+F 2 "" H 5700 2900 50  0001 C CNN
+F 3 "" H 5700 2900 50  0001 C CNN
+	1    5700 2900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4450 3250 5400 3250
+$Comp
+L Connector:Conn_Coaxial J5
+U 1 1 6167D6A1
+P 4900 4250
+F 0 "J5" H 4750 4150 50  0000 C CNN
+F 1 "Sound Out" H 4750 4400 50  0000 C CNN
+F 2 "" H 4900 4250 50  0001 C CNN
+F 3 " ~" H 4900 4250 50  0001 C CNN
+	1    4900 4250
+	-1   0    0    -1  
+$EndComp
+Text GLabel 5350 4250 2    50   Input ~ 0
+SOUND
+Wire Wire Line
+	5100 4250 5350 4250
+$Comp
+L power:GND #PWR0102
+U 1 1 616823AC
+P 4900 4550
+F 0 "#PWR0102" H 4900 4300 50  0001 C CNN
+F 1 "GND" H 4905 4377 50  0000 C CNN
+F 2 "" H 4900 4550 50  0001 C CNN
+F 3 "" H 4900 4550 50  0001 C CNN
+	1    4900 4550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4900 4550 4900 4450
+$Comp
+L Connector:Conn_Coaxial J3
+U 1 1 615F0928
+P 3100 4250
+F 0 "J3" H 2950 4150 50  0000 C CNN
+F 1 "Composite In" H 2900 4400 50  0000 C CNN
+F 2 "" H 3100 4250 50  0001 C CNN
+F 3 " ~" H 3100 4250 50  0001 C CNN
+	1    3100 4250
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_Coaxial J?
+U 1 1 6175F6C9
+P 4300 4250
+F 0 "J?" H 4150 4150 50  0000 C CNN
+F 1 "Composite Out" H 4400 4400 50  0000 C CNN
+F 2 "" H 4300 4250 50  0001 C CNN
+F 3 " ~" H 4300 4250 50  0001 C CNN
+	1    4300 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4450 3350 4450 4000
+Wire Wire Line
+	3300 4250 4100 4250
+Wire Wire Line
+	4450 4000 4100 4000
+Wire Wire Line
+	4100 4000 4100 4250
+Connection ~ 4100 4250
+$Comp
+L power:GND #PWR?
+U 1 1 6176AB1D
+P 4300 4550
+F 0 "#PWR?" H 4300 4300 50  0001 C CNN
+F 1 "GND" H 4305 4377 50  0000 C CNN
+F 2 "" H 4300 4550 50  0001 C CNN
+F 3 "" H 4300 4550 50  0001 C CNN
+	1    4300 4550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 4550 4300 4450
+$EndSCHEMATC
